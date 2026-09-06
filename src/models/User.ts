@@ -34,13 +34,6 @@ import {
     UserAvatarPhotoToJSON,
     UserAvatarPhotoToJSONTyped,
 } from './UserAvatarPhoto';
-import type { Membership } from './Membership';
-import {
-    MembershipFromJSON,
-    MembershipFromJSONTyped,
-    MembershipToJSON,
-    MembershipToJSONTyped,
-} from './Membership';
 
 /**
  * 
@@ -186,12 +179,6 @@ export interface User {
      * @memberof User
      */
     readonly tierPinReason?: string | null;
-    /**
-     * 
-     * @type {Array<Membership>}
-     * @memberof User
-     */
-    memberships?: Array<Membership>;
     /**
      * 
      * @type {Array<OAuthIdentity>}
@@ -411,7 +398,6 @@ export function UserFromJSONTyped(json: any, ignoreDiscriminator: boolean): User
         'tierPinnedAt': json['tierPinnedAt'] == null ? undefined : (new Date(json['tierPinnedAt'])),
         'tierPinnedBy': json['tierPinnedBy'] == null ? undefined : UserFromJSON(json['tierPinnedBy']),
         'tierPinReason': json['tierPinReason'] == null ? undefined : json['tierPinReason'],
-        'memberships': json['memberships'] == null ? undefined : ((json['memberships'] as Array<any>).map(MembershipFromJSON)),
         'oauthIdentities': json['oauthIdentities'] == null ? undefined : ((json['oauthIdentities'] as Array<any>).map(OAuthIdentityFromJSON)),
         'totpSecret': json['totpSecret'] == null ? undefined : json['totpSecret'],
         'totpSecretKeyId': json['totpSecretKeyId'] == null ? undefined : json['totpSecretKeyId'],
@@ -461,7 +447,6 @@ export function UserToJSONTyped(value?: Omit<User, 'disabledAt'|'spamMarkedAt'|'
         'roles': value['roles'],
         'spamMarkedBy': UserToJSON(value['spamMarkedBy']),
         'tierPinnedBy': UserToJSON(value['tierPinnedBy']),
-        'memberships': value['memberships'] == null ? undefined : ((value['memberships'] as Array<any>).map(MembershipToJSON)),
         'oauthIdentities': value['oauthIdentities'] == null ? undefined : ((value['oauthIdentities'] as Array<any>).map(OAuthIdentityToJSON)),
         'totpSecret': value['totpSecret'],
         'recoveryCodes': value['recoveryCodes'] == null ? undefined : ((value['recoveryCodes'] as Array<any>).map(RecoveryCodeToJSON)),

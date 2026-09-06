@@ -17,6 +17,11 @@ import * as runtime from '../runtime';
 import type {
   ConstraintViolation,
   Deployment,
+  DeploymentBundleUploadConfirmInput,
+  DeploymentBundleUploadConfirmOutput,
+  DeploymentBundleUploadDeclareInput,
+  DeploymentBundleUploadDeclareOutput,
+  DeploymentDeploymentEndpoint,
   DeploymentJsonMergePatch,
 } from '../models/index';
 import {
@@ -24,6 +29,16 @@ import {
     ConstraintViolationToJSON,
     DeploymentFromJSON,
     DeploymentToJSON,
+    DeploymentBundleUploadConfirmInputFromJSON,
+    DeploymentBundleUploadConfirmInputToJSON,
+    DeploymentBundleUploadConfirmOutputFromJSON,
+    DeploymentBundleUploadConfirmOutputToJSON,
+    DeploymentBundleUploadDeclareInputFromJSON,
+    DeploymentBundleUploadDeclareInputToJSON,
+    DeploymentBundleUploadDeclareOutputFromJSON,
+    DeploymentBundleUploadDeclareOutputToJSON,
+    DeploymentDeploymentEndpointFromJSON,
+    DeploymentDeploymentEndpointToJSON,
     DeploymentJsonMergePatchFromJSON,
     DeploymentJsonMergePatchToJSON,
 } from '../models/index';
@@ -45,8 +60,20 @@ export interface ApiDeploymentsIdPatchRequest {
     deploymentJsonMergePatch: Omit<DeploymentJsonMergePatch, 'id'|'deletedAt'|'createdAt'|'updatedAt'|'onASwarm'|'deleted'>;
 }
 
+export interface ApiDeploymentsIdendpointsGetCollectionRequest {
+    id: string;
+}
+
 export interface ApiDeploymentsPostRequest {
     deployment: Omit<Deployment, 'id'|'deletedAt'|'createdAt'|'updatedAt'|'onASwarm'|'deleted'>;
+}
+
+export interface BundleUploadConfirmRequest {
+    deploymentBundleUploadConfirmInput: DeploymentBundleUploadConfirmInput;
+}
+
+export interface BundleUploadDeclareRequest {
+    deploymentBundleUploadDeclareInput: DeploymentBundleUploadDeclareInput;
 }
 
 /**
@@ -233,6 +260,49 @@ export class DeploymentApi extends runtime.BaseAPI {
     }
 
     /**
+     * Retrieves the collection of Deployment resources.
+     * Retrieves the collection of Deployment resources.
+     */
+    async apiDeploymentsIdendpointsGetCollectionRaw(requestParameters: ApiDeploymentsIdendpointsGetCollectionRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Array<DeploymentDeploymentEndpoint>>> {
+        if (requestParameters['id'] == null) {
+            throw new runtime.RequiredError(
+                'id',
+                'Required parameter "id" was null or undefined when calling apiDeploymentsIdendpointsGetCollection().'
+            );
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("bearerAuth", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
+        const response = await this.request({
+            path: `/api/deployments/{id}/endpoints`.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters['id']))),
+            method: 'GET',
+            headers: headerParameters,
+            query: queryParameters,
+        }, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) => jsonValue.map(DeploymentDeploymentEndpointFromJSON));
+    }
+
+    /**
+     * Retrieves the collection of Deployment resources.
+     * Retrieves the collection of Deployment resources.
+     */
+    async apiDeploymentsIdendpointsGetCollection(requestParameters: ApiDeploymentsIdendpointsGetCollectionRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Array<DeploymentDeploymentEndpoint>> {
+        const response = await this.apiDeploymentsIdendpointsGetCollectionRaw(requestParameters, initOverrides);
+        return await response.value();
+    }
+
+    /**
      * Creates a Deployment resource.
      * Creates a Deployment resource.
      */
@@ -275,6 +345,98 @@ export class DeploymentApi extends runtime.BaseAPI {
      */
     async apiDeploymentsPost(requestParameters: ApiDeploymentsPostRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Deployment> {
         const response = await this.apiDeploymentsPostRaw(requestParameters, initOverrides);
+        return await response.value();
+    }
+
+    /**
+     * Creates a Deployment resource.
+     * Creates a Deployment resource.
+     */
+    async bundleUploadConfirmRaw(requestParameters: BundleUploadConfirmRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<DeploymentBundleUploadConfirmOutput>> {
+        if (requestParameters['deploymentBundleUploadConfirmInput'] == null) {
+            throw new runtime.RequiredError(
+                'deploymentBundleUploadConfirmInput',
+                'Required parameter "deploymentBundleUploadConfirmInput" was null or undefined when calling bundleUploadConfirm().'
+            );
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        headerParameters['Content-Type'] = 'application/json';
+
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("bearerAuth", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
+        const response = await this.request({
+            path: `/api/deployments/bundle_uploads/confirm`,
+            method: 'POST',
+            headers: headerParameters,
+            query: queryParameters,
+            body: DeploymentBundleUploadConfirmInputToJSON(requestParameters['deploymentBundleUploadConfirmInput']),
+        }, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) => DeploymentBundleUploadConfirmOutputFromJSON(jsonValue));
+    }
+
+    /**
+     * Creates a Deployment resource.
+     * Creates a Deployment resource.
+     */
+    async bundleUploadConfirm(requestParameters: BundleUploadConfirmRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<DeploymentBundleUploadConfirmOutput> {
+        const response = await this.bundleUploadConfirmRaw(requestParameters, initOverrides);
+        return await response.value();
+    }
+
+    /**
+     * Creates a Deployment resource.
+     * Creates a Deployment resource.
+     */
+    async bundleUploadDeclareRaw(requestParameters: BundleUploadDeclareRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<DeploymentBundleUploadDeclareOutput>> {
+        if (requestParameters['deploymentBundleUploadDeclareInput'] == null) {
+            throw new runtime.RequiredError(
+                'deploymentBundleUploadDeclareInput',
+                'Required parameter "deploymentBundleUploadDeclareInput" was null or undefined when calling bundleUploadDeclare().'
+            );
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        headerParameters['Content-Type'] = 'application/json';
+
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("bearerAuth", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
+        const response = await this.request({
+            path: `/api/deployments/bundle_uploads`,
+            method: 'POST',
+            headers: headerParameters,
+            query: queryParameters,
+            body: DeploymentBundleUploadDeclareInputToJSON(requestParameters['deploymentBundleUploadDeclareInput']),
+        }, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) => DeploymentBundleUploadDeclareOutputFromJSON(jsonValue));
+    }
+
+    /**
+     * Creates a Deployment resource.
+     * Creates a Deployment resource.
+     */
+    async bundleUploadDeclare(requestParameters: BundleUploadDeclareRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<DeploymentBundleUploadDeclareOutput> {
+        const response = await this.bundleUploadDeclareRaw(requestParameters, initOverrides);
         return await response.value();
     }
 

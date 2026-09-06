@@ -175,6 +175,31 @@ export interface Application {
      */
     portAllocations?: Array<PortAllocation>;
     /**
+     * Which of the app-hosting pool domains (`snarl.dev`, `starshp.dev` —
+     * {@see \App\Service\Ingress\DomainPoolAssigner}) this application's
+     * deployments answer under, in addition to `someones.computer`. Null until
+     * its first successful deploy assigns one, and never moved after — a
+     * redeploy must resolve to the same pool hostnames it already handed out,
+     * the same reason {@see $firstRunningAt} is a latch rather than a rolling
+     * value.
+     * @type {string}
+     * @memberof Application
+     */
+    readonly poolDomain?: string | null;
+    /**
+     * Overrides the auto-slugified application name in the pool-domain
+     * hostname's `{service}.{deployment}.{label}.{poolDomain}` shape
+     * ({@see \App\Service\Ingress\PoolHostname}) — null for every application
+     * that has not opted into a custom one, which is what {@see poolLabelOrSlug()}
+     * falls back to. Unique platform-wide, the same reasoning as
+     * {@see \App\Entity\Domain::$name}: two applications sharing a label would
+     * collide on the exact same DNS name the moment they also shared a
+     * deployment and service name.
+     * @type {string}
+     * @memberof Application
+     */
+    poolLabel?: string | null;
+    /**
      * 
      * @type {string}
      * @memberof Application
@@ -312,6 +337,8 @@ export function ApplicationFromJSONTyped(json: any, ignoreDiscriminator: boolean
         'deployments': json['deployments'] == null ? undefined : json['deployments'],
         'variables': json['variables'] == null ? undefined : ((json['variables'] as Array<any>).map(VariableFromJSON)),
         'portAllocations': json['portAllocations'] == null ? undefined : ((json['portAllocations'] as Array<any>).map(PortAllocationFromJSON)),
+        'poolDomain': json['poolDomain'] == null ? undefined : json['poolDomain'],
+        'poolLabel': json['poolLabel'] == null ? undefined : json['poolLabel'],
         'id': json['id'] == null ? undefined : json['id'],
         'deletedAt': json['deletedAt'] == null ? undefined : (new Date(json['deletedAt'])),
         'createdAt': json['createdAt'] == null ? undefined : (new Date(json['createdAt'])),
@@ -329,7 +356,7 @@ export function ApplicationToJSON(json: any): Application {
     return ApplicationToJSONTyped(json, false);
 }
 
-export function ApplicationToJSONTyped(value?: Omit<Application, 'firstRunningAt'|'iconKey'|'iconSource'|'id'|'deletedAt'|'createdAt'|'updatedAt'|'operatorChosenIcon'|'iconVersion'|'deleted'> | null, ignoreDiscriminator: boolean = false): any {
+export function ApplicationToJSONTyped(value?: Omit<Application, 'firstRunningAt'|'iconKey'|'iconSource'|'poolDomain'|'id'|'deletedAt'|'createdAt'|'updatedAt'|'operatorChosenIcon'|'iconVersion'|'deleted'> | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
@@ -350,6 +377,7 @@ export function ApplicationToJSONTyped(value?: Omit<Application, 'firstRunningAt
         'deployments': value['deployments'],
         'variables': value['variables'] == null ? undefined : ((value['variables'] as Array<any>).map(VariableToJSON)),
         'portAllocations': value['portAllocations'] == null ? undefined : ((value['portAllocations'] as Array<any>).map(PortAllocationToJSON)),
+        'poolLabel': value['poolLabel'],
         'buildCredential': SealedSecretToJSON(value['buildCredential']),
         'accessGateCredential': SealedSecretToJSON(value['accessGateCredential']),
         'icon': value['icon'],

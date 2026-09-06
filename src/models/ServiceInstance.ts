@@ -109,6 +109,15 @@ export interface ServiceInstance {
      */
     readonly observedAt?: Date | null;
     /**
+     * When the current attempt to reach `Serving` began — {@see claim()} sets it
+     * on a fresh row and {@see markInFlight()} again on an upgrade's re-entry into
+     * `Healthchecking`; null once the row is `Serving`, `Failed`, or anything else
+     * that means nothing is still trying.
+     * @type {Date}
+     * @memberof ServiceInstance
+     */
+    readonly inFlightSince?: Date | null;
+    /**
      * 
      * @type {string}
      * @memberof ServiceInstance
@@ -138,6 +147,12 @@ export interface ServiceInstance {
      * @memberof ServiceInstance
      */
     readonly serving?: boolean;
+    /**
+     * Dispatched so long ago that whatever was carrying it is gone.
+     * @type {boolean}
+     * @memberof ServiceInstance
+     */
+    readonly inFlightStale?: boolean;
     /**
      * 
      * @type {SealedSecret}
@@ -201,11 +216,13 @@ export function ServiceInstanceFromJSONTyped(json: any, ignoreDiscriminator: boo
         'capacityBytes': json['capacityBytes'] == null ? undefined : ServiceInstanceCapacityBytesFromJSON(json['capacityBytes']),
         'observedUsageBytes': json['observedUsageBytes'] == null ? undefined : ServiceInstanceObservedUsageBytesFromJSON(json['observedUsageBytes']),
         'observedAt': json['observedAt'] == null ? undefined : (new Date(json['observedAt'])),
+        'inFlightSince': json['inFlightSince'] == null ? undefined : (new Date(json['inFlightSince'])),
         'id': json['id'] == null ? undefined : json['id'],
         'createdAt': json['createdAt'] == null ? undefined : (new Date(json['createdAt'])),
         'updatedAt': json['updatedAt'] == null ? undefined : (new Date(json['updatedAt'])),
         'catalogueEntry': json['catalogueEntry'] == null ? undefined : json['catalogueEntry'],
         'serving': json['serving'] == null ? undefined : json['serving'],
+        'inFlightStale': json['inFlightStale'] == null ? undefined : json['inFlightStale'],
         'adminCredential': json['adminCredential'] == null ? undefined : SealedSecretFromJSON(json['adminCredential']),
     };
 }
@@ -214,7 +231,7 @@ export function ServiceInstanceToJSON(json: any): ServiceInstance {
     return ServiceInstanceToJSONTyped(json, false);
 }
 
-export function ServiceInstanceToJSONTyped(value?: Omit<ServiceInstance, 'failureReason'|'observedAt'|'id'|'createdAt'|'updatedAt'|'catalogueEntry'|'serving'> | null, ignoreDiscriminator: boolean = false): any {
+export function ServiceInstanceToJSONTyped(value?: Omit<ServiceInstance, 'failureReason'|'observedAt'|'inFlightSince'|'id'|'createdAt'|'updatedAt'|'catalogueEntry'|'serving'|'inFlightStale'> | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }

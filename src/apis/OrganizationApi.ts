@@ -30,6 +30,8 @@ import {
 
 export interface ApiOrganizationsGetCollectionRequest {
     page?: number;
+    slug?: string;
+    slug2?: Array<string>;
 }
 
 export interface ApiOrganizationsIdDeleteRequest {
@@ -63,6 +65,14 @@ export class OrganizationApi extends runtime.BaseAPI {
 
         if (requestParameters['page'] != null) {
             queryParameters['page'] = requestParameters['page'];
+        }
+
+        if (requestParameters['slug'] != null) {
+            queryParameters['slug'] = requestParameters['slug'];
+        }
+
+        if (requestParameters['slug2'] != null) {
+            queryParameters['slug[]'] = requestParameters['slug2'];
         }
 
         const headerParameters: runtime.HTTPHeaders = {};
