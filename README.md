@@ -1,42 +1,46 @@
-# someones.computer SDK — TypeScript
+## @someones-computer/sdk-js@1.0.0
 
-A generated client for the [someones.computer](https://someones.computer) `/api` surface —
-Organizations, Applications, Deployments, Managed Services, Swarms, and the rest of the
-JSON-LD/Hydra API described at `/api/docs`.
+This generator creates TypeScript/JavaScript client that utilizes [Fetch API](https://fetch.spec.whatwg.org/). The generated Node module can be used in the following environments:
 
-Generated with [openapi-generator](https://openapi-generator.tech) (`typescript-fetch`
-generator, no extra HTTP-client dependency) from this API's OpenAPI 3 spec. It is **not
-hand-maintained** — see
-[docs/sdk-generation.md](https://git.grey.ooo/Grey.ooo/Someones.Computer/src/branch/main/docs/sdk-generation.md)
-in the main repo for the pipeline that produces it, and open issues there rather than editing
-generated code here directly.
+Environment
+* Node.js
+* Webpack
+* Browserify
 
-## Install
+Language level
+* ES5 - you must have a Promises/A+ library installed
+* ES6
 
-```bash
-npm install @someones-computer/sdk-js
+Module system
+* CommonJS
+* ES6 module system
+
+It can be used in both TypeScript and JavaScript. In TypeScript, the definition will be automatically resolved via `package.json`. ([Reference](https://www.typescriptlang.org/docs/handbook/declaration-files/consumption.html))
+
+### Building
+
+To build and compile the typescript sources to javascript use:
+```
+npm install
+npm run build
 ```
 
-## Authentication
+### Publishing
 
-Every operation takes a bearer token — the same `ApiToken` secret the platform's own `/cli`
-API accepts (`Authorization: Bearer <token>`). Issue one from the control panel under
-**Settings → API tokens**, then:
+First build the package then run `npm publish`
 
-```typescript
-import { Configuration, OrganizationApi } from "@someones-computer/sdk-js";
+### Consuming
 
-const config = new Configuration({ accessToken: "<your token>" });
-const organizations = new OrganizationApi(config);
+navigate to the folder of your consuming project and run one of the following commands.
+
+_published:_
+
+```
+npm install @someones-computer/sdk-js@1.0.0 --save
 ```
 
-## Status
+_unPublished (not recommended):_
 
-This is an early, mechanically generated SDK — method and type names follow the OpenAPI
-spec's default `operationId` scheme rather than hand-picked names. Cleaning that up is
-tracked upstream; expect method names to improve in a future release without a change in
-what they do.
-
-## License
-
-MIT — see [LICENSE](LICENSE).
+```
+npm install PATH_TO_GENERATED_PACKAGE --save
+```

@@ -30,6 +30,12 @@ import {
 
 export interface ApiApplicationsGetCollectionRequest {
     page?: number;
+    slug?: string;
+    slug2?: Array<string>;
+    organization?: string;
+    organization2?: Array<string>;
+    organizationSlug?: string;
+    organizationSlug2?: Array<string>;
 }
 
 export interface ApiApplicationsIdDeleteRequest {
@@ -42,11 +48,11 @@ export interface ApiApplicationsIdGetRequest {
 
 export interface ApiApplicationsIdPatchRequest {
     id: string;
-    applicationJsonMergePatch: Omit<ApplicationJsonMergePatch, 'firstRunningAt'|'iconKey'|'iconSource'|'id'|'deletedAt'|'createdAt'|'updatedAt'|'operatorChosenIcon'|'iconVersion'|'deleted'>;
+    applicationJsonMergePatch: Omit<ApplicationJsonMergePatch, 'firstRunningAt'|'iconKey'|'iconSource'|'poolDomain'|'id'|'deletedAt'|'createdAt'|'updatedAt'|'operatorChosenIcon'|'iconVersion'|'deleted'>;
 }
 
 export interface ApiApplicationsPostRequest {
-    application: Omit<Application, 'firstRunningAt'|'iconKey'|'iconSource'|'id'|'deletedAt'|'createdAt'|'updatedAt'|'operatorChosenIcon'|'iconVersion'|'deleted'>;
+    application: Omit<Application, 'firstRunningAt'|'iconKey'|'iconSource'|'poolDomain'|'id'|'deletedAt'|'createdAt'|'updatedAt'|'operatorChosenIcon'|'iconVersion'|'deleted'>;
 }
 
 /**
@@ -63,6 +69,30 @@ export class ApplicationApi extends runtime.BaseAPI {
 
         if (requestParameters['page'] != null) {
             queryParameters['page'] = requestParameters['page'];
+        }
+
+        if (requestParameters['slug'] != null) {
+            queryParameters['slug'] = requestParameters['slug'];
+        }
+
+        if (requestParameters['slug2'] != null) {
+            queryParameters['slug[]'] = requestParameters['slug2'];
+        }
+
+        if (requestParameters['organization'] != null) {
+            queryParameters['organization'] = requestParameters['organization'];
+        }
+
+        if (requestParameters['organization2'] != null) {
+            queryParameters['organization[]'] = requestParameters['organization2'];
+        }
+
+        if (requestParameters['organizationSlug'] != null) {
+            queryParameters['organization.slug'] = requestParameters['organizationSlug'];
+        }
+
+        if (requestParameters['organizationSlug2'] != null) {
+            queryParameters['organization.slug[]'] = requestParameters['organizationSlug2'];
         }
 
         const headerParameters: runtime.HTTPHeaders = {};
