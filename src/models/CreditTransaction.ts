@@ -179,7 +179,8 @@ export interface CreditTransaction {
 export const CreditTransactionTypeEnum = {
     TopUp: 'top_up',
     Grant: 'grant',
-    Debit: 'debit'
+    Debit: 'debit',
+    GiftCard: 'gift_card'
 } as const;
 export type CreditTransactionTypeEnum = typeof CreditTransactionTypeEnum[keyof typeof CreditTransactionTypeEnum];
 
