@@ -36,9 +36,7 @@ import {
 } from './PortAllocation';
 
 /**
- * A deployable "island": one logical app, defined by a compose file, deployed as a
- * swarm stack. Holds a pointer to the current (immutable) deployment; history lives
- * in the deployment revisions.
+ * Update an application's mutable fields.
  * @export
  * @interface ApplicationJsonMergePatch
  */

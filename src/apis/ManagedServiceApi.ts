@@ -28,27 +28,27 @@ import {
     ManagedServiceManagedServiceInputToJSON,
 } from '../models/index';
 
-export interface ApiManagedServicesGetCollectionRequest {
-    page?: number;
-}
-
-export interface ApiManagedServicesIdDeleteRequest {
-    id: string;
-}
-
-export interface ApiManagedServicesIdGetRequest {
-    id: string;
-}
-
-export interface ApiManagedServicesPostRequest {
+export interface ManagedServicesCreateRequest {
     managedServiceManagedServiceInput: ManagedServiceManagedServiceInput;
 }
 
-export interface ResumeRequest {
+export interface ManagedServicesDeleteRequest {
     id: string;
 }
 
-export interface SuspendRequest {
+export interface ManagedServicesGetRequest {
+    id: string;
+}
+
+export interface ManagedServicesListRequest {
+    page?: number;
+}
+
+export interface ManagedServicesResumeRequest {
+    id: string;
+}
+
+export interface ManagedServicesSuspendRequest {
     id: string;
 }
 
@@ -58,139 +58,14 @@ export interface SuspendRequest {
 export class ManagedServiceApi extends runtime.BaseAPI {
 
     /**
-     * Retrieves the collection of ManagedService resources.
-     * Retrieves the collection of ManagedService resources.
-     */
-    async apiManagedServicesGetCollectionRaw(requestParameters: ApiManagedServicesGetCollectionRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Array<ManagedService>>> {
-        const queryParameters: any = {};
-
-        if (requestParameters['page'] != null) {
-            queryParameters['page'] = requestParameters['page'];
-        }
-
-        const headerParameters: runtime.HTTPHeaders = {};
-
-        if (this.configuration && this.configuration.accessToken) {
-            const token = this.configuration.accessToken;
-            const tokenString = await token("bearerAuth", []);
-
-            if (tokenString) {
-                headerParameters["Authorization"] = `Bearer ${tokenString}`;
-            }
-        }
-        const response = await this.request({
-            path: `/api/managed_services`,
-            method: 'GET',
-            headers: headerParameters,
-            query: queryParameters,
-        }, initOverrides);
-
-        return new runtime.JSONApiResponse(response, (jsonValue) => jsonValue.map(ManagedServiceFromJSON));
-    }
-
-    /**
-     * Retrieves the collection of ManagedService resources.
-     * Retrieves the collection of ManagedService resources.
-     */
-    async apiManagedServicesGetCollection(requestParameters: ApiManagedServicesGetCollectionRequest = {}, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Array<ManagedService>> {
-        const response = await this.apiManagedServicesGetCollectionRaw(requestParameters, initOverrides);
-        return await response.value();
-    }
-
-    /**
-     * Removes the ManagedService resource.
-     * Removes the ManagedService resource.
-     */
-    async apiManagedServicesIdDeleteRaw(requestParameters: ApiManagedServicesIdDeleteRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>> {
-        if (requestParameters['id'] == null) {
-            throw new runtime.RequiredError(
-                'id',
-                'Required parameter "id" was null or undefined when calling apiManagedServicesIdDelete().'
-            );
-        }
-
-        const queryParameters: any = {};
-
-        const headerParameters: runtime.HTTPHeaders = {};
-
-        if (this.configuration && this.configuration.accessToken) {
-            const token = this.configuration.accessToken;
-            const tokenString = await token("bearerAuth", []);
-
-            if (tokenString) {
-                headerParameters["Authorization"] = `Bearer ${tokenString}`;
-            }
-        }
-        const response = await this.request({
-            path: `/api/managed_services/{id}`.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters['id']))),
-            method: 'DELETE',
-            headers: headerParameters,
-            query: queryParameters,
-        }, initOverrides);
-
-        return new runtime.VoidApiResponse(response);
-    }
-
-    /**
-     * Removes the ManagedService resource.
-     * Removes the ManagedService resource.
-     */
-    async apiManagedServicesIdDelete(requestParameters: ApiManagedServicesIdDeleteRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void> {
-        await this.apiManagedServicesIdDeleteRaw(requestParameters, initOverrides);
-    }
-
-    /**
-     * Retrieves a ManagedService resource.
-     * Retrieves a ManagedService resource.
-     */
-    async apiManagedServicesIdGetRaw(requestParameters: ApiManagedServicesIdGetRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<ManagedService>> {
-        if (requestParameters['id'] == null) {
-            throw new runtime.RequiredError(
-                'id',
-                'Required parameter "id" was null or undefined when calling apiManagedServicesIdGet().'
-            );
-        }
-
-        const queryParameters: any = {};
-
-        const headerParameters: runtime.HTTPHeaders = {};
-
-        if (this.configuration && this.configuration.accessToken) {
-            const token = this.configuration.accessToken;
-            const tokenString = await token("bearerAuth", []);
-
-            if (tokenString) {
-                headerParameters["Authorization"] = `Bearer ${tokenString}`;
-            }
-        }
-        const response = await this.request({
-            path: `/api/managed_services/{id}`.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters['id']))),
-            method: 'GET',
-            headers: headerParameters,
-            query: queryParameters,
-        }, initOverrides);
-
-        return new runtime.JSONApiResponse(response, (jsonValue) => ManagedServiceFromJSON(jsonValue));
-    }
-
-    /**
-     * Retrieves a ManagedService resource.
-     * Retrieves a ManagedService resource.
-     */
-    async apiManagedServicesIdGet(requestParameters: ApiManagedServicesIdGetRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<ManagedService> {
-        const response = await this.apiManagedServicesIdGetRaw(requestParameters, initOverrides);
-        return await response.value();
-    }
-
-    /**
      * Creates a ManagedService resource.
      * Creates a ManagedService resource.
      */
-    async apiManagedServicesPostRaw(requestParameters: ApiManagedServicesPostRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<ManagedService>> {
+    async managedServicesCreateRaw(requestParameters: ManagedServicesCreateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<ManagedService>> {
         if (requestParameters['managedServiceManagedServiceInput'] == null) {
             throw new runtime.RequiredError(
                 'managedServiceManagedServiceInput',
-                'Required parameter "managedServiceManagedServiceInput" was null or undefined when calling apiManagedServicesPost().'
+                'Required parameter "managedServiceManagedServiceInput" was null or undefined when calling managedServicesCreate().'
             );
         }
 
@@ -223,8 +98,133 @@ export class ManagedServiceApi extends runtime.BaseAPI {
      * Creates a ManagedService resource.
      * Creates a ManagedService resource.
      */
-    async apiManagedServicesPost(requestParameters: ApiManagedServicesPostRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<ManagedService> {
-        const response = await this.apiManagedServicesPostRaw(requestParameters, initOverrides);
+    async managedServicesCreate(requestParameters: ManagedServicesCreateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<ManagedService> {
+        const response = await this.managedServicesCreateRaw(requestParameters, initOverrides);
+        return await response.value();
+    }
+
+    /**
+     * Removes the ManagedService resource.
+     * Removes the ManagedService resource.
+     */
+    async managedServicesDeleteRaw(requestParameters: ManagedServicesDeleteRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>> {
+        if (requestParameters['id'] == null) {
+            throw new runtime.RequiredError(
+                'id',
+                'Required parameter "id" was null or undefined when calling managedServicesDelete().'
+            );
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("bearerAuth", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
+        const response = await this.request({
+            path: `/api/managed_services/{id}`.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters['id']))),
+            method: 'DELETE',
+            headers: headerParameters,
+            query: queryParameters,
+        }, initOverrides);
+
+        return new runtime.VoidApiResponse(response);
+    }
+
+    /**
+     * Removes the ManagedService resource.
+     * Removes the ManagedService resource.
+     */
+    async managedServicesDelete(requestParameters: ManagedServicesDeleteRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void> {
+        await this.managedServicesDeleteRaw(requestParameters, initOverrides);
+    }
+
+    /**
+     * Retrieves a ManagedService resource.
+     * Retrieves a ManagedService resource.
+     */
+    async managedServicesGetRaw(requestParameters: ManagedServicesGetRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<ManagedService>> {
+        if (requestParameters['id'] == null) {
+            throw new runtime.RequiredError(
+                'id',
+                'Required parameter "id" was null or undefined when calling managedServicesGet().'
+            );
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("bearerAuth", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
+        const response = await this.request({
+            path: `/api/managed_services/{id}`.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters['id']))),
+            method: 'GET',
+            headers: headerParameters,
+            query: queryParameters,
+        }, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) => ManagedServiceFromJSON(jsonValue));
+    }
+
+    /**
+     * Retrieves a ManagedService resource.
+     * Retrieves a ManagedService resource.
+     */
+    async managedServicesGet(requestParameters: ManagedServicesGetRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<ManagedService> {
+        const response = await this.managedServicesGetRaw(requestParameters, initOverrides);
+        return await response.value();
+    }
+
+    /**
+     * Retrieves the collection of ManagedService resources.
+     * Retrieves the collection of ManagedService resources.
+     */
+    async managedServicesListRaw(requestParameters: ManagedServicesListRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Array<ManagedService>>> {
+        const queryParameters: any = {};
+
+        if (requestParameters['page'] != null) {
+            queryParameters['page'] = requestParameters['page'];
+        }
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("bearerAuth", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
+        const response = await this.request({
+            path: `/api/managed_services`,
+            method: 'GET',
+            headers: headerParameters,
+            query: queryParameters,
+        }, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) => jsonValue.map(ManagedServiceFromJSON));
+    }
+
+    /**
+     * Retrieves the collection of ManagedService resources.
+     * Retrieves the collection of ManagedService resources.
+     */
+    async managedServicesList(requestParameters: ManagedServicesListRequest = {}, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Array<ManagedService>> {
+        const response = await this.managedServicesListRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
@@ -232,11 +232,11 @@ export class ManagedServiceApi extends runtime.BaseAPI {
      * Creates a ManagedService resource.
      * Creates a ManagedService resource.
      */
-    async resumeRaw(requestParameters: ResumeRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<ManagedService>> {
+    async managedServicesResumeRaw(requestParameters: ManagedServicesResumeRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<ManagedService>> {
         if (requestParameters['id'] == null) {
             throw new runtime.RequiredError(
                 'id',
-                'Required parameter "id" was null or undefined when calling resume().'
+                'Required parameter "id" was null or undefined when calling managedServicesResume().'
             );
         }
 
@@ -266,8 +266,8 @@ export class ManagedServiceApi extends runtime.BaseAPI {
      * Creates a ManagedService resource.
      * Creates a ManagedService resource.
      */
-    async resume(requestParameters: ResumeRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<ManagedService> {
-        const response = await this.resumeRaw(requestParameters, initOverrides);
+    async managedServicesResume(requestParameters: ManagedServicesResumeRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<ManagedService> {
+        const response = await this.managedServicesResumeRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
@@ -275,11 +275,11 @@ export class ManagedServiceApi extends runtime.BaseAPI {
      * Creates a ManagedService resource.
      * Creates a ManagedService resource.
      */
-    async suspendRaw(requestParameters: SuspendRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<ManagedService>> {
+    async managedServicesSuspendRaw(requestParameters: ManagedServicesSuspendRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<ManagedService>> {
         if (requestParameters['id'] == null) {
             throw new runtime.RequiredError(
                 'id',
-                'Required parameter "id" was null or undefined when calling suspend().'
+                'Required parameter "id" was null or undefined when calling managedServicesSuspend().'
             );
         }
 
@@ -309,8 +309,8 @@ export class ManagedServiceApi extends runtime.BaseAPI {
      * Creates a ManagedService resource.
      * Creates a ManagedService resource.
      */
-    async suspend(requestParameters: SuspendRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<ManagedService> {
-        const response = await this.suspendRaw(requestParameters, initOverrides);
+    async managedServicesSuspend(requestParameters: ManagedServicesSuspendRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<ManagedService> {
+        const response = await this.managedServicesSuspendRaw(requestParameters, initOverrides);
         return await response.value();
     }
 

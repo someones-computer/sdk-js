@@ -22,12 +22,12 @@ import {
     CreditTransactionToJSON,
 } from '../models/index';
 
-export interface ApiCreditTransactionsGetCollectionRequest {
-    page?: number;
+export interface CreditTransactionsGetRequest {
+    id: string;
 }
 
-export interface ApiCreditTransactionsIdGetRequest {
-    id: string;
+export interface CreditTransactionsListRequest {
+    page?: number;
 }
 
 /**
@@ -36,10 +36,53 @@ export interface ApiCreditTransactionsIdGetRequest {
 export class CreditTransactionApi extends runtime.BaseAPI {
 
     /**
+     * Retrieves a CreditTransaction resource.
+     * Retrieves a CreditTransaction resource.
+     */
+    async creditTransactionsGetRaw(requestParameters: CreditTransactionsGetRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<CreditTransaction>> {
+        if (requestParameters['id'] == null) {
+            throw new runtime.RequiredError(
+                'id',
+                'Required parameter "id" was null or undefined when calling creditTransactionsGet().'
+            );
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("bearerAuth", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
+        const response = await this.request({
+            path: `/api/credit_transactions/{id}`.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters['id']))),
+            method: 'GET',
+            headers: headerParameters,
+            query: queryParameters,
+        }, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) => CreditTransactionFromJSON(jsonValue));
+    }
+
+    /**
+     * Retrieves a CreditTransaction resource.
+     * Retrieves a CreditTransaction resource.
+     */
+    async creditTransactionsGet(requestParameters: CreditTransactionsGetRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<CreditTransaction> {
+        const response = await this.creditTransactionsGetRaw(requestParameters, initOverrides);
+        return await response.value();
+    }
+
+    /**
      * Retrieves the collection of CreditTransaction resources.
      * Retrieves the collection of CreditTransaction resources.
      */
-    async apiCreditTransactionsGetCollectionRaw(requestParameters: ApiCreditTransactionsGetCollectionRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Array<CreditTransaction>>> {
+    async creditTransactionsListRaw(requestParameters: CreditTransactionsListRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Array<CreditTransaction>>> {
         const queryParameters: any = {};
 
         if (requestParameters['page'] != null) {
@@ -70,51 +113,8 @@ export class CreditTransactionApi extends runtime.BaseAPI {
      * Retrieves the collection of CreditTransaction resources.
      * Retrieves the collection of CreditTransaction resources.
      */
-    async apiCreditTransactionsGetCollection(requestParameters: ApiCreditTransactionsGetCollectionRequest = {}, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Array<CreditTransaction>> {
-        const response = await this.apiCreditTransactionsGetCollectionRaw(requestParameters, initOverrides);
-        return await response.value();
-    }
-
-    /**
-     * Retrieves a CreditTransaction resource.
-     * Retrieves a CreditTransaction resource.
-     */
-    async apiCreditTransactionsIdGetRaw(requestParameters: ApiCreditTransactionsIdGetRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<CreditTransaction>> {
-        if (requestParameters['id'] == null) {
-            throw new runtime.RequiredError(
-                'id',
-                'Required parameter "id" was null or undefined when calling apiCreditTransactionsIdGet().'
-            );
-        }
-
-        const queryParameters: any = {};
-
-        const headerParameters: runtime.HTTPHeaders = {};
-
-        if (this.configuration && this.configuration.accessToken) {
-            const token = this.configuration.accessToken;
-            const tokenString = await token("bearerAuth", []);
-
-            if (tokenString) {
-                headerParameters["Authorization"] = `Bearer ${tokenString}`;
-            }
-        }
-        const response = await this.request({
-            path: `/api/credit_transactions/{id}`.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters['id']))),
-            method: 'GET',
-            headers: headerParameters,
-            query: queryParameters,
-        }, initOverrides);
-
-        return new runtime.JSONApiResponse(response, (jsonValue) => CreditTransactionFromJSON(jsonValue));
-    }
-
-    /**
-     * Retrieves a CreditTransaction resource.
-     * Retrieves a CreditTransaction resource.
-     */
-    async apiCreditTransactionsIdGet(requestParameters: ApiCreditTransactionsIdGetRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<CreditTransaction> {
-        const response = await this.apiCreditTransactionsIdGetRaw(requestParameters, initOverrides);
+    async creditTransactionsList(requestParameters: CreditTransactionsListRequest = {}, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Array<CreditTransaction>> {
+        const response = await this.creditTransactionsListRaw(requestParameters, initOverrides);
         return await response.value();
     }
 

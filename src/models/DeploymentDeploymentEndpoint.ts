@@ -14,9 +14,7 @@
 
 import { mapValues } from '../runtime';
 /**
- * An IMMUTABLE compose revision. A deploy is a new row; rollback re-points
- * Application::$currentDeployment at an older one. Placement is resolved onto this
- * row (targetSwarm) at deploy time, so migration is just the next revision.
+ * List the reachable endpoint(s) for one deployment.
  * @export
  * @interface DeploymentDeploymentEndpoint
  */

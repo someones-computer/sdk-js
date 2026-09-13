@@ -28,7 +28,19 @@ import {
     ConstraintViolationToJSON,
 } from '../models/index';
 
-export interface ApiApplicationsGetCollectionRequest {
+export interface ApplicationsCreateRequest {
+    application: Omit<Application, 'firstRunningAt'|'iconKey'|'iconSource'|'poolDomain'|'id'|'deletedAt'|'createdAt'|'updatedAt'|'operatorChosenIcon'|'iconVersion'|'deleted'>;
+}
+
+export interface ApplicationsDeleteRequest {
+    id: string;
+}
+
+export interface ApplicationsGetRequest {
+    id: string;
+}
+
+export interface ApplicationsListRequest {
     page?: number;
     slug?: string;
     slug2?: Array<string>;
@@ -38,21 +50,9 @@ export interface ApiApplicationsGetCollectionRequest {
     organizationSlug2?: Array<string>;
 }
 
-export interface ApiApplicationsIdDeleteRequest {
-    id: string;
-}
-
-export interface ApiApplicationsIdGetRequest {
-    id: string;
-}
-
-export interface ApiApplicationsIdPatchRequest {
+export interface ApplicationsUpdateRequest {
     id: string;
     applicationJsonMergePatch: Omit<ApplicationJsonMergePatch, 'firstRunningAt'|'iconKey'|'iconSource'|'poolDomain'|'id'|'deletedAt'|'createdAt'|'updatedAt'|'operatorChosenIcon'|'iconVersion'|'deleted'>;
-}
-
-export interface ApiApplicationsPostRequest {
-    application: Omit<Application, 'firstRunningAt'|'iconKey'|'iconSource'|'poolDomain'|'id'|'deletedAt'|'createdAt'|'updatedAt'|'operatorChosenIcon'|'iconVersion'|'deleted'>;
 }
 
 /**
@@ -61,10 +61,141 @@ export interface ApiApplicationsPostRequest {
 export class ApplicationApi extends runtime.BaseAPI {
 
     /**
+     * Creates a Application resource.
+     * Creates a Application resource.
+     */
+    async applicationsCreateRaw(requestParameters: ApplicationsCreateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Application>> {
+        if (requestParameters['application'] == null) {
+            throw new runtime.RequiredError(
+                'application',
+                'Required parameter "application" was null or undefined when calling applicationsCreate().'
+            );
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        headerParameters['Content-Type'] = 'application/json';
+
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("bearerAuth", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
+        const response = await this.request({
+            path: `/api/applications`,
+            method: 'POST',
+            headers: headerParameters,
+            query: queryParameters,
+            body: ApplicationToJSON(requestParameters['application']),
+        }, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) => ApplicationFromJSON(jsonValue));
+    }
+
+    /**
+     * Creates a Application resource.
+     * Creates a Application resource.
+     */
+    async applicationsCreate(requestParameters: ApplicationsCreateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Application> {
+        const response = await this.applicationsCreateRaw(requestParameters, initOverrides);
+        return await response.value();
+    }
+
+    /**
+     * Removes the Application resource.
+     * Removes the Application resource.
+     */
+    async applicationsDeleteRaw(requestParameters: ApplicationsDeleteRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>> {
+        if (requestParameters['id'] == null) {
+            throw new runtime.RequiredError(
+                'id',
+                'Required parameter "id" was null or undefined when calling applicationsDelete().'
+            );
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("bearerAuth", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
+        const response = await this.request({
+            path: `/api/applications/{id}`.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters['id']))),
+            method: 'DELETE',
+            headers: headerParameters,
+            query: queryParameters,
+        }, initOverrides);
+
+        return new runtime.VoidApiResponse(response);
+    }
+
+    /**
+     * Removes the Application resource.
+     * Removes the Application resource.
+     */
+    async applicationsDelete(requestParameters: ApplicationsDeleteRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void> {
+        await this.applicationsDeleteRaw(requestParameters, initOverrides);
+    }
+
+    /**
+     * Retrieves a Application resource.
+     * Retrieves a Application resource.
+     */
+    async applicationsGetRaw(requestParameters: ApplicationsGetRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Application>> {
+        if (requestParameters['id'] == null) {
+            throw new runtime.RequiredError(
+                'id',
+                'Required parameter "id" was null or undefined when calling applicationsGet().'
+            );
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("bearerAuth", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
+        const response = await this.request({
+            path: `/api/applications/{id}`.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters['id']))),
+            method: 'GET',
+            headers: headerParameters,
+            query: queryParameters,
+        }, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) => ApplicationFromJSON(jsonValue));
+    }
+
+    /**
+     * Retrieves a Application resource.
+     * Retrieves a Application resource.
+     */
+    async applicationsGet(requestParameters: ApplicationsGetRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Application> {
+        const response = await this.applicationsGetRaw(requestParameters, initOverrides);
+        return await response.value();
+    }
+
+    /**
      * Retrieves the collection of Application resources.
      * Retrieves the collection of Application resources.
      */
-    async apiApplicationsGetCollectionRaw(requestParameters: ApiApplicationsGetCollectionRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Array<Application>>> {
+    async applicationsListRaw(requestParameters: ApplicationsListRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Array<Application>>> {
         const queryParameters: any = {};
 
         if (requestParameters['page'] != null) {
@@ -119,93 +250,8 @@ export class ApplicationApi extends runtime.BaseAPI {
      * Retrieves the collection of Application resources.
      * Retrieves the collection of Application resources.
      */
-    async apiApplicationsGetCollection(requestParameters: ApiApplicationsGetCollectionRequest = {}, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Array<Application>> {
-        const response = await this.apiApplicationsGetCollectionRaw(requestParameters, initOverrides);
-        return await response.value();
-    }
-
-    /**
-     * Removes the Application resource.
-     * Removes the Application resource.
-     */
-    async apiApplicationsIdDeleteRaw(requestParameters: ApiApplicationsIdDeleteRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>> {
-        if (requestParameters['id'] == null) {
-            throw new runtime.RequiredError(
-                'id',
-                'Required parameter "id" was null or undefined when calling apiApplicationsIdDelete().'
-            );
-        }
-
-        const queryParameters: any = {};
-
-        const headerParameters: runtime.HTTPHeaders = {};
-
-        if (this.configuration && this.configuration.accessToken) {
-            const token = this.configuration.accessToken;
-            const tokenString = await token("bearerAuth", []);
-
-            if (tokenString) {
-                headerParameters["Authorization"] = `Bearer ${tokenString}`;
-            }
-        }
-        const response = await this.request({
-            path: `/api/applications/{id}`.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters['id']))),
-            method: 'DELETE',
-            headers: headerParameters,
-            query: queryParameters,
-        }, initOverrides);
-
-        return new runtime.VoidApiResponse(response);
-    }
-
-    /**
-     * Removes the Application resource.
-     * Removes the Application resource.
-     */
-    async apiApplicationsIdDelete(requestParameters: ApiApplicationsIdDeleteRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void> {
-        await this.apiApplicationsIdDeleteRaw(requestParameters, initOverrides);
-    }
-
-    /**
-     * Retrieves a Application resource.
-     * Retrieves a Application resource.
-     */
-    async apiApplicationsIdGetRaw(requestParameters: ApiApplicationsIdGetRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Application>> {
-        if (requestParameters['id'] == null) {
-            throw new runtime.RequiredError(
-                'id',
-                'Required parameter "id" was null or undefined when calling apiApplicationsIdGet().'
-            );
-        }
-
-        const queryParameters: any = {};
-
-        const headerParameters: runtime.HTTPHeaders = {};
-
-        if (this.configuration && this.configuration.accessToken) {
-            const token = this.configuration.accessToken;
-            const tokenString = await token("bearerAuth", []);
-
-            if (tokenString) {
-                headerParameters["Authorization"] = `Bearer ${tokenString}`;
-            }
-        }
-        const response = await this.request({
-            path: `/api/applications/{id}`.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters['id']))),
-            method: 'GET',
-            headers: headerParameters,
-            query: queryParameters,
-        }, initOverrides);
-
-        return new runtime.JSONApiResponse(response, (jsonValue) => ApplicationFromJSON(jsonValue));
-    }
-
-    /**
-     * Retrieves a Application resource.
-     * Retrieves a Application resource.
-     */
-    async apiApplicationsIdGet(requestParameters: ApiApplicationsIdGetRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Application> {
-        const response = await this.apiApplicationsIdGetRaw(requestParameters, initOverrides);
+    async applicationsList(requestParameters: ApplicationsListRequest = {}, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Array<Application>> {
+        const response = await this.applicationsListRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
@@ -213,18 +259,18 @@ export class ApplicationApi extends runtime.BaseAPI {
      * Updates the Application resource.
      * Updates the Application resource.
      */
-    async apiApplicationsIdPatchRaw(requestParameters: ApiApplicationsIdPatchRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Application>> {
+    async applicationsUpdateRaw(requestParameters: ApplicationsUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Application>> {
         if (requestParameters['id'] == null) {
             throw new runtime.RequiredError(
                 'id',
-                'Required parameter "id" was null or undefined when calling apiApplicationsIdPatch().'
+                'Required parameter "id" was null or undefined when calling applicationsUpdate().'
             );
         }
 
         if (requestParameters['applicationJsonMergePatch'] == null) {
             throw new runtime.RequiredError(
                 'applicationJsonMergePatch',
-                'Required parameter "applicationJsonMergePatch" was null or undefined when calling apiApplicationsIdPatch().'
+                'Required parameter "applicationJsonMergePatch" was null or undefined when calling applicationsUpdate().'
             );
         }
 
@@ -257,54 +303,8 @@ export class ApplicationApi extends runtime.BaseAPI {
      * Updates the Application resource.
      * Updates the Application resource.
      */
-    async apiApplicationsIdPatch(requestParameters: ApiApplicationsIdPatchRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Application> {
-        const response = await this.apiApplicationsIdPatchRaw(requestParameters, initOverrides);
-        return await response.value();
-    }
-
-    /**
-     * Creates a Application resource.
-     * Creates a Application resource.
-     */
-    async apiApplicationsPostRaw(requestParameters: ApiApplicationsPostRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Application>> {
-        if (requestParameters['application'] == null) {
-            throw new runtime.RequiredError(
-                'application',
-                'Required parameter "application" was null or undefined when calling apiApplicationsPost().'
-            );
-        }
-
-        const queryParameters: any = {};
-
-        const headerParameters: runtime.HTTPHeaders = {};
-
-        headerParameters['Content-Type'] = 'application/json';
-
-        if (this.configuration && this.configuration.accessToken) {
-            const token = this.configuration.accessToken;
-            const tokenString = await token("bearerAuth", []);
-
-            if (tokenString) {
-                headerParameters["Authorization"] = `Bearer ${tokenString}`;
-            }
-        }
-        const response = await this.request({
-            path: `/api/applications`,
-            method: 'POST',
-            headers: headerParameters,
-            query: queryParameters,
-            body: ApplicationToJSON(requestParameters['application']),
-        }, initOverrides);
-
-        return new runtime.JSONApiResponse(response, (jsonValue) => ApplicationFromJSON(jsonValue));
-    }
-
-    /**
-     * Creates a Application resource.
-     * Creates a Application resource.
-     */
-    async apiApplicationsPost(requestParameters: ApiApplicationsPostRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Application> {
-        const response = await this.apiApplicationsPostRaw(requestParameters, initOverrides);
+    async applicationsUpdate(requestParameters: ApplicationsUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Application> {
+        const response = await this.applicationsUpdateRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
