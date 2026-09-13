@@ -50,7 +50,7 @@ import {
 } from './Machine';
 
 /**
- * Ownership and (future) billing boundary. Owns applications, may own BYO swarms.
+ * Update an organization's mutable fields.
  * @export
  * @interface OrganizationJsonMergePatch
  */

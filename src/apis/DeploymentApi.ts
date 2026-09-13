@@ -43,37 +43,37 @@ import {
     DeploymentJsonMergePatchToJSON,
 } from '../models/index';
 
-export interface ApiDeploymentsGetCollectionRequest {
-    page?: number;
-}
-
-export interface ApiDeploymentsIdDeleteRequest {
-    id: string;
-}
-
-export interface ApiDeploymentsIdGetRequest {
-    id: string;
-}
-
-export interface ApiDeploymentsIdPatchRequest {
-    id: string;
-    deploymentJsonMergePatch: Omit<DeploymentJsonMergePatch, 'id'|'deletedAt'|'createdAt'|'updatedAt'|'onASwarm'|'deleted'>;
-}
-
-export interface ApiDeploymentsIdendpointsGetCollectionRequest {
-    id: string;
-}
-
-export interface ApiDeploymentsPostRequest {
-    deployment: Omit<Deployment, 'id'|'deletedAt'|'createdAt'|'updatedAt'|'onASwarm'|'deleted'>;
-}
-
-export interface BundleUploadConfirmRequest {
+export interface DeploymentsBundleUploadConfirmRequest {
     deploymentBundleUploadConfirmInput: DeploymentBundleUploadConfirmInput;
 }
 
-export interface BundleUploadDeclareRequest {
+export interface DeploymentsBundleUploadDeclareRequest {
     deploymentBundleUploadDeclareInput: DeploymentBundleUploadDeclareInput;
+}
+
+export interface DeploymentsCreateRequest {
+    deployment: Omit<Deployment, 'id'|'deletedAt'|'createdAt'|'updatedAt'|'onASwarm'|'deleted'>;
+}
+
+export interface DeploymentsDeleteRequest {
+    id: string;
+}
+
+export interface DeploymentsEndpointsRequest {
+    id: string;
+}
+
+export interface DeploymentsGetRequest {
+    id: string;
+}
+
+export interface DeploymentsListRequest {
+    page?: number;
+}
+
+export interface DeploymentsUpdateRequest {
+    id: string;
+    deploymentJsonMergePatch: Omit<DeploymentJsonMergePatch, 'id'|'deletedAt'|'createdAt'|'updatedAt'|'onASwarm'|'deleted'>;
 }
 
 /**
@@ -82,281 +82,14 @@ export interface BundleUploadDeclareRequest {
 export class DeploymentApi extends runtime.BaseAPI {
 
     /**
-     * Retrieves the collection of Deployment resources.
-     * Retrieves the collection of Deployment resources.
-     */
-    async apiDeploymentsGetCollectionRaw(requestParameters: ApiDeploymentsGetCollectionRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Array<Deployment>>> {
-        const queryParameters: any = {};
-
-        if (requestParameters['page'] != null) {
-            queryParameters['page'] = requestParameters['page'];
-        }
-
-        const headerParameters: runtime.HTTPHeaders = {};
-
-        if (this.configuration && this.configuration.accessToken) {
-            const token = this.configuration.accessToken;
-            const tokenString = await token("bearerAuth", []);
-
-            if (tokenString) {
-                headerParameters["Authorization"] = `Bearer ${tokenString}`;
-            }
-        }
-        const response = await this.request({
-            path: `/api/deployments`,
-            method: 'GET',
-            headers: headerParameters,
-            query: queryParameters,
-        }, initOverrides);
-
-        return new runtime.JSONApiResponse(response, (jsonValue) => jsonValue.map(DeploymentFromJSON));
-    }
-
-    /**
-     * Retrieves the collection of Deployment resources.
-     * Retrieves the collection of Deployment resources.
-     */
-    async apiDeploymentsGetCollection(requestParameters: ApiDeploymentsGetCollectionRequest = {}, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Array<Deployment>> {
-        const response = await this.apiDeploymentsGetCollectionRaw(requestParameters, initOverrides);
-        return await response.value();
-    }
-
-    /**
-     * Removes the Deployment resource.
-     * Removes the Deployment resource.
-     */
-    async apiDeploymentsIdDeleteRaw(requestParameters: ApiDeploymentsIdDeleteRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>> {
-        if (requestParameters['id'] == null) {
-            throw new runtime.RequiredError(
-                'id',
-                'Required parameter "id" was null or undefined when calling apiDeploymentsIdDelete().'
-            );
-        }
-
-        const queryParameters: any = {};
-
-        const headerParameters: runtime.HTTPHeaders = {};
-
-        if (this.configuration && this.configuration.accessToken) {
-            const token = this.configuration.accessToken;
-            const tokenString = await token("bearerAuth", []);
-
-            if (tokenString) {
-                headerParameters["Authorization"] = `Bearer ${tokenString}`;
-            }
-        }
-        const response = await this.request({
-            path: `/api/deployments/{id}`.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters['id']))),
-            method: 'DELETE',
-            headers: headerParameters,
-            query: queryParameters,
-        }, initOverrides);
-
-        return new runtime.VoidApiResponse(response);
-    }
-
-    /**
-     * Removes the Deployment resource.
-     * Removes the Deployment resource.
-     */
-    async apiDeploymentsIdDelete(requestParameters: ApiDeploymentsIdDeleteRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void> {
-        await this.apiDeploymentsIdDeleteRaw(requestParameters, initOverrides);
-    }
-
-    /**
-     * Retrieves a Deployment resource.
-     * Retrieves a Deployment resource.
-     */
-    async apiDeploymentsIdGetRaw(requestParameters: ApiDeploymentsIdGetRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Deployment>> {
-        if (requestParameters['id'] == null) {
-            throw new runtime.RequiredError(
-                'id',
-                'Required parameter "id" was null or undefined when calling apiDeploymentsIdGet().'
-            );
-        }
-
-        const queryParameters: any = {};
-
-        const headerParameters: runtime.HTTPHeaders = {};
-
-        if (this.configuration && this.configuration.accessToken) {
-            const token = this.configuration.accessToken;
-            const tokenString = await token("bearerAuth", []);
-
-            if (tokenString) {
-                headerParameters["Authorization"] = `Bearer ${tokenString}`;
-            }
-        }
-        const response = await this.request({
-            path: `/api/deployments/{id}`.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters['id']))),
-            method: 'GET',
-            headers: headerParameters,
-            query: queryParameters,
-        }, initOverrides);
-
-        return new runtime.JSONApiResponse(response, (jsonValue) => DeploymentFromJSON(jsonValue));
-    }
-
-    /**
-     * Retrieves a Deployment resource.
-     * Retrieves a Deployment resource.
-     */
-    async apiDeploymentsIdGet(requestParameters: ApiDeploymentsIdGetRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Deployment> {
-        const response = await this.apiDeploymentsIdGetRaw(requestParameters, initOverrides);
-        return await response.value();
-    }
-
-    /**
-     * Updates the Deployment resource.
-     * Updates the Deployment resource.
-     */
-    async apiDeploymentsIdPatchRaw(requestParameters: ApiDeploymentsIdPatchRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Deployment>> {
-        if (requestParameters['id'] == null) {
-            throw new runtime.RequiredError(
-                'id',
-                'Required parameter "id" was null or undefined when calling apiDeploymentsIdPatch().'
-            );
-        }
-
-        if (requestParameters['deploymentJsonMergePatch'] == null) {
-            throw new runtime.RequiredError(
-                'deploymentJsonMergePatch',
-                'Required parameter "deploymentJsonMergePatch" was null or undefined when calling apiDeploymentsIdPatch().'
-            );
-        }
-
-        const queryParameters: any = {};
-
-        const headerParameters: runtime.HTTPHeaders = {};
-
-        headerParameters['Content-Type'] = 'application/merge-patch+json';
-
-        if (this.configuration && this.configuration.accessToken) {
-            const token = this.configuration.accessToken;
-            const tokenString = await token("bearerAuth", []);
-
-            if (tokenString) {
-                headerParameters["Authorization"] = `Bearer ${tokenString}`;
-            }
-        }
-        const response = await this.request({
-            path: `/api/deployments/{id}`.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters['id']))),
-            method: 'PATCH',
-            headers: headerParameters,
-            query: queryParameters,
-            body: DeploymentJsonMergePatchToJSON(requestParameters['deploymentJsonMergePatch']),
-        }, initOverrides);
-
-        return new runtime.JSONApiResponse(response, (jsonValue) => DeploymentFromJSON(jsonValue));
-    }
-
-    /**
-     * Updates the Deployment resource.
-     * Updates the Deployment resource.
-     */
-    async apiDeploymentsIdPatch(requestParameters: ApiDeploymentsIdPatchRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Deployment> {
-        const response = await this.apiDeploymentsIdPatchRaw(requestParameters, initOverrides);
-        return await response.value();
-    }
-
-    /**
-     * Retrieves the collection of Deployment resources.
-     * Retrieves the collection of Deployment resources.
-     */
-    async apiDeploymentsIdendpointsGetCollectionRaw(requestParameters: ApiDeploymentsIdendpointsGetCollectionRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Array<DeploymentDeploymentEndpoint>>> {
-        if (requestParameters['id'] == null) {
-            throw new runtime.RequiredError(
-                'id',
-                'Required parameter "id" was null or undefined when calling apiDeploymentsIdendpointsGetCollection().'
-            );
-        }
-
-        const queryParameters: any = {};
-
-        const headerParameters: runtime.HTTPHeaders = {};
-
-        if (this.configuration && this.configuration.accessToken) {
-            const token = this.configuration.accessToken;
-            const tokenString = await token("bearerAuth", []);
-
-            if (tokenString) {
-                headerParameters["Authorization"] = `Bearer ${tokenString}`;
-            }
-        }
-        const response = await this.request({
-            path: `/api/deployments/{id}/endpoints`.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters['id']))),
-            method: 'GET',
-            headers: headerParameters,
-            query: queryParameters,
-        }, initOverrides);
-
-        return new runtime.JSONApiResponse(response, (jsonValue) => jsonValue.map(DeploymentDeploymentEndpointFromJSON));
-    }
-
-    /**
-     * Retrieves the collection of Deployment resources.
-     * Retrieves the collection of Deployment resources.
-     */
-    async apiDeploymentsIdendpointsGetCollection(requestParameters: ApiDeploymentsIdendpointsGetCollectionRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Array<DeploymentDeploymentEndpoint>> {
-        const response = await this.apiDeploymentsIdendpointsGetCollectionRaw(requestParameters, initOverrides);
-        return await response.value();
-    }
-
-    /**
      * Creates a Deployment resource.
      * Creates a Deployment resource.
      */
-    async apiDeploymentsPostRaw(requestParameters: ApiDeploymentsPostRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Deployment>> {
-        if (requestParameters['deployment'] == null) {
-            throw new runtime.RequiredError(
-                'deployment',
-                'Required parameter "deployment" was null or undefined when calling apiDeploymentsPost().'
-            );
-        }
-
-        const queryParameters: any = {};
-
-        const headerParameters: runtime.HTTPHeaders = {};
-
-        headerParameters['Content-Type'] = 'application/json';
-
-        if (this.configuration && this.configuration.accessToken) {
-            const token = this.configuration.accessToken;
-            const tokenString = await token("bearerAuth", []);
-
-            if (tokenString) {
-                headerParameters["Authorization"] = `Bearer ${tokenString}`;
-            }
-        }
-        const response = await this.request({
-            path: `/api/deployments`,
-            method: 'POST',
-            headers: headerParameters,
-            query: queryParameters,
-            body: DeploymentToJSON(requestParameters['deployment']),
-        }, initOverrides);
-
-        return new runtime.JSONApiResponse(response, (jsonValue) => DeploymentFromJSON(jsonValue));
-    }
-
-    /**
-     * Creates a Deployment resource.
-     * Creates a Deployment resource.
-     */
-    async apiDeploymentsPost(requestParameters: ApiDeploymentsPostRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Deployment> {
-        const response = await this.apiDeploymentsPostRaw(requestParameters, initOverrides);
-        return await response.value();
-    }
-
-    /**
-     * Creates a Deployment resource.
-     * Creates a Deployment resource.
-     */
-    async bundleUploadConfirmRaw(requestParameters: BundleUploadConfirmRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<DeploymentBundleUploadConfirmOutput>> {
+    async deploymentsBundleUploadConfirmRaw(requestParameters: DeploymentsBundleUploadConfirmRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<DeploymentBundleUploadConfirmOutput>> {
         if (requestParameters['deploymentBundleUploadConfirmInput'] == null) {
             throw new runtime.RequiredError(
                 'deploymentBundleUploadConfirmInput',
-                'Required parameter "deploymentBundleUploadConfirmInput" was null or undefined when calling bundleUploadConfirm().'
+                'Required parameter "deploymentBundleUploadConfirmInput" was null or undefined when calling deploymentsBundleUploadConfirm().'
             );
         }
 
@@ -389,8 +122,8 @@ export class DeploymentApi extends runtime.BaseAPI {
      * Creates a Deployment resource.
      * Creates a Deployment resource.
      */
-    async bundleUploadConfirm(requestParameters: BundleUploadConfirmRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<DeploymentBundleUploadConfirmOutput> {
-        const response = await this.bundleUploadConfirmRaw(requestParameters, initOverrides);
+    async deploymentsBundleUploadConfirm(requestParameters: DeploymentsBundleUploadConfirmRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<DeploymentBundleUploadConfirmOutput> {
+        const response = await this.deploymentsBundleUploadConfirmRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
@@ -398,11 +131,11 @@ export class DeploymentApi extends runtime.BaseAPI {
      * Creates a Deployment resource.
      * Creates a Deployment resource.
      */
-    async bundleUploadDeclareRaw(requestParameters: BundleUploadDeclareRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<DeploymentBundleUploadDeclareOutput>> {
+    async deploymentsBundleUploadDeclareRaw(requestParameters: DeploymentsBundleUploadDeclareRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<DeploymentBundleUploadDeclareOutput>> {
         if (requestParameters['deploymentBundleUploadDeclareInput'] == null) {
             throw new runtime.RequiredError(
                 'deploymentBundleUploadDeclareInput',
-                'Required parameter "deploymentBundleUploadDeclareInput" was null or undefined when calling bundleUploadDeclare().'
+                'Required parameter "deploymentBundleUploadDeclareInput" was null or undefined when calling deploymentsBundleUploadDeclare().'
             );
         }
 
@@ -435,8 +168,275 @@ export class DeploymentApi extends runtime.BaseAPI {
      * Creates a Deployment resource.
      * Creates a Deployment resource.
      */
-    async bundleUploadDeclare(requestParameters: BundleUploadDeclareRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<DeploymentBundleUploadDeclareOutput> {
-        const response = await this.bundleUploadDeclareRaw(requestParameters, initOverrides);
+    async deploymentsBundleUploadDeclare(requestParameters: DeploymentsBundleUploadDeclareRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<DeploymentBundleUploadDeclareOutput> {
+        const response = await this.deploymentsBundleUploadDeclareRaw(requestParameters, initOverrides);
+        return await response.value();
+    }
+
+    /**
+     * Creates a Deployment resource.
+     * Creates a Deployment resource.
+     */
+    async deploymentsCreateRaw(requestParameters: DeploymentsCreateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Deployment>> {
+        if (requestParameters['deployment'] == null) {
+            throw new runtime.RequiredError(
+                'deployment',
+                'Required parameter "deployment" was null or undefined when calling deploymentsCreate().'
+            );
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        headerParameters['Content-Type'] = 'application/json';
+
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("bearerAuth", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
+        const response = await this.request({
+            path: `/api/deployments`,
+            method: 'POST',
+            headers: headerParameters,
+            query: queryParameters,
+            body: DeploymentToJSON(requestParameters['deployment']),
+        }, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) => DeploymentFromJSON(jsonValue));
+    }
+
+    /**
+     * Creates a Deployment resource.
+     * Creates a Deployment resource.
+     */
+    async deploymentsCreate(requestParameters: DeploymentsCreateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Deployment> {
+        const response = await this.deploymentsCreateRaw(requestParameters, initOverrides);
+        return await response.value();
+    }
+
+    /**
+     * Removes the Deployment resource.
+     * Removes the Deployment resource.
+     */
+    async deploymentsDeleteRaw(requestParameters: DeploymentsDeleteRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>> {
+        if (requestParameters['id'] == null) {
+            throw new runtime.RequiredError(
+                'id',
+                'Required parameter "id" was null or undefined when calling deploymentsDelete().'
+            );
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("bearerAuth", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
+        const response = await this.request({
+            path: `/api/deployments/{id}`.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters['id']))),
+            method: 'DELETE',
+            headers: headerParameters,
+            query: queryParameters,
+        }, initOverrides);
+
+        return new runtime.VoidApiResponse(response);
+    }
+
+    /**
+     * Removes the Deployment resource.
+     * Removes the Deployment resource.
+     */
+    async deploymentsDelete(requestParameters: DeploymentsDeleteRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void> {
+        await this.deploymentsDeleteRaw(requestParameters, initOverrides);
+    }
+
+    /**
+     * Retrieves the collection of Deployment resources.
+     * Retrieves the collection of Deployment resources.
+     */
+    async deploymentsEndpointsRaw(requestParameters: DeploymentsEndpointsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Array<DeploymentDeploymentEndpoint>>> {
+        if (requestParameters['id'] == null) {
+            throw new runtime.RequiredError(
+                'id',
+                'Required parameter "id" was null or undefined when calling deploymentsEndpoints().'
+            );
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("bearerAuth", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
+        const response = await this.request({
+            path: `/api/deployments/{id}/endpoints`.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters['id']))),
+            method: 'GET',
+            headers: headerParameters,
+            query: queryParameters,
+        }, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) => jsonValue.map(DeploymentDeploymentEndpointFromJSON));
+    }
+
+    /**
+     * Retrieves the collection of Deployment resources.
+     * Retrieves the collection of Deployment resources.
+     */
+    async deploymentsEndpoints(requestParameters: DeploymentsEndpointsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Array<DeploymentDeploymentEndpoint>> {
+        const response = await this.deploymentsEndpointsRaw(requestParameters, initOverrides);
+        return await response.value();
+    }
+
+    /**
+     * Retrieves a Deployment resource.
+     * Retrieves a Deployment resource.
+     */
+    async deploymentsGetRaw(requestParameters: DeploymentsGetRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Deployment>> {
+        if (requestParameters['id'] == null) {
+            throw new runtime.RequiredError(
+                'id',
+                'Required parameter "id" was null or undefined when calling deploymentsGet().'
+            );
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("bearerAuth", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
+        const response = await this.request({
+            path: `/api/deployments/{id}`.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters['id']))),
+            method: 'GET',
+            headers: headerParameters,
+            query: queryParameters,
+        }, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) => DeploymentFromJSON(jsonValue));
+    }
+
+    /**
+     * Retrieves a Deployment resource.
+     * Retrieves a Deployment resource.
+     */
+    async deploymentsGet(requestParameters: DeploymentsGetRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Deployment> {
+        const response = await this.deploymentsGetRaw(requestParameters, initOverrides);
+        return await response.value();
+    }
+
+    /**
+     * Retrieves the collection of Deployment resources.
+     * Retrieves the collection of Deployment resources.
+     */
+    async deploymentsListRaw(requestParameters: DeploymentsListRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Array<Deployment>>> {
+        const queryParameters: any = {};
+
+        if (requestParameters['page'] != null) {
+            queryParameters['page'] = requestParameters['page'];
+        }
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("bearerAuth", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
+        const response = await this.request({
+            path: `/api/deployments`,
+            method: 'GET',
+            headers: headerParameters,
+            query: queryParameters,
+        }, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) => jsonValue.map(DeploymentFromJSON));
+    }
+
+    /**
+     * Retrieves the collection of Deployment resources.
+     * Retrieves the collection of Deployment resources.
+     */
+    async deploymentsList(requestParameters: DeploymentsListRequest = {}, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Array<Deployment>> {
+        const response = await this.deploymentsListRaw(requestParameters, initOverrides);
+        return await response.value();
+    }
+
+    /**
+     * Updates the Deployment resource.
+     * Updates the Deployment resource.
+     */
+    async deploymentsUpdateRaw(requestParameters: DeploymentsUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Deployment>> {
+        if (requestParameters['id'] == null) {
+            throw new runtime.RequiredError(
+                'id',
+                'Required parameter "id" was null or undefined when calling deploymentsUpdate().'
+            );
+        }
+
+        if (requestParameters['deploymentJsonMergePatch'] == null) {
+            throw new runtime.RequiredError(
+                'deploymentJsonMergePatch',
+                'Required parameter "deploymentJsonMergePatch" was null or undefined when calling deploymentsUpdate().'
+            );
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        headerParameters['Content-Type'] = 'application/merge-patch+json';
+
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("bearerAuth", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
+        const response = await this.request({
+            path: `/api/deployments/{id}`.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters['id']))),
+            method: 'PATCH',
+            headers: headerParameters,
+            query: queryParameters,
+            body: DeploymentJsonMergePatchToJSON(requestParameters['deploymentJsonMergePatch']),
+        }, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) => DeploymentFromJSON(jsonValue));
+    }
+
+    /**
+     * Updates the Deployment resource.
+     * Updates the Deployment resource.
+     */
+    async deploymentsUpdate(requestParameters: DeploymentsUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Deployment> {
+        const response = await this.deploymentsUpdateRaw(requestParameters, initOverrides);
         return await response.value();
     }
 

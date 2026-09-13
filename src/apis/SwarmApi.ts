@@ -28,25 +28,25 @@ import {
     SwarmJsonMergePatchToJSON,
 } from '../models/index';
 
-export interface ApiSwarmsGetCollectionRequest {
+export interface SwarmsCreateRequest {
+    swarm: Omit<Swarm, 'kind'|'labels'|'ingressInstalledAt'|'ingressError'|'ingressNetwork'|'ingressVerifiedAt'|'ingressVerificationError'|'id'|'deletedAt'|'createdAt'|'updatedAt'|'platformOwned'|'platformProvisioned'|'workingEdge'|'deleted'>;
+}
+
+export interface SwarmsDeleteRequest {
+    id: string;
+}
+
+export interface SwarmsGetRequest {
+    id: string;
+}
+
+export interface SwarmsListRequest {
     page?: number;
 }
 
-export interface ApiSwarmsIdDeleteRequest {
-    id: string;
-}
-
-export interface ApiSwarmsIdGetRequest {
-    id: string;
-}
-
-export interface ApiSwarmsIdPatchRequest {
+export interface SwarmsUpdateRequest {
     id: string;
     swarmJsonMergePatch: Omit<SwarmJsonMergePatch, 'kind'|'labels'|'ingressInstalledAt'|'ingressError'|'ingressNetwork'|'ingressVerifiedAt'|'ingressVerificationError'|'id'|'deletedAt'|'createdAt'|'updatedAt'|'platformOwned'|'platformProvisioned'|'workingEdge'|'deleted'>;
-}
-
-export interface ApiSwarmsPostRequest {
-    swarm: Omit<Swarm, 'kind'|'labels'|'ingressInstalledAt'|'ingressError'|'ingressNetwork'|'ingressVerifiedAt'|'ingressVerificationError'|'id'|'deletedAt'|'createdAt'|'updatedAt'|'platformOwned'|'platformProvisioned'|'workingEdge'|'deleted'>;
 }
 
 /**
@@ -55,192 +55,14 @@ export interface ApiSwarmsPostRequest {
 export class SwarmApi extends runtime.BaseAPI {
 
     /**
-     * Retrieves the collection of Swarm resources.
-     * Retrieves the collection of Swarm resources.
-     */
-    async apiSwarmsGetCollectionRaw(requestParameters: ApiSwarmsGetCollectionRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Array<Swarm>>> {
-        const queryParameters: any = {};
-
-        if (requestParameters['page'] != null) {
-            queryParameters['page'] = requestParameters['page'];
-        }
-
-        const headerParameters: runtime.HTTPHeaders = {};
-
-        if (this.configuration && this.configuration.accessToken) {
-            const token = this.configuration.accessToken;
-            const tokenString = await token("bearerAuth", []);
-
-            if (tokenString) {
-                headerParameters["Authorization"] = `Bearer ${tokenString}`;
-            }
-        }
-        const response = await this.request({
-            path: `/api/swarms`,
-            method: 'GET',
-            headers: headerParameters,
-            query: queryParameters,
-        }, initOverrides);
-
-        return new runtime.JSONApiResponse(response, (jsonValue) => jsonValue.map(SwarmFromJSON));
-    }
-
-    /**
-     * Retrieves the collection of Swarm resources.
-     * Retrieves the collection of Swarm resources.
-     */
-    async apiSwarmsGetCollection(requestParameters: ApiSwarmsGetCollectionRequest = {}, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Array<Swarm>> {
-        const response = await this.apiSwarmsGetCollectionRaw(requestParameters, initOverrides);
-        return await response.value();
-    }
-
-    /**
-     * Removes the Swarm resource.
-     * Removes the Swarm resource.
-     */
-    async apiSwarmsIdDeleteRaw(requestParameters: ApiSwarmsIdDeleteRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>> {
-        if (requestParameters['id'] == null) {
-            throw new runtime.RequiredError(
-                'id',
-                'Required parameter "id" was null or undefined when calling apiSwarmsIdDelete().'
-            );
-        }
-
-        const queryParameters: any = {};
-
-        const headerParameters: runtime.HTTPHeaders = {};
-
-        if (this.configuration && this.configuration.accessToken) {
-            const token = this.configuration.accessToken;
-            const tokenString = await token("bearerAuth", []);
-
-            if (tokenString) {
-                headerParameters["Authorization"] = `Bearer ${tokenString}`;
-            }
-        }
-        const response = await this.request({
-            path: `/api/swarms/{id}`.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters['id']))),
-            method: 'DELETE',
-            headers: headerParameters,
-            query: queryParameters,
-        }, initOverrides);
-
-        return new runtime.VoidApiResponse(response);
-    }
-
-    /**
-     * Removes the Swarm resource.
-     * Removes the Swarm resource.
-     */
-    async apiSwarmsIdDelete(requestParameters: ApiSwarmsIdDeleteRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void> {
-        await this.apiSwarmsIdDeleteRaw(requestParameters, initOverrides);
-    }
-
-    /**
-     * Retrieves a Swarm resource.
-     * Retrieves a Swarm resource.
-     */
-    async apiSwarmsIdGetRaw(requestParameters: ApiSwarmsIdGetRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Swarm>> {
-        if (requestParameters['id'] == null) {
-            throw new runtime.RequiredError(
-                'id',
-                'Required parameter "id" was null or undefined when calling apiSwarmsIdGet().'
-            );
-        }
-
-        const queryParameters: any = {};
-
-        const headerParameters: runtime.HTTPHeaders = {};
-
-        if (this.configuration && this.configuration.accessToken) {
-            const token = this.configuration.accessToken;
-            const tokenString = await token("bearerAuth", []);
-
-            if (tokenString) {
-                headerParameters["Authorization"] = `Bearer ${tokenString}`;
-            }
-        }
-        const response = await this.request({
-            path: `/api/swarms/{id}`.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters['id']))),
-            method: 'GET',
-            headers: headerParameters,
-            query: queryParameters,
-        }, initOverrides);
-
-        return new runtime.JSONApiResponse(response, (jsonValue) => SwarmFromJSON(jsonValue));
-    }
-
-    /**
-     * Retrieves a Swarm resource.
-     * Retrieves a Swarm resource.
-     */
-    async apiSwarmsIdGet(requestParameters: ApiSwarmsIdGetRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Swarm> {
-        const response = await this.apiSwarmsIdGetRaw(requestParameters, initOverrides);
-        return await response.value();
-    }
-
-    /**
-     * Updates the Swarm resource.
-     * Updates the Swarm resource.
-     */
-    async apiSwarmsIdPatchRaw(requestParameters: ApiSwarmsIdPatchRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Swarm>> {
-        if (requestParameters['id'] == null) {
-            throw new runtime.RequiredError(
-                'id',
-                'Required parameter "id" was null or undefined when calling apiSwarmsIdPatch().'
-            );
-        }
-
-        if (requestParameters['swarmJsonMergePatch'] == null) {
-            throw new runtime.RequiredError(
-                'swarmJsonMergePatch',
-                'Required parameter "swarmJsonMergePatch" was null or undefined when calling apiSwarmsIdPatch().'
-            );
-        }
-
-        const queryParameters: any = {};
-
-        const headerParameters: runtime.HTTPHeaders = {};
-
-        headerParameters['Content-Type'] = 'application/merge-patch+json';
-
-        if (this.configuration && this.configuration.accessToken) {
-            const token = this.configuration.accessToken;
-            const tokenString = await token("bearerAuth", []);
-
-            if (tokenString) {
-                headerParameters["Authorization"] = `Bearer ${tokenString}`;
-            }
-        }
-        const response = await this.request({
-            path: `/api/swarms/{id}`.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters['id']))),
-            method: 'PATCH',
-            headers: headerParameters,
-            query: queryParameters,
-            body: SwarmJsonMergePatchToJSON(requestParameters['swarmJsonMergePatch']),
-        }, initOverrides);
-
-        return new runtime.JSONApiResponse(response, (jsonValue) => SwarmFromJSON(jsonValue));
-    }
-
-    /**
-     * Updates the Swarm resource.
-     * Updates the Swarm resource.
-     */
-    async apiSwarmsIdPatch(requestParameters: ApiSwarmsIdPatchRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Swarm> {
-        const response = await this.apiSwarmsIdPatchRaw(requestParameters, initOverrides);
-        return await response.value();
-    }
-
-    /**
      * Creates a Swarm resource.
      * Creates a Swarm resource.
      */
-    async apiSwarmsPostRaw(requestParameters: ApiSwarmsPostRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Swarm>> {
+    async swarmsCreateRaw(requestParameters: SwarmsCreateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Swarm>> {
         if (requestParameters['swarm'] == null) {
             throw new runtime.RequiredError(
                 'swarm',
-                'Required parameter "swarm" was null or undefined when calling apiSwarmsPost().'
+                'Required parameter "swarm" was null or undefined when calling swarmsCreate().'
             );
         }
 
@@ -273,8 +95,186 @@ export class SwarmApi extends runtime.BaseAPI {
      * Creates a Swarm resource.
      * Creates a Swarm resource.
      */
-    async apiSwarmsPost(requestParameters: ApiSwarmsPostRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Swarm> {
-        const response = await this.apiSwarmsPostRaw(requestParameters, initOverrides);
+    async swarmsCreate(requestParameters: SwarmsCreateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Swarm> {
+        const response = await this.swarmsCreateRaw(requestParameters, initOverrides);
+        return await response.value();
+    }
+
+    /**
+     * Removes the Swarm resource.
+     * Removes the Swarm resource.
+     */
+    async swarmsDeleteRaw(requestParameters: SwarmsDeleteRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>> {
+        if (requestParameters['id'] == null) {
+            throw new runtime.RequiredError(
+                'id',
+                'Required parameter "id" was null or undefined when calling swarmsDelete().'
+            );
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("bearerAuth", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
+        const response = await this.request({
+            path: `/api/swarms/{id}`.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters['id']))),
+            method: 'DELETE',
+            headers: headerParameters,
+            query: queryParameters,
+        }, initOverrides);
+
+        return new runtime.VoidApiResponse(response);
+    }
+
+    /**
+     * Removes the Swarm resource.
+     * Removes the Swarm resource.
+     */
+    async swarmsDelete(requestParameters: SwarmsDeleteRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void> {
+        await this.swarmsDeleteRaw(requestParameters, initOverrides);
+    }
+
+    /**
+     * Retrieves a Swarm resource.
+     * Retrieves a Swarm resource.
+     */
+    async swarmsGetRaw(requestParameters: SwarmsGetRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Swarm>> {
+        if (requestParameters['id'] == null) {
+            throw new runtime.RequiredError(
+                'id',
+                'Required parameter "id" was null or undefined when calling swarmsGet().'
+            );
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("bearerAuth", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
+        const response = await this.request({
+            path: `/api/swarms/{id}`.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters['id']))),
+            method: 'GET',
+            headers: headerParameters,
+            query: queryParameters,
+        }, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) => SwarmFromJSON(jsonValue));
+    }
+
+    /**
+     * Retrieves a Swarm resource.
+     * Retrieves a Swarm resource.
+     */
+    async swarmsGet(requestParameters: SwarmsGetRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Swarm> {
+        const response = await this.swarmsGetRaw(requestParameters, initOverrides);
+        return await response.value();
+    }
+
+    /**
+     * Retrieves the collection of Swarm resources.
+     * Retrieves the collection of Swarm resources.
+     */
+    async swarmsListRaw(requestParameters: SwarmsListRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Array<Swarm>>> {
+        const queryParameters: any = {};
+
+        if (requestParameters['page'] != null) {
+            queryParameters['page'] = requestParameters['page'];
+        }
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("bearerAuth", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
+        const response = await this.request({
+            path: `/api/swarms`,
+            method: 'GET',
+            headers: headerParameters,
+            query: queryParameters,
+        }, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) => jsonValue.map(SwarmFromJSON));
+    }
+
+    /**
+     * Retrieves the collection of Swarm resources.
+     * Retrieves the collection of Swarm resources.
+     */
+    async swarmsList(requestParameters: SwarmsListRequest = {}, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Array<Swarm>> {
+        const response = await this.swarmsListRaw(requestParameters, initOverrides);
+        return await response.value();
+    }
+
+    /**
+     * Updates the Swarm resource.
+     * Updates the Swarm resource.
+     */
+    async swarmsUpdateRaw(requestParameters: SwarmsUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Swarm>> {
+        if (requestParameters['id'] == null) {
+            throw new runtime.RequiredError(
+                'id',
+                'Required parameter "id" was null or undefined when calling swarmsUpdate().'
+            );
+        }
+
+        if (requestParameters['swarmJsonMergePatch'] == null) {
+            throw new runtime.RequiredError(
+                'swarmJsonMergePatch',
+                'Required parameter "swarmJsonMergePatch" was null or undefined when calling swarmsUpdate().'
+            );
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        headerParameters['Content-Type'] = 'application/merge-patch+json';
+
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("bearerAuth", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
+        const response = await this.request({
+            path: `/api/swarms/{id}`.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters['id']))),
+            method: 'PATCH',
+            headers: headerParameters,
+            query: queryParameters,
+            body: SwarmJsonMergePatchToJSON(requestParameters['swarmJsonMergePatch']),
+        }, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) => SwarmFromJSON(jsonValue));
+    }
+
+    /**
+     * Updates the Swarm resource.
+     * Updates the Swarm resource.
+     */
+    async swarmsUpdate(requestParameters: SwarmsUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Swarm> {
+        const response = await this.swarmsUpdateRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
