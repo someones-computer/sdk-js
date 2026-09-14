@@ -181,8 +181,7 @@ export const CreditTransactionResourceKindEnum = {
     Compute: 'compute',
     Storage: 'storage',
     EngineLoad: 'engine_load',
-    RegistryStorage: 'registry_storage',
-    IngressEgress: 'ingress_egress'
+    RegistryStorage: 'registry_storage'
 } as const;
 export type CreditTransactionResourceKindEnum = typeof CreditTransactionResourceKindEnum[keyof typeof CreditTransactionResourceKindEnum];
 
