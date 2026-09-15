@@ -14,6 +14,8 @@ export * from './CreditTransaction';
 export * from './CreditTransactionEngineMillis';
 export * from './CreditTransactionUsageBytes';
 export * from './Deployment';
+export * from './DeploymentAccessGate';
+export * from './DeploymentAccessGateJsonMergePatch';
 export * from './DeploymentBundleUploadConfirmInput';
 export * from './DeploymentBundleUploadConfirmOutput';
 export * from './DeploymentBundleUploadDeclareInput';
