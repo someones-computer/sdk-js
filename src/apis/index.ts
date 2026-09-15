@@ -4,7 +4,6 @@ export * from './AdoptionApprovalApi';
 export * from './ApplicationApi';
 export * from './CreditTransactionApi';
 export * from './DeploymentApi';
-export * from './DeploymentAccessGateApi';
 export * from './ManagedServiceApi';
 export * from './OrganizationApi';
 export * from './ServiceBindingApi';

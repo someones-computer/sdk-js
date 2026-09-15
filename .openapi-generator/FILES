@@ -6,7 +6,6 @@ package.json
 src/apis/AdoptionApprovalApi.ts
 src/apis/ApplicationApi.ts
 src/apis/CreditTransactionApi.ts
-src/apis/DeploymentAccessGateApi.ts
 src/apis/DeploymentApi.ts
 src/apis/ManagedServiceApi.ts
 src/apis/OrganizationApi.ts
@@ -28,8 +27,6 @@ src/models/CreditTransaction.ts
 src/models/CreditTransactionEngineMillis.ts
 src/models/CreditTransactionUsageBytes.ts
 src/models/Deployment.ts
-src/models/DeploymentAccessGate.ts
-src/models/DeploymentAccessGateJsonMergePatch.ts
 src/models/DeploymentBundleUploadConfirmInput.ts
 src/models/DeploymentBundleUploadConfirmOutput.ts
 src/models/DeploymentBundleUploadDeclareInput.ts
