@@ -121,6 +121,15 @@ export interface CreditTransaction {
      */
     engineMillis?: CreditTransactionEngineMillis | null;
     /**
+     * The row count an API-access-log-volume debit was computed from — the
+     * evidence a per-row charge can be checked against, the same role
+     * {@see $usageBytes} plays for a storage debit. Null on anything but that
+     * kind of debit.
+     * @type {number}
+     * @memberof CreditTransaction
+     */
+    readonly usageRows?: number | null;
+    /**
      * Stripe Event id that last transitioned this row; secondary idempotency guard for webhook delivery.
      * @type {string}
      * @memberof CreditTransaction
@@ -182,7 +191,8 @@ export const CreditTransactionResourceKindEnum = {
     Storage: 'storage',
     EngineLoad: 'engine_load',
     RegistryStorage: 'registry_storage',
-    IngressEgress: 'ingress_egress'
+    IngressEgress: 'ingress_egress',
+    ApiAccessLogVolume: 'api_access_log_volume'
 } as const;
 export type CreditTransactionResourceKindEnum = typeof CreditTransactionResourceKindEnum[keyof typeof CreditTransactionResourceKindEnum];
 
@@ -216,6 +226,7 @@ export function CreditTransactionFromJSONTyped(json: any, ignoreDiscriminator: b
         'unresolvedContainers': json['unresolvedContainers'] == null ? undefined : json['unresolvedContainers'],
         'usageBytes': json['usageBytes'] == null ? undefined : CreditTransactionUsageBytesFromJSON(json['usageBytes']),
         'engineMillis': json['engineMillis'] == null ? undefined : CreditTransactionEngineMillisFromJSON(json['engineMillis']),
+        'usageRows': json['usageRows'] == null ? undefined : json['usageRows'],
         'stripeEventId': json['stripeEventId'] == null ? undefined : json['stripeEventId'],
         'createdBy': json['createdBy'] == null ? undefined : UserFromJSON(json['createdBy']),
         'id': json['id'] == null ? undefined : json['id'],
@@ -228,7 +239,7 @@ export function CreditTransactionToJSON(json: any): CreditTransaction {
     return CreditTransactionToJSONTyped(json, false);
 }
 
-export function CreditTransactionToJSONTyped(value?: Omit<CreditTransaction, 'usageHour'|'resourceKind'|'usageSeconds'|'unresolvedContainers'|'id'|'createdAt'|'updatedAt'> | null, ignoreDiscriminator: boolean = false): any {
+export function CreditTransactionToJSONTyped(value?: Omit<CreditTransaction, 'usageHour'|'resourceKind'|'usageSeconds'|'unresolvedContainers'|'usageRows'|'id'|'createdAt'|'updatedAt'> | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }

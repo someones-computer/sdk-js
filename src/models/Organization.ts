@@ -136,6 +136,16 @@ export interface Organization {
      */
     readonly twoFactorRequiredAt?: Date | null;
     /**
+     * How long this organization's {@see \App\Entity\ApiAccessLogEntry} rows are
+     * kept before {@see \App\MessageHandler\PurgeApiAccessLogHandler} prunes
+     * them. Null means "the platform default"
+     * ({@see \App\Service\ApiAccessLogRetention::DEFAULT_DAYS}) rather than a
+     * fixed number baked into every organization row the day this shipped.
+     * @type {number}
+     * @memberof Organization
+     */
+    readonly apiAccessLogRetentionDays?: number | null;
+    /**
      * 
      * @type {Array<Membership>}
      * @memberof Organization
@@ -266,6 +276,7 @@ export function OrganizationFromJSONTyped(json: any, ignoreDiscriminator: boolea
         'tierPinReason': json['tierPinReason'] == null ? undefined : json['tierPinReason'],
         'lowBalanceWarnedAt': json['lowBalanceWarnedAt'] == null ? undefined : (new Date(json['lowBalanceWarnedAt'])),
         'twoFactorRequiredAt': json['twoFactorRequiredAt'] == null ? undefined : (new Date(json['twoFactorRequiredAt'])),
+        'apiAccessLogRetentionDays': json['apiAccessLogRetentionDays'] == null ? undefined : json['apiAccessLogRetentionDays'],
         'memberships': json['memberships'] == null ? undefined : ((json['memberships'] as Array<any>).map(MembershipFromJSON)),
         'applications': json['applications'] == null ? undefined : json['applications'],
         'swarms': json['swarms'] == null ? undefined : json['swarms'],
@@ -286,7 +297,7 @@ export function OrganizationToJSON(json: any): Organization {
     return OrganizationToJSONTyped(json, false);
 }
 
-export function OrganizationToJSONTyped(value?: Omit<Organization, 'tierPin'|'tierPinnedAt'|'tierPinReason'|'lowBalanceWarnedAt'|'twoFactorRequiredAt'|'id'|'deletedAt'|'createdAt'|'updatedAt'|'tierPinned'|'deleted'> | null, ignoreDiscriminator: boolean = false): any {
+export function OrganizationToJSONTyped(value?: Omit<Organization, 'tierPin'|'tierPinnedAt'|'tierPinReason'|'lowBalanceWarnedAt'|'twoFactorRequiredAt'|'apiAccessLogRetentionDays'|'id'|'deletedAt'|'createdAt'|'updatedAt'|'tierPinned'|'deleted'> | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
