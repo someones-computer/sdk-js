@@ -29,7 +29,7 @@ import {
 } from '../models/index';
 
 export interface OrganizationsCreateRequest {
-    organization: Omit<Organization, 'tierPin'|'tierPinnedAt'|'tierPinReason'|'lowBalanceWarnedAt'|'twoFactorRequiredAt'|'id'|'deletedAt'|'createdAt'|'updatedAt'|'tierPinned'|'deleted'>;
+    organization: Omit<Organization, 'tierPin'|'tierPinnedAt'|'tierPinReason'|'lowBalanceWarnedAt'|'twoFactorRequiredAt'|'apiAccessLogRetentionDays'|'id'|'deletedAt'|'createdAt'|'updatedAt'|'tierPinned'|'deleted'>;
 }
 
 export interface OrganizationsDeleteRequest {
@@ -48,7 +48,7 @@ export interface OrganizationsListRequest {
 
 export interface OrganizationsUpdateRequest {
     id: string;
-    organizationJsonMergePatch: Omit<OrganizationJsonMergePatch, 'tierPin'|'tierPinnedAt'|'tierPinReason'|'lowBalanceWarnedAt'|'twoFactorRequiredAt'|'id'|'deletedAt'|'createdAt'|'updatedAt'|'tierPinned'|'deleted'>;
+    organizationJsonMergePatch: Omit<OrganizationJsonMergePatch, 'tierPin'|'tierPinnedAt'|'tierPinReason'|'lowBalanceWarnedAt'|'twoFactorRequiredAt'|'apiAccessLogRetentionDays'|'id'|'deletedAt'|'createdAt'|'updatedAt'|'tierPinned'|'deleted'>;
 }
 
 /**
