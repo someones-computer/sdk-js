@@ -44,6 +44,10 @@ export interface ManagedServicesListRequest {
     page?: number;
 }
 
+export interface ManagedServicesRestoreRequest {
+    id: string;
+}
+
 export interface ManagedServicesResumeRequest {
     id: string;
 }
@@ -225,6 +229,85 @@ export class ManagedServiceApi extends runtime.BaseAPI {
      */
     async managedServicesList(requestParameters: ManagedServicesListRequest = {}, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Array<ManagedService>> {
         const response = await this.managedServicesListRaw(requestParameters, initOverrides);
+        return await response.value();
+    }
+
+    /**
+     * Retrieves the collection of ManagedService resources.
+     * Retrieves the collection of ManagedService resources.
+     */
+    async managedServicesListRetiredRaw(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Array<ManagedService>>> {
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("bearerAuth", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
+        const response = await this.request({
+            path: `/api/managed_services/retired`,
+            method: 'GET',
+            headers: headerParameters,
+            query: queryParameters,
+        }, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) => jsonValue.map(ManagedServiceFromJSON));
+    }
+
+    /**
+     * Retrieves the collection of ManagedService resources.
+     * Retrieves the collection of ManagedService resources.
+     */
+    async managedServicesListRetired(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Array<ManagedService>> {
+        const response = await this.managedServicesListRetiredRaw(initOverrides);
+        return await response.value();
+    }
+
+    /**
+     * Creates a ManagedService resource.
+     * Creates a ManagedService resource.
+     */
+    async managedServicesRestoreRaw(requestParameters: ManagedServicesRestoreRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<ManagedService>> {
+        if (requestParameters['id'] == null) {
+            throw new runtime.RequiredError(
+                'id',
+                'Required parameter "id" was null or undefined when calling managedServicesRestore().'
+            );
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("bearerAuth", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
+        const response = await this.request({
+            path: `/api/managed_services/{id}/restore`.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters['id']))),
+            method: 'POST',
+            headers: headerParameters,
+            query: queryParameters,
+        }, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) => ManagedServiceFromJSON(jsonValue));
+    }
+
+    /**
+     * Creates a ManagedService resource.
+     * Creates a ManagedService resource.
+     */
+    async managedServicesRestore(requestParameters: ManagedServicesRestoreRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<ManagedService> {
+        const response = await this.managedServicesRestoreRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
