@@ -13,21 +13,6 @@
  */
 
 import { mapValues } from '../runtime';
-import type { OAuthIdentity } from './OAuthIdentity';
-import {
-    OAuthIdentityFromJSON,
-    OAuthIdentityFromJSONTyped,
-    OAuthIdentityToJSON,
-    OAuthIdentityToJSONTyped,
-} from './OAuthIdentity';
-import type { UserAvatarPhoto } from './UserAvatarPhoto';
-import {
-    UserAvatarPhotoFromJSON,
-    UserAvatarPhotoFromJSONTyped,
-    UserAvatarPhotoToJSON,
-    UserAvatarPhotoToJSONTyped,
-} from './UserAvatarPhoto';
-
 /**
  * 
  * @export
@@ -39,7 +24,7 @@ export interface User {
      * @type {string}
      * @memberof User
      */
-    email?: string;
+    readonly id?: string;
     /**
      * Handle the user can sign in with instead of their email.
      * @type {string}
@@ -52,281 +37,7 @@ export interface User {
      * @memberof User
      */
     displayName?: string | null;
-    /**
-     * Which skin this person prefers, or null to take whatever their organization
-     * or the instance says.
-     * @type {string}
-     * @memberof User
-     */
-    theme?: UserThemeEnum | null;
-    /**
-     * Which locale this person prefers, or null for no explicit choice — the
-     * same shape as {@see self::$theme}: null is not `en_GB`, it is "let the
-     * cascade decide" (cookie, then `Accept-Language`, then the instance
-     * default). See {@see \App\Service\LocaleResolver} and
-     * docs/internationalization.md.
-     * @type {string}
-     * @memberof User
-     */
-    locale?: UserLocaleEnum | null;
-    /**
-     * The IANA timezone identifier (e.g. `Europe/London`) this person prefers, or
-     * null for no explicit choice — the same shape as {@see self::$locale}: null
-     * is not UTC, it is "let the cascade decide" (cookie written by the browser's
-     * own auto-detection, then the instance default). A plain validated string
-     * rather than a backed enum like {@see self::$theme}/{@see self::$locale}: the
-     * IANA database has ~400 identifiers, too many for an enum to curate the way
-     * {@see \App\Enum\Locale} deliberately does for its two cases. See
-     * {@see \App\Service\TimezoneResolver}.
-     * @type {string}
-     * @memberof User
-     */
-    timezone?: string | null;
-    /**
-     * The bound entry's distinguished name in LLDAP. Presence means the account
-     * is LDAP-authoritative: {@see App\Service\LdapAccountLinker} clears any
-     * local password when it sets this, and it is never set alongside one.
-     * @type {string}
-     * @memberof User
-     */
-    ldapDn?: string | null;
-    /**
-     * 
-     * @type {UserAvatarPhoto}
-     * @memberof User
-     */
-    avatarPhoto?: UserAvatarPhoto | null;
-    /**
-     * 
-     * @type {Array<string>}
-     * @memberof User
-     */
-    roles?: Array<string>;
-    /**
-     * Set when a platform operator suspends the account; null = active.
-     * @type {Date}
-     * @memberof User
-     */
-    readonly disabledAt?: Date | null;
-    /**
-     * When an operator judged this account to be spam; null = not spam.
-     * @type {Date}
-     * @memberof User
-     */
-    readonly spamMarkedAt?: Date | null;
-    /**
-     * 
-     * @type {User}
-     * @memberof User
-     */
-    spamMarkedBy?: User | null;
-    /**
-     * When an operator approved the account; null means it is still waiting and
-     * can reach nothing but the holding page ({@see self::getRoles()}).
-     * @type {Date}
-     * @memberof User
-     */
-    readonly approvedAt?: Date | null;
-    /**
-     * When the address on this account was proven to be one the person can read;
-     * null means it never was ({@see \App\Service\EmailConfirmationService}).
-     * @type {Date}
-     * @memberof User
-     */
-    readonly emailConfirmedAt?: Date | null;
-    /**
-     * When the one-off signup credit was granted ({@see \App\Service\Credit\SignupGrant}).
-     * @type {Date}
-     * @memberof User
-     */
-    readonly creditGrantedAt?: Date | null;
-    /**
-     * An operator's override of the trust tier this account would otherwise
-     * progress into on its own; null means the automatic rule decides
-     * ({@see \App\Service\Trust\TierResolver}).
-     * @type {string}
-     * @memberof User
-     */
-    readonly tierPin?: UserTierPinEnum | null;
-    /**
-     * 
-     * @type {Date}
-     * @memberof User
-     */
-    readonly tierPinnedAt?: Date | null;
-    /**
-     * 
-     * @type {User}
-     * @memberof User
-     */
-    tierPinnedBy?: User | null;
-    /**
-     * 
-     * @type {string}
-     * @memberof User
-     */
-    readonly tierPinReason?: string | null;
-    /**
-     * 
-     * @type {Array<OAuthIdentity>}
-     * @memberof User
-     */
-    oauthIdentities?: Array<OAuthIdentity>;
-    /**
-     * When the person proved the authenticator by entering a live code; null
-     * means 2FA is not in force for this account. This is the flag the step-up
-     * gate reads ({@see \App\EventSubscriber\TwoFactorStepUpSubscriber}).
-     * @type {Date}
-     * @memberof User
-     */
-    readonly totpConfirmedAt?: Date | null;
-    /**
-     * The organization this account exists to act for, or null for a person.
-     * @type {string}
-     * @memberof User
-     */
-    machineFor?: string | null;
-    /**
-     * 
-     * @type {string}
-     * @memberof User
-     */
-    readonly id?: string;
-    /**
-     * 
-     * @type {Date}
-     * @memberof User
-     */
-    readonly deletedAt?: Date | null;
-    /**
-     * 
-     * @type {Date}
-     * @memberof User
-     */
-    readonly createdAt?: Date;
-    /**
-     * 
-     * @type {Date}
-     * @memberof User
-     */
-    readonly updatedAt?: Date | null;
-    /**
-     * How this person is named in the UI. Registration requires a display name,
-     * but an OAuth provider may not share one, so the handle stands in — never
-     * the email address, which is not ours to show.
-     * @type {string}
-     * @memberof User
-     */
-    readonly displayLabel?: string;
-    /**
-     * Whether this account is a machine acting for an organization, not a person.
-     * @type {boolean}
-     * @memberof User
-     */
-    readonly machine?: boolean;
-    /**
-     * 
-     * @type {boolean}
-     * @memberof User
-     */
-    readonly ldapManaged?: boolean;
-    /**
-     * 
-     * @type {string}
-     * @memberof User
-     */
-    readonly avatarPhotoType?: string | null;
-    /**
-     * The identifier stored in the session token. Sign-in accepts either the
-     * email or the username ({@see UserRepository::loadUserByIdentifier()});
-     * this is the canonical one the token is refreshed from.
-     * @type {string}
-     * @memberof User
-     */
-    readonly userIdentifier?: string;
-    /**
-     * The roles the account actually carries, whether or not it has been
-     * approved — what the admin panel shows and what the feature toggles flip.
-     * @type {Array<string>}
-     * @memberof User
-     */
-    grantedRoles?: Array<string>;
-    /**
-     * 
-     * @type {boolean}
-     * @memberof User
-     */
-    readonly disabled?: boolean;
-    /**
-     * 
-     * @type {boolean}
-     * @memberof User
-     */
-    readonly spam?: boolean;
-    /**
-     * 
-     * @type {boolean}
-     * @memberof User
-     */
-    readonly approved?: boolean;
-    /**
-     * 
-     * @type {boolean}
-     * @memberof User
-     */
-    readonly emailConfirmed?: boolean;
-    /**
-     * 
-     * @type {boolean}
-     * @memberof User
-     */
-    readonly tierPinned?: boolean;
-    /**
-     * True once the person has proved the authenticator — the gate's on/off switch.
-     * @type {boolean}
-     * @memberof User
-     */
-    readonly totpEnabled?: boolean;
-    /**
-     * 
-     * @type {boolean}
-     * @memberof User
-     */
-    readonly deleted?: boolean;
 }
-
-
-/**
- * @export
- */
-export const UserThemeEnum = {
-    House: 'house',
-    Corporate: 'corporate',
-    Dull: 'dull',
-    Plain: 'plain',
-    RedLabel: 'red-label'
-} as const;
-export type UserThemeEnum = typeof UserThemeEnum[keyof typeof UserThemeEnum];
-
-/**
- * @export
- */
-export const UserLocaleEnum = {
-    EnGb: 'en_GB',
-    EnUs: 'en_US'
-} as const;
-export type UserLocaleEnum = typeof UserLocaleEnum[keyof typeof UserLocaleEnum];
-
-/**
- * @export
- */
-export const UserTierPinEnum = {
-    Untrusted: 'untrusted',
-    Trusted: 'trusted',
-    Verified: 'verified'
-} as const;
-export type UserTierPinEnum = typeof UserTierPinEnum[keyof typeof UserTierPinEnum];
-
 
 /**
  * Check if a given object implements the User interface.
@@ -345,45 +56,9 @@ export function UserFromJSONTyped(json: any, ignoreDiscriminator: boolean): User
     }
     return {
         
-        'email': json['email'] == null ? undefined : json['email'],
+        'id': json['id'] == null ? undefined : json['id'],
         'username': json['username'] == null ? undefined : json['username'],
         'displayName': json['displayName'] == null ? undefined : json['displayName'],
-        'theme': json['theme'] == null ? undefined : json['theme'],
-        'locale': json['locale'] == null ? undefined : json['locale'],
-        'timezone': json['timezone'] == null ? undefined : json['timezone'],
-        'ldapDn': json['ldapDn'] == null ? undefined : json['ldapDn'],
-        'avatarPhoto': json['avatarPhoto'] == null ? undefined : UserAvatarPhotoFromJSON(json['avatarPhoto']),
-        'roles': json['roles'] == null ? undefined : json['roles'],
-        'disabledAt': json['disabledAt'] == null ? undefined : (new Date(json['disabledAt'])),
-        'spamMarkedAt': json['spamMarkedAt'] == null ? undefined : (new Date(json['spamMarkedAt'])),
-        'spamMarkedBy': json['spamMarkedBy'] == null ? undefined : UserFromJSON(json['spamMarkedBy']),
-        'approvedAt': json['approvedAt'] == null ? undefined : (new Date(json['approvedAt'])),
-        'emailConfirmedAt': json['emailConfirmedAt'] == null ? undefined : (new Date(json['emailConfirmedAt'])),
-        'creditGrantedAt': json['creditGrantedAt'] == null ? undefined : (new Date(json['creditGrantedAt'])),
-        'tierPin': json['tierPin'] == null ? undefined : json['tierPin'],
-        'tierPinnedAt': json['tierPinnedAt'] == null ? undefined : (new Date(json['tierPinnedAt'])),
-        'tierPinnedBy': json['tierPinnedBy'] == null ? undefined : UserFromJSON(json['tierPinnedBy']),
-        'tierPinReason': json['tierPinReason'] == null ? undefined : json['tierPinReason'],
-        'oauthIdentities': json['oauthIdentities'] == null ? undefined : ((json['oauthIdentities'] as Array<any>).map(OAuthIdentityFromJSON)),
-        'totpConfirmedAt': json['totpConfirmedAt'] == null ? undefined : (new Date(json['totpConfirmedAt'])),
-        'machineFor': json['machineFor'] == null ? undefined : json['machineFor'],
-        'id': json['id'] == null ? undefined : json['id'],
-        'deletedAt': json['deletedAt'] == null ? undefined : (new Date(json['deletedAt'])),
-        'createdAt': json['createdAt'] == null ? undefined : (new Date(json['createdAt'])),
-        'updatedAt': json['updatedAt'] == null ? undefined : (new Date(json['updatedAt'])),
-        'displayLabel': json['displayLabel'] == null ? undefined : json['displayLabel'],
-        'machine': json['machine'] == null ? undefined : json['machine'],
-        'ldapManaged': json['ldapManaged'] == null ? undefined : json['ldapManaged'],
-        'avatarPhotoType': json['avatarPhotoType'] == null ? undefined : json['avatarPhotoType'],
-        'userIdentifier': json['userIdentifier'] == null ? undefined : json['userIdentifier'],
-        'grantedRoles': json['grantedRoles'] == null ? undefined : json['grantedRoles'],
-        'disabled': json['disabled'] == null ? undefined : json['disabled'],
-        'spam': json['spam'] == null ? undefined : json['spam'],
-        'approved': json['approved'] == null ? undefined : json['approved'],
-        'emailConfirmed': json['emailConfirmed'] == null ? undefined : json['emailConfirmed'],
-        'tierPinned': json['tierPinned'] == null ? undefined : json['tierPinned'],
-        'totpEnabled': json['totpEnabled'] == null ? undefined : json['totpEnabled'],
-        'deleted': json['deleted'] == null ? undefined : json['deleted'],
     };
 }
 
@@ -391,27 +66,15 @@ export function UserToJSON(json: any): User {
     return UserToJSONTyped(json, false);
 }
 
-export function UserToJSONTyped(value?: Omit<User, 'disabledAt'|'spamMarkedAt'|'approvedAt'|'emailConfirmedAt'|'creditGrantedAt'|'tierPin'|'tierPinnedAt'|'tierPinReason'|'totpConfirmedAt'|'id'|'deletedAt'|'createdAt'|'updatedAt'|'displayLabel'|'machine'|'ldapManaged'|'avatarPhotoType'|'userIdentifier'|'disabled'|'spam'|'approved'|'emailConfirmed'|'tierPinned'|'totpEnabled'|'deleted'> | null, ignoreDiscriminator: boolean = false): any {
+export function UserToJSONTyped(value?: Omit<User, 'id'> | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
     return {
         
-        'email': value['email'],
         'username': value['username'],
         'displayName': value['displayName'],
-        'theme': value['theme'],
-        'locale': value['locale'],
-        'timezone': value['timezone'],
-        'ldapDn': value['ldapDn'],
-        'avatarPhoto': UserAvatarPhotoToJSON(value['avatarPhoto']),
-        'roles': value['roles'],
-        'spamMarkedBy': UserToJSON(value['spamMarkedBy']),
-        'tierPinnedBy': UserToJSON(value['tierPinnedBy']),
-        'oauthIdentities': value['oauthIdentities'] == null ? undefined : ((value['oauthIdentities'] as Array<any>).map(OAuthIdentityToJSON)),
-        'machineFor': value['machineFor'],
-        'grantedRoles': value['grantedRoles'],
     };
 }
 

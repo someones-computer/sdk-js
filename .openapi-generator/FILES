@@ -48,7 +48,6 @@ src/models/ManagedServiceQuotaBytes.ts
 src/models/ManagedServiceUsageBytes.ts
 src/models/Membership.ts
 src/models/ModelError.ts
-src/models/OAuthIdentity.ts
 src/models/Organization.ts
 src/models/OrganizationJsonMergePatch.ts
 src/models/OrganizationSignal.ts
@@ -70,7 +69,6 @@ src/models/Swarm.ts
 src/models/SwarmJsonMergePatch.ts
 src/models/SwarmNode.ts
 src/models/User.ts
-src/models/UserAvatarPhoto.ts
 src/models/index.ts
 src/runtime.ts
 tsconfig.json
