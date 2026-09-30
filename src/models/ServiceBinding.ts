@@ -13,6 +13,14 @@
  */
 
 import { mapValues } from '../runtime';
+import type { SealedSecret } from './SealedSecret';
+import {
+    SealedSecretFromJSON,
+    SealedSecretFromJSONTyped,
+    SealedSecretToJSON,
+    SealedSecretToJSONTyped,
+} from './SealedSecret';
+
 /**
  * List service bindings (application-to-managed-service links) the caller can see.
  * @export
@@ -76,6 +84,12 @@ export interface ServiceBinding {
      * @memberof ServiceBinding
      */
     readonly adopted?: boolean;
+    /**
+     * 
+     * @type {SealedSecret}
+     * @memberof ServiceBinding
+     */
+    sidecarCredential?: SealedSecret;
 }
 
 /**
@@ -104,6 +118,7 @@ export function ServiceBindingFromJSONTyped(json: any, ignoreDiscriminator: bool
         'createdAt': json['createdAt'] == null ? undefined : (new Date(json['createdAt'])),
         'updatedAt': json['updatedAt'] == null ? undefined : (new Date(json['updatedAt'])),
         'adopted': json['adopted'] == null ? undefined : json['adopted'],
+        'sidecarCredential': json['sidecarCredential'] == null ? undefined : SealedSecretFromJSON(json['sidecarCredential']),
     };
 }
 
@@ -123,6 +138,7 @@ export function ServiceBindingToJSONTyped(value?: Omit<ServiceBinding, 'id'|'cre
         'injectedKeys': value['injectedKeys'],
         'sidecarServiceName': value['sidecarServiceName'],
         'adoptedComposeService': value['adoptedComposeService'],
+        'sidecarCredential': SealedSecretToJSON(value['sidecarCredential']),
     };
 }
 

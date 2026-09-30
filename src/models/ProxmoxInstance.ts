@@ -38,6 +38,13 @@ export interface ProxmoxInstance {
      */
     tokenId?: string;
     /**
+     * The token's secret (a UUID as Proxmox issues it), encrypted at rest and
+     * never serialized. Proxmox shows it exactly once, at creation.
+     * @type {string}
+     * @memberof ProxmoxInstance
+     */
+    tokenSecret?: string;
+    /**
      * Whether the certificate must validate against a CA chain.
      * @type {boolean}
      * @memberof ProxmoxInstance
@@ -177,6 +184,7 @@ export function ProxmoxInstanceFromJSONTyped(json: any, ignoreDiscriminator: boo
         'name': json['name'] == null ? undefined : json['name'],
         'endpoint': json['endpoint'] == null ? undefined : json['endpoint'],
         'tokenId': json['tokenId'] == null ? undefined : json['tokenId'],
+        'tokenSecret': json['tokenSecret'] == null ? undefined : json['tokenSecret'],
         'verifyTls': json['verifyTls'] == null ? undefined : json['verifyTls'],
         'publicKeyPin': json['publicKeyPin'] == null ? undefined : json['publicKeyPin'],
         'status': json['status'] == null ? undefined : json['status'],
@@ -209,6 +217,7 @@ export function ProxmoxInstanceToJSONTyped(value?: Omit<ProxmoxInstance, 'templa
         'name': value['name'],
         'endpoint': value['endpoint'],
         'tokenId': value['tokenId'],
+        'tokenSecret': value['tokenSecret'],
         'verifyTls': value['verifyTls'],
         'publicKeyPin': value['publicKeyPin'],
         'status': value['status'],

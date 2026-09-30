@@ -92,6 +92,13 @@ export interface Failure {
      */
     imageDigest?: string | null;
     /**
+     * The capability that makes {@see \App\Controller\FailureController::shared()}
+     * serve this to someone with no session, or null while it is private.
+     * @type {string}
+     * @memberof Failure
+     */
+    readonly shareToken?: string | null;
+    /**
      * 
      * @type {Date}
      * @memberof Failure
@@ -184,6 +191,7 @@ export function FailureFromJSONTyped(json: any, ignoreDiscriminator: boolean): F
         'service': json['service'] == null ? undefined : json['service'],
         'buildLogKey': json['buildLogKey'] == null ? undefined : json['buildLogKey'],
         'imageDigest': json['imageDigest'] == null ? undefined : json['imageDigest'],
+        'shareToken': json['shareToken'] == null ? undefined : json['shareToken'],
         'sharedAt': json['sharedAt'] == null ? undefined : (new Date(json['sharedAt'])),
         'shareExpiresAt': json['shareExpiresAt'] == null ? undefined : (new Date(json['shareExpiresAt'])),
         'sharedBy': json['sharedBy'] == null ? undefined : UserFromJSON(json['sharedBy']),
@@ -199,7 +207,7 @@ export function FailureToJSON(json: any): Failure {
     return FailureToJSONTyped(json, false);
 }
 
-export function FailureToJSONTyped(value?: Omit<Failure, 'reference'|'sharedAt'|'shareExpiresAt'|'id'|'createdAt'|'updatedAt'|'displayLabel'|'shared'> | null, ignoreDiscriminator: boolean = false): any {
+export function FailureToJSONTyped(value?: Omit<Failure, 'reference'|'shareToken'|'sharedAt'|'shareExpiresAt'|'id'|'createdAt'|'updatedAt'|'displayLabel'|'shared'> | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }

@@ -27,6 +27,13 @@ import {
     UserToJSON,
     UserToJSONTyped,
 } from './User';
+import type { Variable } from './Variable';
+import {
+    VariableFromJSON,
+    VariableFromJSONTyped,
+    VariableToJSON,
+    VariableToJSONTyped,
+} from './Variable';
 import type { Membership } from './Membership';
 import {
     MembershipFromJSON,
@@ -170,6 +177,12 @@ export interface OrganizationJsonMergePatch {
     creditTransactions?: Array<string>;
     /**
      * 
+     * @type {Array<Variable>}
+     * @memberof OrganizationJsonMergePatch
+     */
+    variables?: Array<Variable>;
+    /**
+     * 
      * @type {Array<OrganizationSignal>}
      * @memberof OrganizationJsonMergePatch
      */
@@ -269,6 +282,7 @@ export function OrganizationJsonMergePatchFromJSONTyped(json: any, ignoreDiscrim
         'swarms': json['swarms'] == null ? undefined : json['swarms'],
         'machines': json['machines'] == null ? undefined : ((json['machines'] as Array<any>).map(MachineFromJSON)),
         'creditTransactions': json['creditTransactions'] == null ? undefined : json['creditTransactions'],
+        'variables': json['variables'] == null ? undefined : ((json['variables'] as Array<any>).map(VariableFromJSON)),
         'signals': json['signals'] == null ? undefined : ((json['signals'] as Array<any>).map(OrganizationSignalFromJSON)),
         'id': json['id'] == null ? undefined : json['id'],
         'deletedAt': json['deletedAt'] == null ? undefined : (new Date(json['deletedAt'])),
@@ -300,6 +314,7 @@ export function OrganizationJsonMergePatchToJSONTyped(value?: Omit<OrganizationJ
         'swarms': value['swarms'],
         'machines': value['machines'] == null ? undefined : ((value['machines'] as Array<any>).map(MachineToJSON)),
         'creditTransactions': value['creditTransactions'],
+        'variables': value['variables'] == null ? undefined : ((value['variables'] as Array<any>).map(VariableToJSON)),
         'signals': value['signals'] == null ? undefined : ((value['signals'] as Array<any>).map(OrganizationSignalToJSON)),
     };
 }
