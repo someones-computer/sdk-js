@@ -27,13 +27,6 @@ import {
     ManagedServiceLastLoadMillisToJSON,
     ManagedServiceLastLoadMillisToJSONTyped,
 } from './ManagedServiceLastLoadMillis';
-import type { SealedSecret } from './SealedSecret';
-import {
-    SealedSecretFromJSON,
-    SealedSecretFromJSONTyped,
-    SealedSecretToJSON,
-    SealedSecretToJSONTyped,
-} from './SealedSecret';
 import type { ManagedServicePendingLoadMillis } from './ManagedServicePendingLoadMillis';
 import {
     ManagedServicePendingLoadMillisFromJSON,
@@ -221,12 +214,6 @@ export interface ManagedService {
     readonly catalogueEntry?: string;
     /**
      * 
-     * @type {SealedSecret}
-     * @memberof ManagedService
-     */
-    credential?: SealedSecret;
-    /**
-     * 
      * @type {boolean}
      * @memberof ManagedService
      */
@@ -317,7 +304,6 @@ export function ManagedServiceFromJSONTyped(json: any, ignoreDiscriminator: bool
         'createdAt': json['createdAt'] == null ? undefined : (new Date(json['createdAt'])),
         'updatedAt': json['updatedAt'] == null ? undefined : (new Date(json['updatedAt'])),
         'catalogueEntry': json['catalogueEntry'] == null ? undefined : json['catalogueEntry'],
-        'credential': json['credential'] == null ? undefined : SealedSecretFromJSON(json['credential']),
         'available': json['available'] == null ? undefined : json['available'],
         'deleted': json['deleted'] == null ? undefined : json['deleted'],
     };
@@ -350,7 +336,6 @@ export function ManagedServiceToJSONTyped(value?: Omit<ManagedService, 'failureR
         'lastLoadMillis': ManagedServiceLastLoadMillisToJSON(value['lastLoadMillis']),
         'pendingLoadMillis': ManagedServicePendingLoadMillisToJSON(value['pendingLoadMillis']),
         'bindings': value['bindings'],
-        'credential': SealedSecretToJSON(value['credential']),
     };
 }
 

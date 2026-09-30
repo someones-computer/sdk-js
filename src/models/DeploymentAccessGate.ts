@@ -13,14 +13,6 @@
  */
 
 import { mapValues } from '../runtime';
-import type { SealedSecret } from './SealedSecret';
-import {
-    SealedSecretFromJSON,
-    SealedSecretFromJSONTyped,
-    SealedSecretToJSON,
-    SealedSecretToJSONTyped,
-} from './SealedSecret';
-
 /**
  * List an application's per-deployment access-gate overrides.
  * @export
@@ -63,12 +55,6 @@ export interface DeploymentAccessGate {
      * @memberof DeploymentAccessGate
      */
     readonly updatedAt?: Date | null;
-    /**
-     * 
-     * @type {SealedSecret}
-     * @memberof DeploymentAccessGate
-     */
-    accessGateCredential?: SealedSecret | null;
 }
 
 
@@ -107,7 +93,6 @@ export function DeploymentAccessGateFromJSONTyped(json: any, ignoreDiscriminator
         'id': json['id'] == null ? undefined : json['id'],
         'createdAt': json['createdAt'] == null ? undefined : (new Date(json['createdAt'])),
         'updatedAt': json['updatedAt'] == null ? undefined : (new Date(json['updatedAt'])),
-        'accessGateCredential': json['accessGateCredential'] == null ? undefined : SealedSecretFromJSON(json['accessGateCredential']),
     };
 }
 
@@ -125,7 +110,6 @@ export function DeploymentAccessGateToJSONTyped(value?: Omit<DeploymentAccessGat
         'application': value['application'],
         'name': value['name'],
         'accessGate': value['accessGate'],
-        'accessGateCredential': SealedSecretToJSON(value['accessGateCredential']),
     };
 }
 
