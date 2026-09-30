@@ -41,13 +41,6 @@ import {
     ServiceToJSON,
     ServiceToJSONTyped,
 } from './Service';
-import type { DeploymentVariable } from './DeploymentVariable';
-import {
-    DeploymentVariableFromJSON,
-    DeploymentVariableFromJSONTyped,
-    DeploymentVariableToJSON,
-    DeploymentVariableToJSONTyped,
-} from './DeploymentVariable';
 import type { Failure } from './Failure';
 import {
     FailureFromJSON,
@@ -127,18 +120,6 @@ export interface DeploymentJsonMergePatch {
      */
     forwardedImages?: { [key: string]: { [key: string]: string | null; }; };
     /**
-     * `build.secrets` values declared for this revision's build services
-     * (Grey.ooo/someones.computer_agent#46), sealed the moment they arrive
-     * ({@see \App\Service\Secret\SecretBox}) and never written to the object
-     * store the way a build context is: unlike a context tarball, a build
-     * secret is live tenant credential material, not something worth caching
-     * by content — closer to how {@see \App\Service\Registry\RegistryTokenSigner}
-     * mints a push token than to how {@see \App\Entity\Variable} keeps one.
-     * @type {{ [key: string]: { [key: string]: { [key: string]: string; }; }; }}
-     * @memberof DeploymentJsonMergePatch
-     */
-    buildSecrets?: { [key: string]: { [key: string]: { [key: string]: string; }; }; };
-    /**
      * Resolved by the placement engine; null until placed.
      * @type {string}
      * @memberof DeploymentJsonMergePatch
@@ -209,12 +190,6 @@ export interface DeploymentJsonMergePatch {
      * @memberof DeploymentJsonMergePatch
      */
     services?: Array<Service>;
-    /**
-     * 
-     * @type {Array<DeploymentVariable>}
-     * @memberof DeploymentJsonMergePatch
-     */
-    variables?: Array<DeploymentVariable>;
     /**
      * 
      * @type {Array<Failure>}
@@ -301,7 +276,6 @@ export function DeploymentJsonMergePatchFromJSONTyped(json: any, ignoreDiscrimin
         'canonicalSpec': json['canonicalSpec'] == null ? undefined : (mapValues(json['canonicalSpec'], DeploymentJsonMergePatchCanonicalSpecValueFromJSON)),
         'buildContexts': json['buildContexts'] == null ? undefined : json['buildContexts'],
         'forwardedImages': json['forwardedImages'] == null ? undefined : json['forwardedImages'],
-        'buildSecrets': json['buildSecrets'] == null ? undefined : json['buildSecrets'],
         'targetSwarm': json['targetSwarm'] == null ? undefined : json['targetSwarm'],
         'status': json['status'] == null ? undefined : json['status'],
         'statusReason': json['statusReason'] == null ? undefined : json['statusReason'],
@@ -311,7 +285,6 @@ export function DeploymentJsonMergePatchFromJSONTyped(json: any, ignoreDiscrimin
         'digest': json['digest'] == null ? undefined : json['digest'],
         'createdBy': json['createdBy'] == null ? undefined : UserFromJSON(json['createdBy']),
         'services': json['services'] == null ? undefined : ((json['services'] as Array<any>).map(ServiceFromJSON)),
-        'variables': json['variables'] == null ? undefined : ((json['variables'] as Array<any>).map(DeploymentVariableFromJSON)),
         'failures': json['failures'] == null ? undefined : ((json['failures'] as Array<any>).map(FailureFromJSON)),
         'id': json['id'] == null ? undefined : json['id'],
         'deletedAt': json['deletedAt'] == null ? undefined : (new Date(json['deletedAt'])),
@@ -340,7 +313,6 @@ export function DeploymentJsonMergePatchToJSONTyped(value?: Omit<DeploymentJsonM
         'canonicalSpec': value['canonicalSpec'] == null ? undefined : (mapValues(value['canonicalSpec'], DeploymentJsonMergePatchCanonicalSpecValueToJSON)),
         'buildContexts': value['buildContexts'],
         'forwardedImages': value['forwardedImages'],
-        'buildSecrets': value['buildSecrets'],
         'targetSwarm': value['targetSwarm'],
         'status': value['status'],
         'statusReason': value['statusReason'],
@@ -350,7 +322,6 @@ export function DeploymentJsonMergePatchToJSONTyped(value?: Omit<DeploymentJsonM
         'digest': value['digest'],
         'createdBy': UserToJSON(value['createdBy']),
         'services': value['services'] == null ? undefined : ((value['services'] as Array<any>).map(ServiceToJSON)),
-        'variables': value['variables'] == null ? undefined : ((value['variables'] as Array<any>).map(DeploymentVariableToJSON)),
         'failures': value['failures'] == null ? undefined : ((value['failures'] as Array<any>).map(FailureToJSON)),
     };
 }

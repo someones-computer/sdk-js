@@ -20,13 +20,6 @@ import {
     OAuthIdentityToJSON,
     OAuthIdentityToJSONTyped,
 } from './OAuthIdentity';
-import type { RecoveryCode } from './RecoveryCode';
-import {
-    RecoveryCodeFromJSON,
-    RecoveryCodeFromJSONTyped,
-    RecoveryCodeToJSON,
-    RecoveryCodeToJSONTyped,
-} from './RecoveryCode';
 import type { UserAvatarPhoto } from './UserAvatarPhoto';
 import {
     UserAvatarPhotoFromJSON,
@@ -89,12 +82,6 @@ export interface User {
      * @memberof User
      */
     timezone?: string | null;
-    /**
-     * Hashed password; null for accounts that authenticate only via OAuth or LDAP.
-     * @type {string}
-     * @memberof User
-     */
-    password?: string | null;
     /**
      * The bound entry's distinguished name in LLDAP. Presence means the account
      * is LDAP-authoritative: {@see App\Service\LdapAccountLinker} clears any
@@ -186,20 +173,6 @@ export interface User {
      */
     oauthIdentities?: Array<OAuthIdentity>;
     /**
-     * The TOTP shared secret, **encrypted at rest** ({@see \App\Service\TwoFactor\TotpSecretCipher}),
-     * or null for an account that has not enabled a second factor.
-     * @type {string}
-     * @memberof User
-     */
-    totpSecret?: string | null;
-    /**
-     * Which key wrapped {@see self::$totpSecret}, so a key rotation can re-wrap it
-     * without users re-enrolling ({@see \App\Service\TwoFactor\TotpSecretCipher}).
-     * @type {string}
-     * @memberof User
-     */
-    readonly totpSecretKeyId?: string | null;
-    /**
      * When the person proved the authenticator by entering a live code; null
      * means 2FA is not in force for this account. This is the flag the step-up
      * gate reads ({@see \App\EventSubscriber\TwoFactorStepUpSubscriber}).
@@ -207,12 +180,6 @@ export interface User {
      * @memberof User
      */
     readonly totpConfirmedAt?: Date | null;
-    /**
-     * 
-     * @type {Array<RecoveryCode>}
-     * @memberof User
-     */
-    recoveryCodes?: Array<RecoveryCode>;
     /**
      * The organization this account exists to act for, or null for a person.
      * @type {string}
@@ -384,7 +351,6 @@ export function UserFromJSONTyped(json: any, ignoreDiscriminator: boolean): User
         'theme': json['theme'] == null ? undefined : json['theme'],
         'locale': json['locale'] == null ? undefined : json['locale'],
         'timezone': json['timezone'] == null ? undefined : json['timezone'],
-        'password': json['password'] == null ? undefined : json['password'],
         'ldapDn': json['ldapDn'] == null ? undefined : json['ldapDn'],
         'avatarPhoto': json['avatarPhoto'] == null ? undefined : UserAvatarPhotoFromJSON(json['avatarPhoto']),
         'roles': json['roles'] == null ? undefined : json['roles'],
@@ -399,10 +365,7 @@ export function UserFromJSONTyped(json: any, ignoreDiscriminator: boolean): User
         'tierPinnedBy': json['tierPinnedBy'] == null ? undefined : UserFromJSON(json['tierPinnedBy']),
         'tierPinReason': json['tierPinReason'] == null ? undefined : json['tierPinReason'],
         'oauthIdentities': json['oauthIdentities'] == null ? undefined : ((json['oauthIdentities'] as Array<any>).map(OAuthIdentityFromJSON)),
-        'totpSecret': json['totpSecret'] == null ? undefined : json['totpSecret'],
-        'totpSecretKeyId': json['totpSecretKeyId'] == null ? undefined : json['totpSecretKeyId'],
         'totpConfirmedAt': json['totpConfirmedAt'] == null ? undefined : (new Date(json['totpConfirmedAt'])),
-        'recoveryCodes': json['recoveryCodes'] == null ? undefined : ((json['recoveryCodes'] as Array<any>).map(RecoveryCodeFromJSON)),
         'machineFor': json['machineFor'] == null ? undefined : json['machineFor'],
         'id': json['id'] == null ? undefined : json['id'],
         'deletedAt': json['deletedAt'] == null ? undefined : (new Date(json['deletedAt'])),
@@ -428,7 +391,7 @@ export function UserToJSON(json: any): User {
     return UserToJSONTyped(json, false);
 }
 
-export function UserToJSONTyped(value?: Omit<User, 'disabledAt'|'spamMarkedAt'|'approvedAt'|'emailConfirmedAt'|'creditGrantedAt'|'tierPin'|'tierPinnedAt'|'tierPinReason'|'totpSecretKeyId'|'totpConfirmedAt'|'id'|'deletedAt'|'createdAt'|'updatedAt'|'displayLabel'|'machine'|'ldapManaged'|'avatarPhotoType'|'userIdentifier'|'disabled'|'spam'|'approved'|'emailConfirmed'|'tierPinned'|'totpEnabled'|'deleted'> | null, ignoreDiscriminator: boolean = false): any {
+export function UserToJSONTyped(value?: Omit<User, 'disabledAt'|'spamMarkedAt'|'approvedAt'|'emailConfirmedAt'|'creditGrantedAt'|'tierPin'|'tierPinnedAt'|'tierPinReason'|'totpConfirmedAt'|'id'|'deletedAt'|'createdAt'|'updatedAt'|'displayLabel'|'machine'|'ldapManaged'|'avatarPhotoType'|'userIdentifier'|'disabled'|'spam'|'approved'|'emailConfirmed'|'tierPinned'|'totpEnabled'|'deleted'> | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
@@ -441,15 +404,12 @@ export function UserToJSONTyped(value?: Omit<User, 'disabledAt'|'spamMarkedAt'|'
         'theme': value['theme'],
         'locale': value['locale'],
         'timezone': value['timezone'],
-        'password': value['password'],
         'ldapDn': value['ldapDn'],
         'avatarPhoto': UserAvatarPhotoToJSON(value['avatarPhoto']),
         'roles': value['roles'],
         'spamMarkedBy': UserToJSON(value['spamMarkedBy']),
         'tierPinnedBy': UserToJSON(value['tierPinnedBy']),
         'oauthIdentities': value['oauthIdentities'] == null ? undefined : ((value['oauthIdentities'] as Array<any>).map(OAuthIdentityToJSON)),
-        'totpSecret': value['totpSecret'],
-        'recoveryCodes': value['recoveryCodes'] == null ? undefined : ((value['recoveryCodes'] as Array<any>).map(RecoveryCodeToJSON)),
         'machineFor': value['machineFor'],
         'grantedRoles': value['grantedRoles'],
     };
