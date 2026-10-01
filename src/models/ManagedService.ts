@@ -50,7 +50,7 @@ import {
 } from './ManagedServiceQuotaBytes';
 
 /**
- * List retired managed services that a restore can still bring back. A service stays restorable for 7 days after deletedAt.
+ * List managed services (databases/buckets) the caller can see.
  * @export
  * @interface ManagedService
  */
@@ -257,8 +257,7 @@ export type ManagedServiceStateEnum = typeof ManagedServiceStateEnum[keyof typeo
  */
 export const ManagedServiceSuspensionReasonEnum = {
     CreditExhausted: 'credit_exhausted',
-    OverQuota: 'over_quota',
-    Retired: 'retired'
+    OverQuota: 'over_quota'
 } as const;
 export type ManagedServiceSuspensionReasonEnum = typeof ManagedServiceSuspensionReasonEnum[keyof typeof ManagedServiceSuspensionReasonEnum];
 
