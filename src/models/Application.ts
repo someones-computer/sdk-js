@@ -13,20 +13,6 @@
  */
 
 import { mapValues } from '../runtime';
-import type { Variable } from './Variable';
-import {
-    VariableFromJSON,
-    VariableFromJSONTyped,
-    VariableToJSON,
-    VariableToJSONTyped,
-} from './Variable';
-import type { SealedSecret } from './SealedSecret';
-import {
-    SealedSecretFromJSON,
-    SealedSecretFromJSONTyped,
-    SealedSecretToJSON,
-    SealedSecretToJSONTyped,
-} from './SealedSecret';
 import type { PortAllocation } from './PortAllocation';
 import {
     PortAllocationFromJSON,
@@ -162,12 +148,6 @@ export interface Application {
     deployments?: Array<string>;
     /**
      * 
-     * @type {Array<Variable>}
-     * @memberof Application
-     */
-    variables?: Array<Variable>;
-    /**
-     * 
      * @type {Array<PortAllocation>}
      * @memberof Application
      */
@@ -221,18 +201,6 @@ export interface Application {
      * @memberof Application
      */
     readonly updatedAt?: Date | null;
-    /**
-     * 
-     * @type {SealedSecret}
-     * @memberof Application
-     */
-    buildCredential?: SealedSecret;
-    /**
-     * 
-     * @type {SealedSecret}
-     * @memberof Application
-     */
-    accessGateCredential?: SealedSecret | null;
     /**
      * Point the application at a stored icon, or at none.
      * @type {string}
@@ -333,7 +301,6 @@ export function ApplicationFromJSONTyped(json: any, ignoreDiscriminator: boolean
         'buildBucket': json['buildBucket'] == null ? undefined : json['buildBucket'],
         'buildKeyId': json['buildKeyId'] == null ? undefined : json['buildKeyId'],
         'deployments': json['deployments'] == null ? undefined : json['deployments'],
-        'variables': json['variables'] == null ? undefined : ((json['variables'] as Array<any>).map(VariableFromJSON)),
         'portAllocations': json['portAllocations'] == null ? undefined : ((json['portAllocations'] as Array<any>).map(PortAllocationFromJSON)),
         'poolDomain': json['poolDomain'] == null ? undefined : json['poolDomain'],
         'poolLabel': json['poolLabel'] == null ? undefined : json['poolLabel'],
@@ -341,8 +308,6 @@ export function ApplicationFromJSONTyped(json: any, ignoreDiscriminator: boolean
         'deletedAt': json['deletedAt'] == null ? undefined : (new Date(json['deletedAt'])),
         'createdAt': json['createdAt'] == null ? undefined : (new Date(json['createdAt'])),
         'updatedAt': json['updatedAt'] == null ? undefined : (new Date(json['updatedAt'])),
-        'buildCredential': json['buildCredential'] == null ? undefined : SealedSecretFromJSON(json['buildCredential']),
-        'accessGateCredential': json['accessGateCredential'] == null ? undefined : SealedSecretFromJSON(json['accessGateCredential']),
         'icon': json['icon'] == null ? undefined : json['icon'],
         'operatorChosenIcon': json['operatorChosenIcon'] == null ? undefined : json['operatorChosenIcon'],
         'iconVersion': json['iconVersion'] == null ? undefined : json['iconVersion'],
@@ -373,11 +338,8 @@ export function ApplicationToJSONTyped(value?: Omit<Application, 'firstRunningAt
         'buildBucket': value['buildBucket'],
         'buildKeyId': value['buildKeyId'],
         'deployments': value['deployments'],
-        'variables': value['variables'] == null ? undefined : ((value['variables'] as Array<any>).map(VariableToJSON)),
         'portAllocations': value['portAllocations'] == null ? undefined : ((value['portAllocations'] as Array<any>).map(PortAllocationToJSON)),
         'poolLabel': value['poolLabel'],
-        'buildCredential': SealedSecretToJSON(value['buildCredential']),
-        'accessGateCredential': SealedSecretToJSON(value['accessGateCredential']),
         'icon': value['icon'],
     };
 }

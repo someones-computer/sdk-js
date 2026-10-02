@@ -38,7 +38,6 @@ src/models/DeploymentDeploymentEndpoint.ts
 src/models/DeploymentJsonMergePatch.ts
 src/models/DeploymentJsonMergePatchBuildContextsValueValue.ts
 src/models/DeploymentJsonMergePatchCanonicalSpecValue.ts
-src/models/DeploymentVariable.ts
 src/models/Failure.ts
 src/models/Machine.ts
 src/models/ManagedService.ts
@@ -54,7 +53,6 @@ src/models/OrganizationJsonMergePatch.ts
 src/models/OrganizationSignal.ts
 src/models/PortAllocation.ts
 src/models/ProxmoxInstance.ts
-src/models/SealedSecret.ts
 src/models/Service.ts
 src/models/ServiceBinding.ts
 src/models/ServiceBindingServiceBindingInput.ts
@@ -71,8 +69,6 @@ src/models/Swarm.ts
 src/models/SwarmJsonMergePatch.ts
 src/models/SwarmNode.ts
 src/models/User.ts
-src/models/Variable.ts
-src/models/VariableVersion.ts
 src/models/index.ts
 src/runtime.ts
 tsconfig.json
