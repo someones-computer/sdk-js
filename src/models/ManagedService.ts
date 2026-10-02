@@ -27,6 +27,13 @@ import {
     ManagedServiceLastLoadMillisToJSON,
     ManagedServiceLastLoadMillisToJSONTyped,
 } from './ManagedServiceLastLoadMillis';
+import type { SealedSecret } from './SealedSecret';
+import {
+    SealedSecretFromJSON,
+    SealedSecretFromJSONTyped,
+    SealedSecretToJSON,
+    SealedSecretToJSONTyped,
+} from './SealedSecret';
 import type { ManagedServicePendingLoadMillis } from './ManagedServicePendingLoadMillis';
 import {
     ManagedServicePendingLoadMillisFromJSON,
@@ -50,7 +57,7 @@ import {
 } from './ManagedServiceQuotaBytes';
 
 /**
- * List managed services (databases/buckets) the caller can see.
+ * List retired managed services that a restore can still bring back. A service stays restorable for 7 days after deletedAt.
  * @export
  * @interface ManagedService
  */
@@ -214,6 +221,12 @@ export interface ManagedService {
     readonly catalogueEntry?: string;
     /**
      * 
+     * @type {SealedSecret}
+     * @memberof ManagedService
+     */
+    credential?: SealedSecret;
+    /**
+     * 
      * @type {boolean}
      * @memberof ManagedService
      */
@@ -257,7 +270,8 @@ export type ManagedServiceStateEnum = typeof ManagedServiceStateEnum[keyof typeo
  */
 export const ManagedServiceSuspensionReasonEnum = {
     CreditExhausted: 'credit_exhausted',
-    OverQuota: 'over_quota'
+    OverQuota: 'over_quota',
+    Retired: 'retired'
 } as const;
 export type ManagedServiceSuspensionReasonEnum = typeof ManagedServiceSuspensionReasonEnum[keyof typeof ManagedServiceSuspensionReasonEnum];
 
@@ -303,6 +317,7 @@ export function ManagedServiceFromJSONTyped(json: any, ignoreDiscriminator: bool
         'createdAt': json['createdAt'] == null ? undefined : (new Date(json['createdAt'])),
         'updatedAt': json['updatedAt'] == null ? undefined : (new Date(json['updatedAt'])),
         'catalogueEntry': json['catalogueEntry'] == null ? undefined : json['catalogueEntry'],
+        'credential': json['credential'] == null ? undefined : SealedSecretFromJSON(json['credential']),
         'available': json['available'] == null ? undefined : json['available'],
         'deleted': json['deleted'] == null ? undefined : json['deleted'],
     };
@@ -335,6 +350,7 @@ export function ManagedServiceToJSONTyped(value?: Omit<ManagedService, 'failureR
         'lastLoadMillis': ManagedServiceLastLoadMillisToJSON(value['lastLoadMillis']),
         'pendingLoadMillis': ManagedServicePendingLoadMillisToJSON(value['pendingLoadMillis']),
         'bindings': value['bindings'],
+        'credential': SealedSecretToJSON(value['credential']),
     };
 }
 

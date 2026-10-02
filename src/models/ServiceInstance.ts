@@ -20,6 +20,13 @@ import {
     ServiceInstanceObservedUsageBytesToJSON,
     ServiceInstanceObservedUsageBytesToJSONTyped,
 } from './ServiceInstanceObservedUsageBytes';
+import type { SealedSecret } from './SealedSecret';
+import {
+    SealedSecretFromJSON,
+    SealedSecretFromJSONTyped,
+    SealedSecretToJSON,
+    SealedSecretToJSONTyped,
+} from './SealedSecret';
 import type { ServiceInstanceCapacityBytes } from './ServiceInstanceCapacityBytes';
 import {
     ServiceInstanceCapacityBytesFromJSON,
@@ -146,6 +153,12 @@ export interface ServiceInstance {
      * @memberof ServiceInstance
      */
     readonly inFlightStale?: boolean;
+    /**
+     * 
+     * @type {SealedSecret}
+     * @memberof ServiceInstance
+     */
+    adminCredential?: SealedSecret;
 }
 
 
@@ -210,6 +223,7 @@ export function ServiceInstanceFromJSONTyped(json: any, ignoreDiscriminator: boo
         'catalogueEntry': json['catalogueEntry'] == null ? undefined : json['catalogueEntry'],
         'serving': json['serving'] == null ? undefined : json['serving'],
         'inFlightStale': json['inFlightStale'] == null ? undefined : json['inFlightStale'],
+        'adminCredential': json['adminCredential'] == null ? undefined : SealedSecretFromJSON(json['adminCredential']),
     };
 }
 
@@ -233,6 +247,7 @@ export function ServiceInstanceToJSONTyped(value?: Omit<ServiceInstance, 'failur
         'state': value['state'],
         'capacityBytes': ServiceInstanceCapacityBytesToJSON(value['capacityBytes']),
         'observedUsageBytes': ServiceInstanceObservedUsageBytesToJSON(value['observedUsageBytes']),
+        'adminCredential': SealedSecretToJSON(value['adminCredential']),
     };
 }
 
