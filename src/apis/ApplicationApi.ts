@@ -29,7 +29,7 @@ import {
 } from '../models/index';
 
 export interface ApplicationsCreateRequest {
-    application: Omit<Application, 'firstRunningAt'|'iconKey'|'iconSource'|'poolDomain'|'id'|'deletedAt'|'createdAt'|'updatedAt'|'operatorChosenIcon'|'iconVersion'|'deleted'>;
+    application: Omit<Application, 'firstRunningAt'|'iconKey'|'iconSource'|'poolDomain'|'poolShortNameDeployment'|'poolShortNameService'|'id'|'deletedAt'|'createdAt'|'updatedAt'|'operatorChosenIcon'|'iconVersion'|'deleted'>;
 }
 
 export interface ApplicationsDeleteRequest {
@@ -52,7 +52,7 @@ export interface ApplicationsListRequest {
 
 export interface ApplicationsUpdateRequest {
     id: string;
-    applicationJsonMergePatch: Omit<ApplicationJsonMergePatch, 'firstRunningAt'|'iconKey'|'iconSource'|'poolDomain'|'id'|'deletedAt'|'createdAt'|'updatedAt'|'operatorChosenIcon'|'iconVersion'|'deleted'>;
+    applicationJsonMergePatch: Omit<ApplicationJsonMergePatch, 'firstRunningAt'|'iconKey'|'iconSource'|'poolDomain'|'poolShortNameDeployment'|'poolShortNameService'|'id'|'deletedAt'|'createdAt'|'updatedAt'|'operatorChosenIcon'|'iconVersion'|'deleted'>;
 }
 
 /**

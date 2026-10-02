@@ -178,6 +178,25 @@ export interface ApplicationJsonMergePatch {
      */
     poolLabel?: string | null;
     /**
+     * Whether `{label}.{poolDomain}`, with no service or deployment level in
+     * front, answers for one deployment (#2030). See {@see poolShortHostname()}.
+     * @type {boolean}
+     * @memberof ApplicationJsonMergePatch
+     */
+    poolShortName?: boolean;
+    /**
+     * The deployment the short name answers for. Null is the unnamed deployment.
+     * @type {string}
+     * @memberof ApplicationJsonMergePatch
+     */
+    readonly poolShortNameDeployment?: string | null;
+    /**
+     * The compose service it routes to. Null is the only HTTP service.
+     * @type {string}
+     * @memberof ApplicationJsonMergePatch
+     */
+    readonly poolShortNameService?: string | null;
+    /**
      * 
      * @type {string}
      * @memberof ApplicationJsonMergePatch
@@ -304,6 +323,9 @@ export function ApplicationJsonMergePatchFromJSONTyped(json: any, ignoreDiscrimi
         'portAllocations': json['portAllocations'] == null ? undefined : ((json['portAllocations'] as Array<any>).map(PortAllocationFromJSON)),
         'poolDomain': json['poolDomain'] == null ? undefined : json['poolDomain'],
         'poolLabel': json['poolLabel'] == null ? undefined : json['poolLabel'],
+        'poolShortName': json['poolShortName'] == null ? undefined : json['poolShortName'],
+        'poolShortNameDeployment': json['poolShortNameDeployment'] == null ? undefined : json['poolShortNameDeployment'],
+        'poolShortNameService': json['poolShortNameService'] == null ? undefined : json['poolShortNameService'],
         'id': json['id'] == null ? undefined : json['id'],
         'deletedAt': json['deletedAt'] == null ? undefined : (new Date(json['deletedAt'])),
         'createdAt': json['createdAt'] == null ? undefined : (new Date(json['createdAt'])),
@@ -319,7 +341,7 @@ export function ApplicationJsonMergePatchToJSON(json: any): ApplicationJsonMerge
     return ApplicationJsonMergePatchToJSONTyped(json, false);
 }
 
-export function ApplicationJsonMergePatchToJSONTyped(value?: Omit<ApplicationJsonMergePatch, 'firstRunningAt'|'iconKey'|'iconSource'|'poolDomain'|'id'|'deletedAt'|'createdAt'|'updatedAt'|'operatorChosenIcon'|'iconVersion'|'deleted'> | null, ignoreDiscriminator: boolean = false): any {
+export function ApplicationJsonMergePatchToJSONTyped(value?: Omit<ApplicationJsonMergePatch, 'firstRunningAt'|'iconKey'|'iconSource'|'poolDomain'|'poolShortNameDeployment'|'poolShortNameService'|'id'|'deletedAt'|'createdAt'|'updatedAt'|'operatorChosenIcon'|'iconVersion'|'deleted'> | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
@@ -340,6 +362,7 @@ export function ApplicationJsonMergePatchToJSONTyped(value?: Omit<ApplicationJso
         'deployments': value['deployments'],
         'portAllocations': value['portAllocations'] == null ? undefined : ((value['portAllocations'] as Array<any>).map(PortAllocationToJSON)),
         'poolLabel': value['poolLabel'],
+        'poolShortName': value['poolShortName'],
         'icon': value['icon'],
     };
 }
