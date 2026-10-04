@@ -13,6 +13,13 @@
  */
 
 import { mapValues } from '../runtime';
+import type { ManagedServiceEngine } from './ManagedServiceEngine';
+import {
+    ManagedServiceEngineFromJSON,
+    ManagedServiceEngineFromJSONTyped,
+    ManagedServiceEngineToJSON,
+    ManagedServiceEngineToJSONTyped,
+} from './ManagedServiceEngine';
 import type { ManagedServiceUsageBytes } from './ManagedServiceUsageBytes';
 import {
     ManagedServiceUsageBytesFromJSON,
@@ -34,13 +41,6 @@ import {
     ManagedServicePendingLoadMillisToJSON,
     ManagedServicePendingLoadMillisToJSONTyped,
 } from './ManagedServicePendingLoadMillis';
-import type { ServiceInstance } from './ServiceInstance';
-import {
-    ServiceInstanceFromJSON,
-    ServiceInstanceFromJSONTyped,
-    ServiceInstanceToJSON,
-    ServiceInstanceToJSONTyped,
-} from './ServiceInstance';
 import type { ManagedServiceQuotaBytes } from './ManagedServiceQuotaBytes';
 import {
     ManagedServiceQuotaBytesFromJSON,
@@ -79,12 +79,6 @@ export interface ManagedService {
      * @memberof ManagedService
      */
     majorVersion?: string;
-    /**
-     * 
-     * @type {ServiceInstance}
-     * @memberof ManagedService
-     */
-    instance?: ServiceInstance | null;
     /**
      * What the object is actually called inside the engine — `acme_hearth_db` for a
      * database, `acme-hearth-media` for a bucket.
@@ -214,6 +208,12 @@ export interface ManagedService {
     readonly catalogueEntry?: string;
     /**
      * 
+     * @type {ManagedServiceEngine}
+     * @memberof ManagedService
+     */
+    instance?: ManagedServiceEngine | null;
+    /**
+     * 
      * @type {boolean}
      * @memberof ManagedService
      */
@@ -284,7 +284,6 @@ export function ManagedServiceFromJSONTyped(json: any, ignoreDiscriminator: bool
         'slug': json['slug'] == null ? undefined : json['slug'],
         'kind': json['kind'] == null ? undefined : json['kind'],
         'majorVersion': json['majorVersion'] == null ? undefined : json['majorVersion'],
-        'instance': json['instance'] == null ? undefined : ServiceInstanceFromJSON(json['instance']),
         'backingName': json['backingName'] == null ? undefined : json['backingName'],
         'externalKeyId': json['externalKeyId'] == null ? undefined : json['externalKeyId'],
         'quotaBytes': json['quotaBytes'] == null ? undefined : ManagedServiceQuotaBytesFromJSON(json['quotaBytes']),
@@ -304,6 +303,7 @@ export function ManagedServiceFromJSONTyped(json: any, ignoreDiscriminator: bool
         'createdAt': json['createdAt'] == null ? undefined : (new Date(json['createdAt'])),
         'updatedAt': json['updatedAt'] == null ? undefined : (new Date(json['updatedAt'])),
         'catalogueEntry': json['catalogueEntry'] == null ? undefined : json['catalogueEntry'],
+        'instance': json['instance'] == null ? undefined : ManagedServiceEngineFromJSON(json['instance']),
         'available': json['available'] == null ? undefined : json['available'],
         'deleted': json['deleted'] == null ? undefined : json['deleted'],
     };
@@ -324,7 +324,6 @@ export function ManagedServiceToJSONTyped(value?: Omit<ManagedService, 'failureR
         'slug': value['slug'],
         'kind': value['kind'],
         'majorVersion': value['majorVersion'],
-        'instance': ServiceInstanceToJSON(value['instance']),
         'backingName': value['backingName'],
         'externalKeyId': value['externalKeyId'],
         'quotaBytes': ManagedServiceQuotaBytesToJSON(value['quotaBytes']),
@@ -336,6 +335,7 @@ export function ManagedServiceToJSONTyped(value?: Omit<ManagedService, 'failureR
         'lastLoadMillis': ManagedServiceLastLoadMillisToJSON(value['lastLoadMillis']),
         'pendingLoadMillis': ManagedServicePendingLoadMillisToJSON(value['pendingLoadMillis']),
         'bindings': value['bindings'],
+        'instance': ManagedServiceEngineToJSON(value['instance']),
     };
 }
 
