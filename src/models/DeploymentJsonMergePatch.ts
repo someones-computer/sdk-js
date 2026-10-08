@@ -20,13 +20,6 @@ import {
     DeploymentJsonMergePatchBuildContextsValueValueToJSON,
     DeploymentJsonMergePatchBuildContextsValueValueToJSONTyped,
 } from './DeploymentJsonMergePatchBuildContextsValueValue';
-import type { DeploymentJsonMergePatchCanonicalSpecValue } from './DeploymentJsonMergePatchCanonicalSpecValue';
-import {
-    DeploymentJsonMergePatchCanonicalSpecValueFromJSON,
-    DeploymentJsonMergePatchCanonicalSpecValueFromJSONTyped,
-    DeploymentJsonMergePatchCanonicalSpecValueToJSON,
-    DeploymentJsonMergePatchCanonicalSpecValueToJSONTyped,
-} from './DeploymentJsonMergePatchCanonicalSpecValue';
 import type { User } from './User';
 import {
     UserFromJSON,
@@ -82,14 +75,11 @@ export interface DeploymentJsonMergePatch {
      */
     rawCompose?: string;
     /**
-     * Parsed, supported-subset-only canonical representation — what
-     * {@see \App\Service\Compose\ComposeParser::parse()} produced. Both keys are
-     * optional here and not there: a row is whatever was written when it was
-     * written, so a revision that predates a key still has to load.
-     * @type {{ [key: string]: DeploymentJsonMergePatchCanonicalSpecValue; }}
+     * Parsed, supported-subset-only canonical representation of the compose file, as the parser produced it. Keys are `services` and `warnings`. A revision that predates a key omits it.
+     * @type {{ [key: string]: any; }}
      * @memberof DeploymentJsonMergePatch
      */
-    canonicalSpec?: { [key: string]: DeploymentJsonMergePatchCanonicalSpecValue; };
+    canonicalSpec?: { [key: string]: any; };
     /**
      * Build contexts uploaded with this revision, keyed by compose service name:
      * `{ contextSha256, dockerfile, dockerfileContent?, additionalContexts?, image?, log? }`. The
@@ -276,7 +266,7 @@ export function DeploymentJsonMergePatchFromJSONTyped(json: any, ignoreDiscrimin
         'sequence': json['sequence'] == null ? undefined : json['sequence'],
         'name': json['name'] == null ? undefined : json['name'],
         'rawCompose': json['rawCompose'] == null ? undefined : json['rawCompose'],
-        'canonicalSpec': json['canonicalSpec'] == null ? undefined : (mapValues(json['canonicalSpec'], DeploymentJsonMergePatchCanonicalSpecValueFromJSON)),
+        'canonicalSpec': json['canonicalSpec'] == null ? undefined : json['canonicalSpec'],
         'buildContexts': json['buildContexts'] == null ? undefined : json['buildContexts'],
         'forwardedImages': json['forwardedImages'] == null ? undefined : json['forwardedImages'],
         'targetSwarm': json['targetSwarm'] == null ? undefined : json['targetSwarm'],
@@ -313,7 +303,7 @@ export function DeploymentJsonMergePatchToJSONTyped(value?: Omit<DeploymentJsonM
         'sequence': value['sequence'],
         'name': value['name'],
         'rawCompose': value['rawCompose'],
-        'canonicalSpec': value['canonicalSpec'] == null ? undefined : (mapValues(value['canonicalSpec'], DeploymentJsonMergePatchCanonicalSpecValueToJSON)),
+        'canonicalSpec': value['canonicalSpec'],
         'buildContexts': value['buildContexts'],
         'forwardedImages': value['forwardedImages'],
         'targetSwarm': value['targetSwarm'],

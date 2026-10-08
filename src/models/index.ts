@@ -23,7 +23,6 @@ export * from './DeploymentBundleUploadDeclareOutput';
 export * from './DeploymentDeploymentEndpoint';
 export * from './DeploymentJsonMergePatch';
 export * from './DeploymentJsonMergePatchBuildContextsValueValue';
-export * from './DeploymentJsonMergePatchCanonicalSpecValue';
 export * from './Failure';
 export * from './Machine';
 export * from './ManagedService';
