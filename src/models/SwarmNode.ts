@@ -12,7 +12,7 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
+import { mapValues, parseDate, parseDateTime, serializeDate, serializeDateTime } from '../runtime';
 /**
  * 
  * @export
@@ -21,50 +21,34 @@ import { mapValues } from '../runtime';
 export interface SwarmNode {
     /**
      * 
-     * @type {string}
-     * @memberof SwarmNode
      */
     swarm?: string;
     /**
      * The swarm-assigned node id.
-     * @type {string}
-     * @memberof SwarmNode
      */
     nodeId?: string;
     /**
      * 
-     * @type {string}
-     * @memberof SwarmNode
      */
     hostname?: string | null;
     /**
      * 
-     * @type {string}
-     * @memberof SwarmNode
      */
     state?: string | null;
     /**
      * This node's share of the cluster's capacity, as the reconciler read it.
-     * @type {{ [key: string]: string | null; }}
-     * @memberof SwarmNode
      */
-    capacity?: { [key: string]: string | null; };
+    capacity?: { [key: string]: string | null; } | null;
     /**
      * 
-     * @type {string}
-     * @memberof SwarmNode
      */
     readonly id?: string;
     /**
      * 
-     * @type {Date}
-     * @memberof SwarmNode
      */
     readonly createdAt?: Date;
     /**
      * 
-     * @type {Date}
-     * @memberof SwarmNode
      */
     readonly updatedAt?: Date | null;
 }
@@ -88,12 +72,12 @@ export function SwarmNodeFromJSONTyped(json: any, ignoreDiscriminator: boolean):
         
         'swarm': json['swarm'] == null ? undefined : json['swarm'],
         'nodeId': json['nodeId'] == null ? undefined : json['nodeId'],
-        'hostname': json['hostname'] == null ? undefined : json['hostname'],
-        'state': json['state'] == null ? undefined : json['state'],
-        'capacity': json['capacity'] == null ? undefined : json['capacity'],
+        'hostname': json['hostname'] === undefined ? undefined : json['hostname'] === null ? null : json['hostname'],
+        'state': json['state'] === undefined ? undefined : json['state'] === null ? null : json['state'],
+        'capacity': json['capacity'] === undefined ? undefined : json['capacity'] === null ? null : json['capacity'],
         'id': json['id'] == null ? undefined : json['id'],
-        'createdAt': json['createdAt'] == null ? undefined : (new Date(json['createdAt'])),
-        'updatedAt': json['updatedAt'] == null ? undefined : (new Date(json['updatedAt'])),
+        'createdAt': json['createdAt'] == null ? undefined : (parseDateTime(json['createdAt'])),
+        'updatedAt': json['updatedAt'] === undefined ? undefined : json['updatedAt'] === null ? null : (parseDateTime(json['updatedAt'])),
     };
 }
 

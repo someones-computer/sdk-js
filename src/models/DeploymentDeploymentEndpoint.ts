@@ -21,56 +21,38 @@ import { mapValues } from '../runtime';
 export interface DeploymentDeploymentEndpoint {
     /**
      * 
-     * @type {string}
-     * @memberof DeploymentDeploymentEndpoint
      */
     service?: string;
     /**
      * 
-     * @type {string}
-     * @memberof DeploymentDeploymentEndpoint
      */
     protocol?: string;
     /**
      * 
-     * @type {string}
-     * @memberof DeploymentDeploymentEndpoint
      */
     host?: string | null;
     /**
      * 
-     * @type {number}
-     * @memberof DeploymentDeploymentEndpoint
      */
     port?: number | null;
     /**
      * 
-     * @type {number}
-     * @memberof DeploymentDeploymentEndpoint
      */
     targetPort?: number;
     /**
      * 
-     * @type {boolean}
-     * @memberof DeploymentDeploymentEndpoint
      */
     assigned?: boolean;
     /**
      * 
-     * @type {boolean}
-     * @memberof DeploymentDeploymentEndpoint
      */
     edgeRouted?: boolean;
     /**
      * 
-     * @type {string}
-     * @memberof DeploymentDeploymentEndpoint
      */
     url?: string | null;
     /**
      * 
-     * @type {string}
-     * @memberof DeploymentDeploymentEndpoint
      */
     hostUnknownReason?: string | null;
 }
@@ -94,13 +76,13 @@ export function DeploymentDeploymentEndpointFromJSONTyped(json: any, ignoreDiscr
         
         'service': json['service'] == null ? undefined : json['service'],
         'protocol': json['protocol'] == null ? undefined : json['protocol'],
-        'host': json['host'] == null ? undefined : json['host'],
-        'port': json['port'] == null ? undefined : json['port'],
+        'host': json['host'] === undefined ? undefined : json['host'] === null ? null : json['host'],
+        'port': json['port'] === undefined ? undefined : json['port'] === null ? null : json['port'],
         'targetPort': json['targetPort'] == null ? undefined : json['targetPort'],
         'assigned': json['assigned'] == null ? undefined : json['assigned'],
         'edgeRouted': json['edgeRouted'] == null ? undefined : json['edgeRouted'],
-        'url': json['url'] == null ? undefined : json['url'],
-        'hostUnknownReason': json['hostUnknownReason'] == null ? undefined : json['hostUnknownReason'],
+        'url': json['url'] === undefined ? undefined : json['url'] === null ? null : json['url'],
+        'hostUnknownReason': json['hostUnknownReason'] === undefined ? undefined : json['hostUnknownReason'] === null ? null : json['hostUnknownReason'],
     };
 }
 

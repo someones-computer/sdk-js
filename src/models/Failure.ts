@@ -12,7 +12,7 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
+import { mapValues, parseDate, parseDateTime, serializeDate, serializeDateTime } from '../runtime';
 import type { User } from './User';
 import {
     UserFromJSON,
@@ -38,46 +38,35 @@ export interface Failure {
      * Deleting a revision deletes its failures with it. They are an account of
      * what that revision did, and outliving the thing they describe would leave
      * a page that can only render half of itself.
-     * @type {string}
-     * @memberof Failure
      */
     deployment?: string | null;
     /**
-     * 
-     * @type {ProxmoxInstance}
-     * @memberof Failure
+     * The platform-infrastructure counterpart to {@see $deployment}, set only
+     * for a failure that has no revision behind it at all, such as a template
+     * build. There's no tenant on the other end of this one: it's reachable
+     * only from `/admin`, never from a member's own pages.
      */
     proxmoxInstance?: ProxmoxInstance | null;
     /**
      * 
-     * @type {string}
-     * @memberof Failure
      */
     phase?: FailurePhaseEnum;
     /**
      * Verbatim, as it was written to `Deployment::$statusReason` at the time.
-     * @type {string}
-     * @memberof Failure
      */
     reason?: string;
     /**
      * The short handle this failure is quoted by — see {@see FailureReference}.
-     * @type {string}
-     * @memberof Failure
      */
     readonly reference?: string;
     /**
      * Which compose service, where the phase happens per-service. Null for the
      * phases that fail the revision as a whole (placement, stranded) and for a
      * deploy that never got as far as naming one.
-     * @type {string}
-     * @memberof Failure
      */
     service?: string | null;
     /**
      * Object key of the build log as it stood, or null when there was none.
-     * @type {string}
-     * @memberof Failure
      */
     buildLogKey?: string | null;
     /**
@@ -87,57 +76,39 @@ export interface Failure {
      * revision to the exact {@see \App\Entity\ImageScan} an operator's Clear
      * or Uphold acts on, without re-deriving it from a pinned image
      * reference or a reason string meant for a person to read.
-     * @type {string}
-     * @memberof Failure
      */
     imageDigest?: string | null;
     /**
      * 
-     * @type {Date}
-     * @memberof Failure
      */
     readonly sharedAt?: Date | null;
     /**
      * When the capability above stops working, 24 hours after it was minted.
-     * @type {Date}
-     * @memberof Failure
      */
     readonly shareExpiresAt?: Date | null;
     /**
      * 
-     * @type {User}
-     * @memberof Failure
      */
-    sharedBy?: User | null;
+    readonly sharedBy?: User | null;
     /**
      * 
-     * @type {string}
-     * @memberof Failure
      */
     readonly id?: string;
     /**
      * 
-     * @type {Date}
-     * @memberof Failure
      */
     readonly createdAt?: Date;
     /**
      * 
-     * @type {Date}
-     * @memberof Failure
      */
     readonly updatedAt?: Date | null;
     /**
      * The reference as it is written for a reader: `F-24GT1BQ7`.
-     * @type {string}
-     * @memberof Failure
      */
     readonly displayLabel?: string;
     /**
      * Whether an unauthenticated request may read this: a token was minted and
      * it has not yet passed its expiry.
-     * @type {boolean}
-     * @memberof Failure
      */
     readonly shared?: boolean;
 }
@@ -154,7 +125,7 @@ export const FailurePhaseEnum = {
     Runtime: 'runtime',
     Scan: 'scan',
     Stranded: 'stranded',
-    Infrastructure: 'infrastructure'
+    Infrastructure: 'infrastructure',
 } as const;
 export type FailurePhaseEnum = typeof FailurePhaseEnum[keyof typeof FailurePhaseEnum];
 
@@ -176,20 +147,20 @@ export function FailureFromJSONTyped(json: any, ignoreDiscriminator: boolean): F
     }
     return {
         
-        'deployment': json['deployment'] == null ? undefined : json['deployment'],
-        'proxmoxInstance': json['proxmoxInstance'] == null ? undefined : ProxmoxInstanceFromJSON(json['proxmoxInstance']),
+        'deployment': json['deployment'] === undefined ? undefined : json['deployment'] === null ? null : json['deployment'],
+        'proxmoxInstance': json['proxmoxInstance'] === undefined ? undefined : json['proxmoxInstance'] === null ? null : ProxmoxInstanceFromJSON(json['proxmoxInstance']),
         'phase': json['phase'] == null ? undefined : json['phase'],
         'reason': json['reason'] == null ? undefined : json['reason'],
         'reference': json['reference'] == null ? undefined : json['reference'],
-        'service': json['service'] == null ? undefined : json['service'],
-        'buildLogKey': json['buildLogKey'] == null ? undefined : json['buildLogKey'],
-        'imageDigest': json['imageDigest'] == null ? undefined : json['imageDigest'],
-        'sharedAt': json['sharedAt'] == null ? undefined : (new Date(json['sharedAt'])),
-        'shareExpiresAt': json['shareExpiresAt'] == null ? undefined : (new Date(json['shareExpiresAt'])),
-        'sharedBy': json['sharedBy'] == null ? undefined : UserFromJSON(json['sharedBy']),
+        'service': json['service'] === undefined ? undefined : json['service'] === null ? null : json['service'],
+        'buildLogKey': json['buildLogKey'] === undefined ? undefined : json['buildLogKey'] === null ? null : json['buildLogKey'],
+        'imageDigest': json['imageDigest'] === undefined ? undefined : json['imageDigest'] === null ? null : json['imageDigest'],
+        'sharedAt': json['sharedAt'] === undefined ? undefined : json['sharedAt'] === null ? null : (parseDateTime(json['sharedAt'])),
+        'shareExpiresAt': json['shareExpiresAt'] === undefined ? undefined : json['shareExpiresAt'] === null ? null : (parseDateTime(json['shareExpiresAt'])),
+        'sharedBy': json['sharedBy'] === undefined ? undefined : json['sharedBy'] === null ? null : UserFromJSON(json['sharedBy']),
         'id': json['id'] == null ? undefined : json['id'],
-        'createdAt': json['createdAt'] == null ? undefined : (new Date(json['createdAt'])),
-        'updatedAt': json['updatedAt'] == null ? undefined : (new Date(json['updatedAt'])),
+        'createdAt': json['createdAt'] == null ? undefined : (parseDateTime(json['createdAt'])),
+        'updatedAt': json['updatedAt'] === undefined ? undefined : json['updatedAt'] === null ? null : (parseDateTime(json['updatedAt'])),
         'displayLabel': json['displayLabel'] == null ? undefined : json['displayLabel'],
         'shared': json['shared'] == null ? undefined : json['shared'],
     };
@@ -199,7 +170,7 @@ export function FailureToJSON(json: any): Failure {
     return FailureToJSONTyped(json, false);
 }
 
-export function FailureToJSONTyped(value?: Omit<Failure, 'reference'|'sharedAt'|'shareExpiresAt'|'id'|'createdAt'|'updatedAt'|'displayLabel'|'shared'> | null, ignoreDiscriminator: boolean = false): any {
+export function FailureToJSONTyped(value?: Omit<Failure, 'reference'|'sharedAt'|'shareExpiresAt'|'sharedBy'|'id'|'createdAt'|'updatedAt'|'displayLabel'|'shared'> | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
@@ -213,7 +184,6 @@ export function FailureToJSONTyped(value?: Omit<Failure, 'reference'|'sharedAt'|
         'service': value['service'],
         'buildLogKey': value['buildLogKey'],
         'imageDigest': value['imageDigest'],
-        'sharedBy': UserToJSON(value['sharedBy']),
     };
 }
 

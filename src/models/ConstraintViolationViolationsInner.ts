@@ -21,32 +21,22 @@ import { mapValues } from '../runtime';
 export interface ConstraintViolationViolationsInner {
     /**
      * The property path of the violation
-     * @type {string}
-     * @memberof ConstraintViolationViolationsInner
      */
     propertyPath: string;
     /**
      * The message associated with the violation
-     * @type {string}
-     * @memberof ConstraintViolationViolationsInner
      */
     message: string;
     /**
      * The code of the violation
-     * @type {string}
-     * @memberof ConstraintViolationViolationsInner
      */
     code?: string;
     /**
      * An extra hint to understand the violation
-     * @type {string}
-     * @memberof ConstraintViolationViolationsInner
      */
     hint?: string;
     /**
      * The serialized payload of the violation
-     * @type {{ [key: string]: any; }}
-     * @memberof ConstraintViolationViolationsInner
      */
     payload?: { [key: string]: any; };
 }

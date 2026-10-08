@@ -12,7 +12,7 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
+import { mapValues, parseDate, parseDateTime, serializeDate, serializeDateTime } from '../runtime';
 import type { OrganizationSignal } from './OrganizationSignal';
 import {
     OrganizationSignalFromJSON,
@@ -49,15 +49,12 @@ import {
  */
 export interface OrganizationJsonMergePatch {
     /**
-     * 
-     * @type {User}
-     * @memberof OrganizationJsonMergePatch
+     * The principal an {@see OrganizationToken} authenticates as: a machine
+     * account this platform owns, not a person.
      */
     machineAccount?: User | null;
     /**
      * 
-     * @type {string}
-     * @memberof OrganizationJsonMergePatch
      */
     name?: string;
     /**
@@ -65,14 +62,10 @@ export interface OrganizationJsonMergePatch {
      * constraint stops two holding strings that fold to the same **stack name**,
      * which the database has no way to express (#860). Both are needed: the
      * column guards the identifier, the constraint guards what is derived from it.
-     * @type {string}
-     * @memberof OrganizationJsonMergePatch
      */
     slug?: string;
     /**
      * The skin this organization's members see, or null to take the instance's.
-     * @type {string}
-     * @memberof OrganizationJsonMergePatch
      */
     theme?: OrganizationJsonMergePatchThemeEnum | null;
     /**
@@ -85,26 +78,18 @@ export interface OrganizationJsonMergePatch {
      * individually pinned `Verified` still lifts the org the same way a
      * `Trusted` member always has — this pin is for granting it to the org
      * directly, without needing a person to hang it on.
-     * @type {string}
-     * @memberof OrganizationJsonMergePatch
      */
     readonly tierPin?: OrganizationJsonMergePatchTierPinEnum | null;
     /**
      * 
-     * @type {Date}
-     * @memberof OrganizationJsonMergePatch
      */
     readonly tierPinnedAt?: Date | null;
     /**
-     * 
-     * @type {User}
-     * @memberof OrganizationJsonMergePatch
+     * Nullable and SET NULL: somebody can delete an operator, and the pin outlives them.
      */
-    tierPinnedBy?: User | null;
+    readonly tierPinnedBy?: User | null;
     /**
      * 
-     * @type {string}
-     * @memberof OrganizationJsonMergePatch
      */
     readonly tierPinReason?: string | null;
     /**
@@ -115,8 +100,6 @@ export interface OrganizationJsonMergePatch {
      * burn easing off — which is what makes "warn once, re-arm on recovery"
      * a fact this column can answer rather than something re-derived from
      * the notification table on every tick.
-     * @type {Date}
-     * @memberof OrganizationJsonMergePatch
      */
     readonly lowBalanceWarnedAt?: Date | null;
     /**
@@ -124,8 +107,6 @@ export interface OrganizationJsonMergePatch {
      * organization protects their account with a second factor; null means it is
      * optional. A reversible policy toggle, stamped like {@see User::$disabledAt}
      * rather than a verdict, so no "who set it" attribution.
-     * @type {Date}
-     * @memberof OrganizationJsonMergePatch
      */
     readonly twoFactorRequiredAt?: Date | null;
     /**
@@ -134,80 +115,54 @@ export interface OrganizationJsonMergePatch {
      * them. Null means "the platform default"
      * ({@see \App\Service\ApiAccessLogRetention::DEFAULT_DAYS}) rather than a
      * fixed number baked into every organization row the day this shipped.
-     * @type {number}
-     * @memberof OrganizationJsonMergePatch
      */
     readonly apiAccessLogRetentionDays?: number | null;
     /**
      * 
-     * @type {Array<Membership>}
-     * @memberof OrganizationJsonMergePatch
      */
-    memberships?: Array<Membership>;
+    readonly memberships?: Array<Membership>;
     /**
      * 
-     * @type {Array<string>}
-     * @memberof OrganizationJsonMergePatch
      */
-    applications?: Array<string>;
+    readonly applications?: Array<string>;
     /**
      * BYO swarms owned by this organization.
-     * @type {Array<string>}
-     * @memberof OrganizationJsonMergePatch
      */
-    swarms?: Array<string>;
+    readonly swarms?: Array<string>;
     /**
      * Machines self-service-provisioned for this organization.
-     * @type {Array<Machine>}
-     * @memberof OrganizationJsonMergePatch
      */
-    machines?: Array<Machine>;
+    readonly machines?: Array<Machine>;
     /**
      * The append-only credit ledger.
-     * @type {Array<string>}
-     * @memberof OrganizationJsonMergePatch
      */
-    creditTransactions?: Array<string>;
+    readonly creditTransactions?: Array<string>;
     /**
      * What this organization's own compose files have told the platform about it (#818).
-     * @type {Array<OrganizationSignal>}
-     * @memberof OrganizationJsonMergePatch
      */
-    signals?: Array<OrganizationSignal>;
+    readonly signals?: Array<OrganizationSignal>;
     /**
      * 
-     * @type {string}
-     * @memberof OrganizationJsonMergePatch
      */
     readonly id?: string;
     /**
      * 
-     * @type {Date}
-     * @memberof OrganizationJsonMergePatch
      */
     readonly deletedAt?: Date | null;
     /**
      * 
-     * @type {Date}
-     * @memberof OrganizationJsonMergePatch
      */
     readonly createdAt?: Date;
     /**
      * 
-     * @type {Date}
-     * @memberof OrganizationJsonMergePatch
      */
     readonly updatedAt?: Date | null;
     /**
      * 
-     * @type {boolean}
-     * @memberof OrganizationJsonMergePatch
      */
     readonly tierPinned?: boolean;
     /**
      * 
-     * @type {boolean}
-     * @memberof OrganizationJsonMergePatch
      */
     readonly deleted?: boolean;
 }
@@ -221,7 +176,7 @@ export const OrganizationJsonMergePatchThemeEnum = {
     Corporate: 'corporate',
     Dull: 'dull',
     Plain: 'plain',
-    RedLabel: 'red-label'
+    RedLabel: 'red-label',
 } as const;
 export type OrganizationJsonMergePatchThemeEnum = typeof OrganizationJsonMergePatchThemeEnum[keyof typeof OrganizationJsonMergePatchThemeEnum];
 
@@ -231,7 +186,7 @@ export type OrganizationJsonMergePatchThemeEnum = typeof OrganizationJsonMergePa
 export const OrganizationJsonMergePatchTierPinEnum = {
     Untrusted: 'untrusted',
     Trusted: 'trusted',
-    Verified: 'verified'
+    Verified: 'verified',
 } as const;
 export type OrganizationJsonMergePatchTierPinEnum = typeof OrganizationJsonMergePatchTierPinEnum[keyof typeof OrganizationJsonMergePatchTierPinEnum];
 
@@ -253,17 +208,17 @@ export function OrganizationJsonMergePatchFromJSONTyped(json: any, ignoreDiscrim
     }
     return {
         
-        'machineAccount': json['machineAccount'] == null ? undefined : UserFromJSON(json['machineAccount']),
+        'machineAccount': json['machineAccount'] === undefined ? undefined : json['machineAccount'] === null ? null : UserFromJSON(json['machineAccount']),
         'name': json['name'] == null ? undefined : json['name'],
         'slug': json['slug'] == null ? undefined : json['slug'],
-        'theme': json['theme'] == null ? undefined : json['theme'],
-        'tierPin': json['tierPin'] == null ? undefined : json['tierPin'],
-        'tierPinnedAt': json['tierPinnedAt'] == null ? undefined : (new Date(json['tierPinnedAt'])),
-        'tierPinnedBy': json['tierPinnedBy'] == null ? undefined : UserFromJSON(json['tierPinnedBy']),
-        'tierPinReason': json['tierPinReason'] == null ? undefined : json['tierPinReason'],
-        'lowBalanceWarnedAt': json['lowBalanceWarnedAt'] == null ? undefined : (new Date(json['lowBalanceWarnedAt'])),
-        'twoFactorRequiredAt': json['twoFactorRequiredAt'] == null ? undefined : (new Date(json['twoFactorRequiredAt'])),
-        'apiAccessLogRetentionDays': json['apiAccessLogRetentionDays'] == null ? undefined : json['apiAccessLogRetentionDays'],
+        'theme': json['theme'] === undefined ? undefined : json['theme'] === null ? null : json['theme'],
+        'tierPin': json['tierPin'] === undefined ? undefined : json['tierPin'] === null ? null : json['tierPin'],
+        'tierPinnedAt': json['tierPinnedAt'] === undefined ? undefined : json['tierPinnedAt'] === null ? null : (parseDateTime(json['tierPinnedAt'])),
+        'tierPinnedBy': json['tierPinnedBy'] === undefined ? undefined : json['tierPinnedBy'] === null ? null : UserFromJSON(json['tierPinnedBy']),
+        'tierPinReason': json['tierPinReason'] === undefined ? undefined : json['tierPinReason'] === null ? null : json['tierPinReason'],
+        'lowBalanceWarnedAt': json['lowBalanceWarnedAt'] === undefined ? undefined : json['lowBalanceWarnedAt'] === null ? null : (parseDateTime(json['lowBalanceWarnedAt'])),
+        'twoFactorRequiredAt': json['twoFactorRequiredAt'] === undefined ? undefined : json['twoFactorRequiredAt'] === null ? null : (parseDateTime(json['twoFactorRequiredAt'])),
+        'apiAccessLogRetentionDays': json['apiAccessLogRetentionDays'] === undefined ? undefined : json['apiAccessLogRetentionDays'] === null ? null : json['apiAccessLogRetentionDays'],
         'memberships': json['memberships'] == null ? undefined : ((json['memberships'] as Array<any>).map(MembershipFromJSON)),
         'applications': json['applications'] == null ? undefined : json['applications'],
         'swarms': json['swarms'] == null ? undefined : json['swarms'],
@@ -271,9 +226,9 @@ export function OrganizationJsonMergePatchFromJSONTyped(json: any, ignoreDiscrim
         'creditTransactions': json['creditTransactions'] == null ? undefined : json['creditTransactions'],
         'signals': json['signals'] == null ? undefined : ((json['signals'] as Array<any>).map(OrganizationSignalFromJSON)),
         'id': json['id'] == null ? undefined : json['id'],
-        'deletedAt': json['deletedAt'] == null ? undefined : (new Date(json['deletedAt'])),
-        'createdAt': json['createdAt'] == null ? undefined : (new Date(json['createdAt'])),
-        'updatedAt': json['updatedAt'] == null ? undefined : (new Date(json['updatedAt'])),
+        'deletedAt': json['deletedAt'] === undefined ? undefined : json['deletedAt'] === null ? null : (parseDateTime(json['deletedAt'])),
+        'createdAt': json['createdAt'] == null ? undefined : (parseDateTime(json['createdAt'])),
+        'updatedAt': json['updatedAt'] === undefined ? undefined : json['updatedAt'] === null ? null : (parseDateTime(json['updatedAt'])),
         'tierPinned': json['tierPinned'] == null ? undefined : json['tierPinned'],
         'deleted': json['deleted'] == null ? undefined : json['deleted'],
     };
@@ -283,7 +238,7 @@ export function OrganizationJsonMergePatchToJSON(json: any): OrganizationJsonMer
     return OrganizationJsonMergePatchToJSONTyped(json, false);
 }
 
-export function OrganizationJsonMergePatchToJSONTyped(value?: Omit<OrganizationJsonMergePatch, 'tierPin'|'tierPinnedAt'|'tierPinReason'|'lowBalanceWarnedAt'|'twoFactorRequiredAt'|'apiAccessLogRetentionDays'|'id'|'deletedAt'|'createdAt'|'updatedAt'|'tierPinned'|'deleted'> | null, ignoreDiscriminator: boolean = false): any {
+export function OrganizationJsonMergePatchToJSONTyped(value?: Omit<OrganizationJsonMergePatch, 'tierPin'|'tierPinnedAt'|'tierPinnedBy'|'tierPinReason'|'lowBalanceWarnedAt'|'twoFactorRequiredAt'|'apiAccessLogRetentionDays'|'memberships'|'applications'|'swarms'|'machines'|'creditTransactions'|'signals'|'id'|'deletedAt'|'createdAt'|'updatedAt'|'tierPinned'|'deleted'> | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
@@ -294,13 +249,6 @@ export function OrganizationJsonMergePatchToJSONTyped(value?: Omit<OrganizationJ
         'name': value['name'],
         'slug': value['slug'],
         'theme': value['theme'],
-        'tierPinnedBy': UserToJSON(value['tierPinnedBy']),
-        'memberships': value['memberships'] == null ? undefined : ((value['memberships'] as Array<any>).map(MembershipToJSON)),
-        'applications': value['applications'],
-        'swarms': value['swarms'],
-        'machines': value['machines'] == null ? undefined : ((value['machines'] as Array<any>).map(MachineToJSON)),
-        'creditTransactions': value['creditTransactions'],
-        'signals': value['signals'] == null ? undefined : ((value['signals'] as Array<any>).map(OrganizationSignalToJSON)),
     };
 }
 

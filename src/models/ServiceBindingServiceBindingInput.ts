@@ -21,14 +21,10 @@ import { mapValues } from '../runtime';
 export interface ServiceBindingServiceBindingInput {
     /**
      * 
-     * @type {string}
-     * @memberof ServiceBindingServiceBindingInput
      */
     application: string | null;
     /**
      * 
-     * @type {string}
-     * @memberof ServiceBindingServiceBindingInput
      */
     service: string | null;
 }

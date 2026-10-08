@@ -21,32 +21,22 @@ import { mapValues } from '../runtime';
 export interface BundleUploadTarget {
     /**
      * 
-     * @type {string}
-     * @memberof BundleUploadTarget
      */
     service?: string;
     /**
      * The additional context's name, or null for a service's own primary context/image.
-     * @type {string}
-     * @memberof BundleUploadTarget
      */
     name?: string | null;
     /**
      * 
-     * @type {string}
-     * @memberof BundleUploadTarget
      */
     contextSha256?: string;
     /**
      * 
-     * @type {boolean}
-     * @memberof BundleUploadTarget
      */
     alreadyStored?: boolean;
     /**
      * 
-     * @type {string}
-     * @memberof BundleUploadTarget
      */
     uploadUrl?: string | null;
 }
@@ -69,10 +59,10 @@ export function BundleUploadTargetFromJSONTyped(json: any, ignoreDiscriminator: 
     return {
         
         'service': json['service'] == null ? undefined : json['service'],
-        'name': json['name'] == null ? undefined : json['name'],
+        'name': json['name'] === undefined ? undefined : json['name'] === null ? null : json['name'],
         'contextSha256': json['contextSha256'] == null ? undefined : json['contextSha256'],
         'alreadyStored': json['alreadyStored'] == null ? undefined : json['alreadyStored'],
-        'uploadUrl': json['uploadUrl'] == null ? undefined : json['uploadUrl'],
+        'uploadUrl': json['uploadUrl'] === undefined ? undefined : json['uploadUrl'] === null ? null : json['uploadUrl'],
     };
 }
 

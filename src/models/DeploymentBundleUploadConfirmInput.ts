@@ -39,51 +39,35 @@ export interface DeploymentBundleUploadConfirmInput {
      * (Grey.ooo/someones.computer_agent#46) — matches
      * `App\Service\Bundle\BundleIngestor::commitFromStoredContent()`'s
      * `$secrets` parameter.
-     * @type {{ [key: string]: { [key: string]: string; }; }}
-     * @memberof DeploymentBundleUploadConfirmInput
      */
     secrets?: { [key: string]: { [key: string]: string; }; };
     /**
      * 
-     * @type {string}
-     * @memberof DeploymentBundleUploadConfirmInput
      */
     application: string | null;
     /**
      * Matches `App\Service\Bundle\BundleManifest::$client` — which client produced this.
-     * @type {string}
-     * @memberof DeploymentBundleUploadConfirmInput
      */
     client: string;
     /**
      * 
-     * @type {string}
-     * @memberof DeploymentBundleUploadConfirmInput
      */
     name?: string | null;
     /**
      * Ask for a new revision even if this digest already matches one —
      * {@see BundleManifest::$force}'s own meaning, unchanged.
-     * @type {boolean}
-     * @memberof DeploymentBundleUploadConfirmInput
      */
     force?: boolean;
     /**
      * 
-     * @type {string}
-     * @memberof DeploymentBundleUploadConfirmInput
      */
     compose: string;
     /**
      * 
-     * @type {Array<BundleContextInput>}
-     * @memberof DeploymentBundleUploadConfirmInput
      */
     contexts?: Array<BundleContextInput>;
     /**
      * 
-     * @type {Array<BundleForwardedImageInput>}
-     * @memberof DeploymentBundleUploadConfirmInput
      */
     images?: Array<BundleForwardedImageInput>;
 }
@@ -111,7 +95,7 @@ export function DeploymentBundleUploadConfirmInputFromJSONTyped(json: any, ignor
         'secrets': json['secrets'] == null ? undefined : json['secrets'],
         'application': json['application'],
         'client': json['client'],
-        'name': json['name'] == null ? undefined : json['name'],
+        'name': json['name'] === undefined ? undefined : json['name'] === null ? null : json['name'],
         'force': json['force'] == null ? undefined : json['force'],
         'compose': json['compose'],
         'contexts': json['contexts'] == null ? undefined : ((json['contexts'] as Array<any>).map(BundleContextInputFromJSON)),

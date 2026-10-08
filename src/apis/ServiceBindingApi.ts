@@ -12,35 +12,48 @@
  * Do not edit the class manually.
  */
 
-
 import * as runtime from '../runtime';
-import type {
-  ConstraintViolation,
-  ServiceBinding,
-  ServiceBindingServiceBindingInput,
-} from '../models/index';
 import {
+    type ConstraintViolation,
     ConstraintViolationFromJSON,
     ConstraintViolationToJSON,
+} from '../models/ConstraintViolation';
+import {
+    type ServiceBinding,
     ServiceBindingFromJSON,
     ServiceBindingToJSON,
+} from '../models/ServiceBinding';
+import {
+    type ServiceBindingServiceBindingInput,
     ServiceBindingServiceBindingInputFromJSON,
     ServiceBindingServiceBindingInputToJSON,
-} from '../models/index';
+} from '../models/ServiceBindingServiceBindingInput';
 
 export interface ServiceBindingsCreateRequest {
+    /**
+     * 
+     */
     serviceBindingServiceBindingInput: ServiceBindingServiceBindingInput;
 }
 
 export interface ServiceBindingsDeleteRequest {
+    /**
+     * ServiceBinding identifier
+     */
     id: string;
 }
 
 export interface ServiceBindingsGetRequest {
+    /**
+     * ServiceBinding identifier
+     */
     id: string;
 }
 
 export interface ServiceBindingsListRequest {
+    /**
+     * The collection page number
+     */
     page?: number;
 }
 
@@ -50,10 +63,9 @@ export interface ServiceBindingsListRequest {
 export class ServiceBindingApi extends runtime.BaseAPI {
 
     /**
-     * Creates a ServiceBinding resource.
-     * Creates a ServiceBinding resource.
+     * Creates request options for serviceBindingsCreate without sending the request
      */
-    async serviceBindingsCreateRaw(requestParameters: ServiceBindingsCreateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<ServiceBinding>> {
+    async serviceBindingsCreateRequestOpts(requestParameters: ServiceBindingsCreateRequest): Promise<runtime.RequestOpts> {
         if (requestParameters['serviceBindingServiceBindingInput'] == null) {
             throw new runtime.RequiredError(
                 'serviceBindingServiceBindingInput',
@@ -75,13 +87,25 @@ export class ServiceBindingApi extends runtime.BaseAPI {
                 headerParameters["Authorization"] = `Bearer ${tokenString}`;
             }
         }
-        const response = await this.request({
-            path: `/api/service_bindings`,
+
+        let urlPath = `/api/service_bindings`;
+
+        return {
+            path: urlPath,
             method: 'POST',
             headers: headerParameters,
             query: queryParameters,
             body: ServiceBindingServiceBindingInputToJSON(requestParameters['serviceBindingServiceBindingInput']),
-        }, initOverrides);
+        };
+    }
+
+    /**
+     * Creates a ServiceBinding resource.
+     * Creates a ServiceBinding resource.
+     */
+    async serviceBindingsCreateRaw(requestParameters: ServiceBindingsCreateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<ServiceBinding>> {
+        const requestOptions = await this.serviceBindingsCreateRequestOpts(requestParameters);
+        const response = await this.request(requestOptions, initOverrides);
 
         return new runtime.JSONApiResponse(response, (jsonValue) => ServiceBindingFromJSON(jsonValue));
     }
@@ -96,10 +120,9 @@ export class ServiceBindingApi extends runtime.BaseAPI {
     }
 
     /**
-     * Removes the ServiceBinding resource.
-     * Removes the ServiceBinding resource.
+     * Creates request options for serviceBindingsDelete without sending the request
      */
-    async serviceBindingsDeleteRaw(requestParameters: ServiceBindingsDeleteRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>> {
+    async serviceBindingsDeleteRequestOpts(requestParameters: ServiceBindingsDeleteRequest): Promise<runtime.RequestOpts> {
         if (requestParameters['id'] == null) {
             throw new runtime.RequiredError(
                 'id',
@@ -119,12 +142,25 @@ export class ServiceBindingApi extends runtime.BaseAPI {
                 headerParameters["Authorization"] = `Bearer ${tokenString}`;
             }
         }
-        const response = await this.request({
-            path: `/api/service_bindings/{id}`.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters['id']))),
+
+        let urlPath = `/api/service_bindings/{id}`;
+        urlPath = urlPath.replace('{id}', encodeURIComponent(String(requestParameters['id'])));
+
+        return {
+            path: urlPath,
             method: 'DELETE',
             headers: headerParameters,
             query: queryParameters,
-        }, initOverrides);
+        };
+    }
+
+    /**
+     * Removes the ServiceBinding resource.
+     * Removes the ServiceBinding resource.
+     */
+    async serviceBindingsDeleteRaw(requestParameters: ServiceBindingsDeleteRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>> {
+        const requestOptions = await this.serviceBindingsDeleteRequestOpts(requestParameters);
+        const response = await this.request(requestOptions, initOverrides);
 
         return new runtime.VoidApiResponse(response);
     }
@@ -138,10 +174,9 @@ export class ServiceBindingApi extends runtime.BaseAPI {
     }
 
     /**
-     * Retrieves a ServiceBinding resource.
-     * Retrieves a ServiceBinding resource.
+     * Creates request options for serviceBindingsGet without sending the request
      */
-    async serviceBindingsGetRaw(requestParameters: ServiceBindingsGetRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<ServiceBinding>> {
+    async serviceBindingsGetRequestOpts(requestParameters: ServiceBindingsGetRequest): Promise<runtime.RequestOpts> {
         if (requestParameters['id'] == null) {
             throw new runtime.RequiredError(
                 'id',
@@ -161,12 +196,25 @@ export class ServiceBindingApi extends runtime.BaseAPI {
                 headerParameters["Authorization"] = `Bearer ${tokenString}`;
             }
         }
-        const response = await this.request({
-            path: `/api/service_bindings/{id}`.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters['id']))),
+
+        let urlPath = `/api/service_bindings/{id}`;
+        urlPath = urlPath.replace('{id}', encodeURIComponent(String(requestParameters['id'])));
+
+        return {
+            path: urlPath,
             method: 'GET',
             headers: headerParameters,
             query: queryParameters,
-        }, initOverrides);
+        };
+    }
+
+    /**
+     * Retrieves a ServiceBinding resource.
+     * Retrieves a ServiceBinding resource.
+     */
+    async serviceBindingsGetRaw(requestParameters: ServiceBindingsGetRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<ServiceBinding>> {
+        const requestOptions = await this.serviceBindingsGetRequestOpts(requestParameters);
+        const response = await this.request(requestOptions, initOverrides);
 
         return new runtime.JSONApiResponse(response, (jsonValue) => ServiceBindingFromJSON(jsonValue));
     }
@@ -181,10 +229,9 @@ export class ServiceBindingApi extends runtime.BaseAPI {
     }
 
     /**
-     * Retrieves the collection of ServiceBinding resources.
-     * Retrieves the collection of ServiceBinding resources.
+     * Creates request options for serviceBindingsList without sending the request
      */
-    async serviceBindingsListRaw(requestParameters: ServiceBindingsListRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Array<ServiceBinding>>> {
+    async serviceBindingsListRequestOpts(requestParameters: ServiceBindingsListRequest): Promise<runtime.RequestOpts> {
         const queryParameters: any = {};
 
         if (requestParameters['page'] != null) {
@@ -201,12 +248,24 @@ export class ServiceBindingApi extends runtime.BaseAPI {
                 headerParameters["Authorization"] = `Bearer ${tokenString}`;
             }
         }
-        const response = await this.request({
-            path: `/api/service_bindings`,
+
+        let urlPath = `/api/service_bindings`;
+
+        return {
+            path: urlPath,
             method: 'GET',
             headers: headerParameters,
             query: queryParameters,
-        }, initOverrides);
+        };
+    }
+
+    /**
+     * Retrieves the collection of ServiceBinding resources.
+     * Retrieves the collection of ServiceBinding resources.
+     */
+    async serviceBindingsListRaw(requestParameters: ServiceBindingsListRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Array<ServiceBinding>>> {
+        const requestOptions = await this.serviceBindingsListRequestOpts(requestParameters);
+        const response = await this.request(requestOptions, initOverrides);
 
         return new runtime.JSONApiResponse(response, (jsonValue) => jsonValue.map(ServiceBindingFromJSON));
     }

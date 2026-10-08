@@ -12,7 +12,7 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
+import { mapValues, parseDate, parseDateTime, serializeDate, serializeDateTime } from '../runtime';
 import type { CreditTransactionEngineMillis } from './CreditTransactionEngineMillis';
 import {
     CreditTransactionEngineMillisFromJSON,
@@ -43,32 +43,22 @@ import {
 export interface CreditTransaction {
     /**
      * 
-     * @type {string}
-     * @memberof CreditTransaction
      */
     organization?: string;
     /**
      * 
-     * @type {string}
-     * @memberof CreditTransaction
      */
     type?: CreditTransactionTypeEnum;
     /**
      * 
-     * @type {string}
-     * @memberof CreditTransaction
      */
     status?: CreditTransactionStatusEnum;
     /**
      * Signed integer amount in the smallest currency unit (cents for USD).
-     * @type {number}
-     * @memberof CreditTransaction
      */
     amountCents?: number;
     /**
      * 
-     * @type {string}
-     * @memberof CreditTransaction
      */
     currency?: string;
     /**
@@ -76,14 +66,10 @@ export interface CreditTransaction {
      * before redirecting. Null on a grant and on a debit, neither of which has
      * a Stripe session — the *type* is what says which kind of row this is, not
      * whether this column is set.
-     * @type {string}
-     * @memberof CreditTransaction
      */
     stripeCheckoutSessionId?: string | null;
     /**
      * The clock hour a debit bills for, truncated to the hour and stored UTC.
-     * @type {Date}
-     * @memberof CreditTransaction
      */
     readonly usageHour?: Date | null;
     /**
@@ -92,32 +78,22 @@ export interface CreditTransaction {
      * way a top-up or grant's `usageHour` is, or two debits from different
      * meters in the same hour would stop colliding with each other but a debit
      * from the *same* meter twice would also stop colliding with itself.
-     * @type {string}
-     * @memberof CreditTransaction
      */
     readonly resourceKind?: CreditTransactionResourceKindEnum | null;
     /**
      * Resolved container-seconds this debit was computed from; null on anything but a compute debit.
-     * @type {number}
-     * @memberof CreditTransaction
      */
     readonly usageSeconds?: number | null;
     /**
      * Containers the meter saw start and never saw stop over the billed hour.
-     * @type {number}
-     * @memberof CreditTransaction
      */
     readonly unresolvedContainers?: number | null;
     /**
      * 
-     * @type {CreditTransactionUsageBytes}
-     * @memberof CreditTransaction
      */
     usageBytes?: CreditTransactionUsageBytes | null;
     /**
      * 
-     * @type {CreditTransactionEngineMillis}
-     * @memberof CreditTransaction
      */
     engineMillis?: CreditTransactionEngineMillis | null;
     /**
@@ -125,38 +101,26 @@ export interface CreditTransaction {
      * evidence a per-row charge can be checked against, the same role
      * {@see $usageBytes} plays for a storage debit. Null on anything but that
      * kind of debit.
-     * @type {number}
-     * @memberof CreditTransaction
      */
     readonly usageRows?: number | null;
     /**
      * Stripe Event id that last transitioned this row; secondary idempotency guard for webhook delivery.
-     * @type {string}
-     * @memberof CreditTransaction
      */
     stripeEventId?: string | null;
     /**
      * 
-     * @type {User}
-     * @memberof CreditTransaction
      */
     createdBy?: User | null;
     /**
      * 
-     * @type {string}
-     * @memberof CreditTransaction
      */
     readonly id?: string;
     /**
      * 
-     * @type {Date}
-     * @memberof CreditTransaction
      */
     readonly createdAt?: Date;
     /**
      * 
-     * @type {Date}
-     * @memberof CreditTransaction
      */
     readonly updatedAt?: Date | null;
 }
@@ -169,7 +133,7 @@ export const CreditTransactionTypeEnum = {
     TopUp: 'top_up',
     Grant: 'grant',
     Debit: 'debit',
-    GiftCard: 'gift_card'
+    GiftCard: 'gift_card',
 } as const;
 export type CreditTransactionTypeEnum = typeof CreditTransactionTypeEnum[keyof typeof CreditTransactionTypeEnum];
 
@@ -179,7 +143,7 @@ export type CreditTransactionTypeEnum = typeof CreditTransactionTypeEnum[keyof t
 export const CreditTransactionStatusEnum = {
     Pending: 'pending',
     Succeeded: 'succeeded',
-    Failed: 'failed'
+    Failed: 'failed',
 } as const;
 export type CreditTransactionStatusEnum = typeof CreditTransactionStatusEnum[keyof typeof CreditTransactionStatusEnum];
 
@@ -192,7 +156,7 @@ export const CreditTransactionResourceKindEnum = {
     EngineLoad: 'engine_load',
     RegistryStorage: 'registry_storage',
     IngressEgress: 'ingress_egress',
-    ApiAccessLogVolume: 'api_access_log_volume'
+    ApiAccessLogVolume: 'api_access_log_volume',
 } as const;
 export type CreditTransactionResourceKindEnum = typeof CreditTransactionResourceKindEnum[keyof typeof CreditTransactionResourceKindEnum];
 
@@ -219,19 +183,19 @@ export function CreditTransactionFromJSONTyped(json: any, ignoreDiscriminator: b
         'status': json['status'] == null ? undefined : json['status'],
         'amountCents': json['amountCents'] == null ? undefined : json['amountCents'],
         'currency': json['currency'] == null ? undefined : json['currency'],
-        'stripeCheckoutSessionId': json['stripeCheckoutSessionId'] == null ? undefined : json['stripeCheckoutSessionId'],
-        'usageHour': json['usageHour'] == null ? undefined : (new Date(json['usageHour'])),
-        'resourceKind': json['resourceKind'] == null ? undefined : json['resourceKind'],
-        'usageSeconds': json['usageSeconds'] == null ? undefined : json['usageSeconds'],
-        'unresolvedContainers': json['unresolvedContainers'] == null ? undefined : json['unresolvedContainers'],
-        'usageBytes': json['usageBytes'] == null ? undefined : CreditTransactionUsageBytesFromJSON(json['usageBytes']),
-        'engineMillis': json['engineMillis'] == null ? undefined : CreditTransactionEngineMillisFromJSON(json['engineMillis']),
-        'usageRows': json['usageRows'] == null ? undefined : json['usageRows'],
-        'stripeEventId': json['stripeEventId'] == null ? undefined : json['stripeEventId'],
-        'createdBy': json['createdBy'] == null ? undefined : UserFromJSON(json['createdBy']),
+        'stripeCheckoutSessionId': json['stripeCheckoutSessionId'] === undefined ? undefined : json['stripeCheckoutSessionId'] === null ? null : json['stripeCheckoutSessionId'],
+        'usageHour': json['usageHour'] === undefined ? undefined : json['usageHour'] === null ? null : (parseDateTime(json['usageHour'])),
+        'resourceKind': json['resourceKind'] === undefined ? undefined : json['resourceKind'] === null ? null : json['resourceKind'],
+        'usageSeconds': json['usageSeconds'] === undefined ? undefined : json['usageSeconds'] === null ? null : json['usageSeconds'],
+        'unresolvedContainers': json['unresolvedContainers'] === undefined ? undefined : json['unresolvedContainers'] === null ? null : json['unresolvedContainers'],
+        'usageBytes': json['usageBytes'] === undefined ? undefined : json['usageBytes'] === null ? null : CreditTransactionUsageBytesFromJSON(json['usageBytes']),
+        'engineMillis': json['engineMillis'] === undefined ? undefined : json['engineMillis'] === null ? null : CreditTransactionEngineMillisFromJSON(json['engineMillis']),
+        'usageRows': json['usageRows'] === undefined ? undefined : json['usageRows'] === null ? null : json['usageRows'],
+        'stripeEventId': json['stripeEventId'] === undefined ? undefined : json['stripeEventId'] === null ? null : json['stripeEventId'],
+        'createdBy': json['createdBy'] === undefined ? undefined : json['createdBy'] === null ? null : UserFromJSON(json['createdBy']),
         'id': json['id'] == null ? undefined : json['id'],
-        'createdAt': json['createdAt'] == null ? undefined : (new Date(json['createdAt'])),
-        'updatedAt': json['updatedAt'] == null ? undefined : (new Date(json['updatedAt'])),
+        'createdAt': json['createdAt'] == null ? undefined : (parseDateTime(json['createdAt'])),
+        'updatedAt': json['updatedAt'] === undefined ? undefined : json['updatedAt'] === null ? null : (parseDateTime(json['updatedAt'])),
     };
 }
 

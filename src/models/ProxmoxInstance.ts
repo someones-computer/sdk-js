@@ -12,7 +12,7 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
+import { mapValues, parseDate, parseDateTime, serializeDate, serializeDateTime } from '../runtime';
 /**
  * 
  * @export
@@ -21,26 +21,18 @@ import { mapValues } from '../runtime';
 export interface ProxmoxInstance {
     /**
      * 
-     * @type {string}
-     * @memberof ProxmoxInstance
      */
     name?: string;
     /**
      * Base URL of the API, scheme and authority only — `https://10.0.0.68:8006`.
-     * @type {string}
-     * @memberof ProxmoxInstance
      */
     endpoint?: string;
     /**
      * Full token identifier, `user@realm!tokenid` — e.g. `root@pam!someones-computer`.
-     * @type {string}
-     * @memberof ProxmoxInstance
      */
     tokenId?: string;
     /**
      * Whether the certificate must validate against a CA chain.
-     * @type {boolean}
-     * @memberof ProxmoxInstance
      */
     verifyTls?: boolean;
     /**
@@ -49,62 +41,44 @@ export interface ProxmoxInstance {
      * authenticates *this specific host* without any CA, so the connection is
      * still protected against interception, which `verifyTls = false` alone is
      * not.
-     * @type {string}
-     * @memberof ProxmoxInstance
      */
     publicKeyPin?: string | null;
     /**
      * 
-     * @type {string}
-     * @memberof ProxmoxInstance
      */
     status?: ProxmoxInstanceStatusEnum;
     /**
      * 
-     * @type {Date}
-     * @memberof ProxmoxInstance
      */
     lastSeenAt?: Date | null;
     /**
      * Why the last probe failed, kept so an operator can tell a revoked token
      * from a dead host without re-running anything. Cleared on success.
-     * @type {string}
-     * @memberof ProxmoxInstance
      */
     lastError?: string | null;
     /**
      * Observed `GET /version` snapshot (release, repoid). Observed state, so it
      * is whatever the last probe saw and is never authoritative.
-     * @type {{ [key: string]: string | null; }}
-     * @memberof ProxmoxInstance
      */
-    version?: { [key: string]: string | null; };
+    version?: { [key: string]: string | null; } | null;
     /**
      * The vmid of the Alpine template `app:proxmox:template` last built here, or
      * null if it has never been run against this endpoint. This is what makes a
      * template's existence something the app can answer without an SSH session
      * and a `qm list` — the gap that sent an operator to do exactly that.
-     * @type {number}
-     * @memberof ProxmoxInstance
      */
     readonly templateVmid?: number | null;
     /**
      * The Alpine version baked into {@see $templateVmid}, e.g. `3.23.0`.
-     * @type {string}
-     * @memberof ProxmoxInstance
      */
     readonly templateAlpineVersion?: string | null;
     /**
      * 
-     * @type {Date}
-     * @memberof ProxmoxInstance
      */
     readonly templateBuiltAt?: Date | null;
     /**
      * When a background template build was dispatched for this endpoint, or null
      * when none is in flight — the only trace a build leaves while it runs.
-     * @type {Date}
-     * @memberof ProxmoxInstance
      */
     readonly templateBuildStartedAt?: Date | null;
     /**
@@ -115,32 +89,22 @@ export interface ProxmoxInstance {
      * it, {@see \App\MessageHandler\CheckProxmoxTemplatesHandler} redispatches
      * a build every tick regardless of how many times it has already failed
      * (#1059).
-     * @type {number}
-     * @memberof ProxmoxInstance
      */
     readonly templateBuildFailures?: number;
     /**
      * 
-     * @type {string}
-     * @memberof ProxmoxInstance
      */
     readonly id?: string;
     /**
      * 
-     * @type {Date}
-     * @memberof ProxmoxInstance
      */
     readonly createdAt?: Date;
     /**
      * 
-     * @type {Date}
-     * @memberof ProxmoxInstance
      */
     readonly updatedAt?: Date | null;
     /**
      * Whether `app:proxmox:template` has ever recorded a build against this endpoint.
-     * @type {boolean}
-     * @memberof ProxmoxInstance
      */
     readonly template?: boolean;
 }
@@ -152,7 +116,7 @@ export interface ProxmoxInstance {
 export const ProxmoxInstanceStatusEnum = {
     Reachable: 'reachable',
     Unreachable: 'unreachable',
-    Unauthorized: 'unauthorized'
+    Unauthorized: 'unauthorized',
 } as const;
 export type ProxmoxInstanceStatusEnum = typeof ProxmoxInstanceStatusEnum[keyof typeof ProxmoxInstanceStatusEnum];
 
@@ -178,19 +142,19 @@ export function ProxmoxInstanceFromJSONTyped(json: any, ignoreDiscriminator: boo
         'endpoint': json['endpoint'] == null ? undefined : json['endpoint'],
         'tokenId': json['tokenId'] == null ? undefined : json['tokenId'],
         'verifyTls': json['verifyTls'] == null ? undefined : json['verifyTls'],
-        'publicKeyPin': json['publicKeyPin'] == null ? undefined : json['publicKeyPin'],
+        'publicKeyPin': json['publicKeyPin'] === undefined ? undefined : json['publicKeyPin'] === null ? null : json['publicKeyPin'],
         'status': json['status'] == null ? undefined : json['status'],
-        'lastSeenAt': json['lastSeenAt'] == null ? undefined : (new Date(json['lastSeenAt'])),
-        'lastError': json['lastError'] == null ? undefined : json['lastError'],
-        'version': json['version'] == null ? undefined : json['version'],
-        'templateVmid': json['templateVmid'] == null ? undefined : json['templateVmid'],
-        'templateAlpineVersion': json['templateAlpineVersion'] == null ? undefined : json['templateAlpineVersion'],
-        'templateBuiltAt': json['templateBuiltAt'] == null ? undefined : (new Date(json['templateBuiltAt'])),
-        'templateBuildStartedAt': json['templateBuildStartedAt'] == null ? undefined : (new Date(json['templateBuildStartedAt'])),
+        'lastSeenAt': json['lastSeenAt'] === undefined ? undefined : json['lastSeenAt'] === null ? null : (parseDateTime(json['lastSeenAt'])),
+        'lastError': json['lastError'] === undefined ? undefined : json['lastError'] === null ? null : json['lastError'],
+        'version': json['version'] === undefined ? undefined : json['version'] === null ? null : json['version'],
+        'templateVmid': json['templateVmid'] === undefined ? undefined : json['templateVmid'] === null ? null : json['templateVmid'],
+        'templateAlpineVersion': json['templateAlpineVersion'] === undefined ? undefined : json['templateAlpineVersion'] === null ? null : json['templateAlpineVersion'],
+        'templateBuiltAt': json['templateBuiltAt'] === undefined ? undefined : json['templateBuiltAt'] === null ? null : (parseDateTime(json['templateBuiltAt'])),
+        'templateBuildStartedAt': json['templateBuildStartedAt'] === undefined ? undefined : json['templateBuildStartedAt'] === null ? null : (parseDateTime(json['templateBuildStartedAt'])),
         'templateBuildFailures': json['templateBuildFailures'] == null ? undefined : json['templateBuildFailures'],
         'id': json['id'] == null ? undefined : json['id'],
-        'createdAt': json['createdAt'] == null ? undefined : (new Date(json['createdAt'])),
-        'updatedAt': json['updatedAt'] == null ? undefined : (new Date(json['updatedAt'])),
+        'createdAt': json['createdAt'] == null ? undefined : (parseDateTime(json['createdAt'])),
+        'updatedAt': json['updatedAt'] === undefined ? undefined : json['updatedAt'] === null ? null : (parseDateTime(json['updatedAt'])),
         'template': json['template'] == null ? undefined : json['template'],
     };
 }
@@ -212,7 +176,7 @@ export function ProxmoxInstanceToJSONTyped(value?: Omit<ProxmoxInstance, 'templa
         'verifyTls': value['verifyTls'],
         'publicKeyPin': value['publicKeyPin'],
         'status': value['status'],
-        'lastSeenAt': value['lastSeenAt'] == null ? undefined : ((value['lastSeenAt'] as any).toISOString()),
+        'lastSeenAt': value['lastSeenAt'] == null ? value['lastSeenAt'] : serializeDateTime(value['lastSeenAt']),
         'lastError': value['lastError'],
         'version': value['version'],
     };

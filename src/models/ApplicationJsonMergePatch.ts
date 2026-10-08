@@ -12,7 +12,7 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
+import { mapValues, parseDate, parseDateTime, serializeDate, serializeDateTime } from '../runtime';
 import type { PortAllocation } from './PortAllocation';
 import {
     PortAllocationFromJSON,
@@ -31,47 +31,33 @@ export interface ApplicationJsonMergePatch {
      * Re-home this application. Callers own everything the uniqueness
      * constraint and the trust invariant elsewhere in the platform expect of
      * a move — the entity itself only holds the pointer.
-     * @type {string}
-     * @memberof ApplicationJsonMergePatch
      */
     organization?: string;
     /**
      * 
-     * @type {string}
-     * @memberof ApplicationJsonMergePatch
      */
     slug?: string;
     /**
      * 
-     * @type {string}
-     * @memberof ApplicationJsonMergePatch
      */
     name?: string;
     /**
      * 
-     * @type {string}
-     * @memberof ApplicationJsonMergePatch
      */
     isolationLevel?: ApplicationJsonMergePatchIsolationLevelEnum;
     /**
      * Whether a deploy's compose file is watched for services a managed
      * equivalent could replace.
-     * @type {string}
-     * @memberof ApplicationJsonMergePatch
      */
     serviceAdoption?: ApplicationJsonMergePatchServiceAdoptionEnum;
     /**
      * How this application's routed HTTP services are gated at the edge —
      * `None` by default, so an application behaves exactly as it always has
      * until an org manager opts it in ({@see AccessGateMode}).
-     * @type {string}
-     * @memberof ApplicationJsonMergePatch
      */
     accessGate?: ApplicationJsonMergePatchAccessGateEnum;
     /**
      * Pointer to the currently active revision; null before the first deploy.
-     * @type {string}
-     * @memberof ApplicationJsonMergePatch
      */
     currentDeployment?: string | null;
     /**
@@ -85,16 +71,12 @@ export interface ApplicationJsonMergePatch {
      * redeploy, or reactivating an old revision, does not reset it, because
      * the application's history is what earns the longer grace, not whichever
      * revision happens to be current.
-     * @type {Date}
-     * @memberof ApplicationJsonMergePatch
      */
     readonly firstRunningAt?: Date | null;
     /**
      * Which deployment *name* owns the application's apex identity — the stack,
      * network and hostname that carry no revision component
      * ({@see \App\Service\Placement\StackNaming}).
-     * @type {string}
-     * @memberof ApplicationJsonMergePatch
      */
     primaryDeploymentName?: string | null;
     /**
@@ -102,22 +84,16 @@ export interface ApplicationJsonMergePatch {
      * named from**, before the separator was made unambiguous — or null, meaning
      * nothing of this application has ever been on a swarm under the old name and
      * {@see \App\Service\Placement\StackNaming} is free to derive the current one.
-     * @type {string}
-     * @memberof ApplicationJsonMergePatch
      */
     legacyStackBase?: string | null;
     /**
      * Object key of this application's stored icon, or null when nobody has given
      * it one — in which case {@see \App\Service\Icon\GeneratedIcon} draws one from
      * the name and slug, so every application has an icon either way.
-     * @type {string}
-     * @memberof ApplicationJsonMergePatch
      */
     readonly iconKey?: string | null;
     /**
      * Where {@see $iconKey} came from — null exactly when there is no stored icon.
-     * @type {string}
-     * @memberof ApplicationJsonMergePatch
      */
     readonly iconSource?: ApplicationJsonMergePatchIconSourceEnum | null;
     /**
@@ -127,8 +103,6 @@ export interface ApplicationJsonMergePatch {
      * ({@see \App\Service\Bundle\ApplicationBuildBucketProvisioner}); every
      * application predating #996 looks like that too, and provisions on its next
      * deploy.
-     * @type {string}
-     * @memberof ApplicationJsonMergePatch
      */
     buildBucket?: string | null;
     /**
@@ -136,24 +110,18 @@ export interface ApplicationJsonMergePatch {
      * handed to build tasks. Doubles as Garage's own identifier for the key (the
      * same way {@see ManagedService::$externalKeyId} does), so nothing separate is
      * persisted for it.
-     * @type {string}
-     * @memberof ApplicationJsonMergePatch
      */
     buildKeyId?: string | null;
     /**
      * 
-     * @type {Array<string>}
-     * @memberof ApplicationJsonMergePatch
      */
-    deployments?: Array<string>;
+    readonly deployments?: Array<string>;
     /**
      * the published ports this application
      * holds cluster-wide, for as long as it exists
      * ({@see \App\Entity\PortAllocation})
-     * @type {Array<PortAllocation>}
-     * @memberof ApplicationJsonMergePatch
      */
-    portAllocations?: Array<PortAllocation>;
+    readonly portAllocations?: Array<PortAllocation>;
     /**
      * Which of the app-hosting pool domains (`snarl.dev`, `starshp.dev` —
      * {@see \App\Service\Ingress\DomainPoolAssigner}) this application's
@@ -162,8 +130,6 @@ export interface ApplicationJsonMergePatch {
      * redeploy must resolve to the same pool hostnames it already handed out,
      * the same reason {@see $firstRunningAt} is a latch rather than a rolling
      * value.
-     * @type {string}
-     * @memberof ApplicationJsonMergePatch
      */
     readonly poolDomain?: string | null;
     /**
@@ -175,77 +141,53 @@ export interface ApplicationJsonMergePatch {
      * {@see \App\Entity\Domain::$name}: two applications sharing a label would
      * collide on the exact same DNS name the moment they also shared a
      * deployment and service name.
-     * @type {string}
-     * @memberof ApplicationJsonMergePatch
      */
     poolLabel?: string | null;
     /**
      * Whether `{label}.{poolDomain}`, with no service or deployment level in
      * front, answers for one deployment (#2030). See {@see poolShortHostname()}.
-     * @type {boolean}
-     * @memberof ApplicationJsonMergePatch
      */
     poolShortName?: boolean;
     /**
      * The deployment the short name answers for. Null is the unnamed deployment.
-     * @type {string}
-     * @memberof ApplicationJsonMergePatch
      */
     readonly poolShortNameDeployment?: string | null;
     /**
      * The compose service it routes to. Null is the only HTTP service.
-     * @type {string}
-     * @memberof ApplicationJsonMergePatch
      */
     readonly poolShortNameService?: string | null;
     /**
      * 
-     * @type {string}
-     * @memberof ApplicationJsonMergePatch
      */
     readonly id?: string;
     /**
      * 
-     * @type {Date}
-     * @memberof ApplicationJsonMergePatch
      */
     readonly deletedAt?: Date | null;
     /**
      * 
-     * @type {Date}
-     * @memberof ApplicationJsonMergePatch
      */
     readonly createdAt?: Date;
     /**
      * 
-     * @type {Date}
-     * @memberof ApplicationJsonMergePatch
      */
     readonly updatedAt?: Date | null;
     /**
      * Point the application at a stored icon, or at none.
-     * @type {string}
-     * @memberof ApplicationJsonMergePatch
      */
     icon?: string | null;
     /**
      * Whether the stored icon was chosen by a person, and so must survive the next
      * deploy's favicon extraction.
-     * @type {boolean}
-     * @memberof ApplicationJsonMergePatch
      */
     readonly operatorChosenIcon?: boolean;
     /**
      * A short, stable token for the icon a caller is looking at — the cache-busting
      * half of the icon URL, and null when there is nothing stored to bust.
-     * @type {string}
-     * @memberof ApplicationJsonMergePatch
      */
     readonly iconVersion?: string | null;
     /**
      * 
-     * @type {boolean}
-     * @memberof ApplicationJsonMergePatch
      */
     readonly deleted?: boolean;
 }
@@ -256,7 +198,7 @@ export interface ApplicationJsonMergePatch {
  */
 export const ApplicationJsonMergePatchIsolationLevelEnum = {
     Shared: 'shared',
-    Dedicated: 'dedicated'
+    Dedicated: 'dedicated',
 } as const;
 export type ApplicationJsonMergePatchIsolationLevelEnum = typeof ApplicationJsonMergePatchIsolationLevelEnum[keyof typeof ApplicationJsonMergePatchIsolationLevelEnum];
 
@@ -265,7 +207,7 @@ export type ApplicationJsonMergePatchIsolationLevelEnum = typeof ApplicationJson
  */
 export const ApplicationJsonMergePatchServiceAdoptionEnum = {
     Off: 'off',
-    Auto: 'auto'
+    Auto: 'auto',
 } as const;
 export type ApplicationJsonMergePatchServiceAdoptionEnum = typeof ApplicationJsonMergePatchServiceAdoptionEnum[keyof typeof ApplicationJsonMergePatchServiceAdoptionEnum];
 
@@ -276,7 +218,7 @@ export const ApplicationJsonMergePatchAccessGateEnum = {
     None: 'none',
     BasicAuth: 'basic_auth',
     Token: 'token',
-    SomeonesAuth: 'someones_auth'
+    SomeonesAuth: 'someones_auth',
 } as const;
 export type ApplicationJsonMergePatchAccessGateEnum = typeof ApplicationJsonMergePatchAccessGateEnum[keyof typeof ApplicationJsonMergePatchAccessGateEnum];
 
@@ -285,7 +227,7 @@ export type ApplicationJsonMergePatchAccessGateEnum = typeof ApplicationJsonMerg
  */
 export const ApplicationJsonMergePatchIconSourceEnum = {
     Uploaded: 'uploaded',
-    Favicon: 'favicon'
+    Favicon: 'favicon',
 } as const;
 export type ApplicationJsonMergePatchIconSourceEnum = typeof ApplicationJsonMergePatchIconSourceEnum[keyof typeof ApplicationJsonMergePatchIconSourceEnum];
 
@@ -313,28 +255,28 @@ export function ApplicationJsonMergePatchFromJSONTyped(json: any, ignoreDiscrimi
         'isolationLevel': json['isolationLevel'] == null ? undefined : json['isolationLevel'],
         'serviceAdoption': json['serviceAdoption'] == null ? undefined : json['serviceAdoption'],
         'accessGate': json['accessGate'] == null ? undefined : json['accessGate'],
-        'currentDeployment': json['currentDeployment'] == null ? undefined : json['currentDeployment'],
-        'firstRunningAt': json['firstRunningAt'] == null ? undefined : (new Date(json['firstRunningAt'])),
-        'primaryDeploymentName': json['primaryDeploymentName'] == null ? undefined : json['primaryDeploymentName'],
-        'legacyStackBase': json['legacyStackBase'] == null ? undefined : json['legacyStackBase'],
-        'iconKey': json['iconKey'] == null ? undefined : json['iconKey'],
-        'iconSource': json['iconSource'] == null ? undefined : json['iconSource'],
-        'buildBucket': json['buildBucket'] == null ? undefined : json['buildBucket'],
-        'buildKeyId': json['buildKeyId'] == null ? undefined : json['buildKeyId'],
+        'currentDeployment': json['currentDeployment'] === undefined ? undefined : json['currentDeployment'] === null ? null : json['currentDeployment'],
+        'firstRunningAt': json['firstRunningAt'] === undefined ? undefined : json['firstRunningAt'] === null ? null : (parseDateTime(json['firstRunningAt'])),
+        'primaryDeploymentName': json['primaryDeploymentName'] === undefined ? undefined : json['primaryDeploymentName'] === null ? null : json['primaryDeploymentName'],
+        'legacyStackBase': json['legacyStackBase'] === undefined ? undefined : json['legacyStackBase'] === null ? null : json['legacyStackBase'],
+        'iconKey': json['iconKey'] === undefined ? undefined : json['iconKey'] === null ? null : json['iconKey'],
+        'iconSource': json['iconSource'] === undefined ? undefined : json['iconSource'] === null ? null : json['iconSource'],
+        'buildBucket': json['buildBucket'] === undefined ? undefined : json['buildBucket'] === null ? null : json['buildBucket'],
+        'buildKeyId': json['buildKeyId'] === undefined ? undefined : json['buildKeyId'] === null ? null : json['buildKeyId'],
         'deployments': json['deployments'] == null ? undefined : json['deployments'],
         'portAllocations': json['portAllocations'] == null ? undefined : ((json['portAllocations'] as Array<any>).map(PortAllocationFromJSON)),
-        'poolDomain': json['poolDomain'] == null ? undefined : json['poolDomain'],
-        'poolLabel': json['poolLabel'] == null ? undefined : json['poolLabel'],
+        'poolDomain': json['poolDomain'] === undefined ? undefined : json['poolDomain'] === null ? null : json['poolDomain'],
+        'poolLabel': json['poolLabel'] === undefined ? undefined : json['poolLabel'] === null ? null : json['poolLabel'],
         'poolShortName': json['poolShortName'] == null ? undefined : json['poolShortName'],
-        'poolShortNameDeployment': json['poolShortNameDeployment'] == null ? undefined : json['poolShortNameDeployment'],
-        'poolShortNameService': json['poolShortNameService'] == null ? undefined : json['poolShortNameService'],
+        'poolShortNameDeployment': json['poolShortNameDeployment'] === undefined ? undefined : json['poolShortNameDeployment'] === null ? null : json['poolShortNameDeployment'],
+        'poolShortNameService': json['poolShortNameService'] === undefined ? undefined : json['poolShortNameService'] === null ? null : json['poolShortNameService'],
         'id': json['id'] == null ? undefined : json['id'],
-        'deletedAt': json['deletedAt'] == null ? undefined : (new Date(json['deletedAt'])),
-        'createdAt': json['createdAt'] == null ? undefined : (new Date(json['createdAt'])),
-        'updatedAt': json['updatedAt'] == null ? undefined : (new Date(json['updatedAt'])),
-        'icon': json['icon'] == null ? undefined : json['icon'],
+        'deletedAt': json['deletedAt'] === undefined ? undefined : json['deletedAt'] === null ? null : (parseDateTime(json['deletedAt'])),
+        'createdAt': json['createdAt'] == null ? undefined : (parseDateTime(json['createdAt'])),
+        'updatedAt': json['updatedAt'] === undefined ? undefined : json['updatedAt'] === null ? null : (parseDateTime(json['updatedAt'])),
+        'icon': json['icon'] === undefined ? undefined : json['icon'] === null ? null : json['icon'],
         'operatorChosenIcon': json['operatorChosenIcon'] == null ? undefined : json['operatorChosenIcon'],
-        'iconVersion': json['iconVersion'] == null ? undefined : json['iconVersion'],
+        'iconVersion': json['iconVersion'] === undefined ? undefined : json['iconVersion'] === null ? null : json['iconVersion'],
         'deleted': json['deleted'] == null ? undefined : json['deleted'],
     };
 }
@@ -343,7 +285,7 @@ export function ApplicationJsonMergePatchToJSON(json: any): ApplicationJsonMerge
     return ApplicationJsonMergePatchToJSONTyped(json, false);
 }
 
-export function ApplicationJsonMergePatchToJSONTyped(value?: Omit<ApplicationJsonMergePatch, 'firstRunningAt'|'iconKey'|'iconSource'|'poolDomain'|'poolShortNameDeployment'|'poolShortNameService'|'id'|'deletedAt'|'createdAt'|'updatedAt'|'operatorChosenIcon'|'iconVersion'|'deleted'> | null, ignoreDiscriminator: boolean = false): any {
+export function ApplicationJsonMergePatchToJSONTyped(value?: Omit<ApplicationJsonMergePatch, 'firstRunningAt'|'iconKey'|'iconSource'|'deployments'|'portAllocations'|'poolDomain'|'poolShortNameDeployment'|'poolShortNameService'|'id'|'deletedAt'|'createdAt'|'updatedAt'|'operatorChosenIcon'|'iconVersion'|'deleted'> | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
@@ -361,8 +303,6 @@ export function ApplicationJsonMergePatchToJSONTyped(value?: Omit<ApplicationJso
         'legacyStackBase': value['legacyStackBase'],
         'buildBucket': value['buildBucket'],
         'buildKeyId': value['buildKeyId'],
-        'deployments': value['deployments'],
-        'portAllocations': value['portAllocations'] == null ? undefined : ((value['portAllocations'] as Array<any>).map(PortAllocationToJSON)),
         'poolLabel': value['poolLabel'],
         'poolShortName': value['poolShortName'],
         'icon': value['icon'],

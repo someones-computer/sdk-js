@@ -21,20 +21,14 @@ import { mapValues } from '../runtime';
 export interface ManagedServiceManagedServiceInput {
     /**
      * The engine, as the catalogue names it — `postgres:17`, `mysql:8.0`.
-     * @type {string}
-     * @memberof ManagedServiceManagedServiceInput
      */
     engine: string;
     /**
      * The tenant's own name for it — what appears in the UI and in `sc service ls`.
-     * @type {string}
-     * @memberof ManagedServiceManagedServiceInput
      */
     slug: string;
     /**
      * 
-     * @type {string}
-     * @memberof ManagedServiceManagedServiceInput
      */
     organization: string | null;
 }
