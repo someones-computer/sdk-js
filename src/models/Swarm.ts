@@ -143,7 +143,8 @@ export interface Swarm {
      */
     nodes?: Array<SwarmNode>;
     /**
-     * 
+     * The machines that serve this context. Mapped only so a delete can let go
+     * of them. See {@see self::markDeleted()}.
      * @type {Array<Machine>}
      * @memberof Swarm
      */

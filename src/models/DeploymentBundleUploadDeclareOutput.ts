@@ -28,19 +28,19 @@ import {
  */
 export interface DeploymentBundleUploadDeclareOutput {
     /**
-     * 
+     * one per declared build context
      * @type {Array<BundleUploadTarget>}
      * @memberof DeploymentBundleUploadDeclareOutput
      */
     contexts?: Array<BundleUploadTarget>;
     /**
-     * 
+     * one per declared named additional context
      * @type {Array<BundleUploadTarget>}
      * @memberof DeploymentBundleUploadDeclareOutput
      */
     additionalContexts?: Array<BundleUploadTarget>;
     /**
-     * 
+     * one per declared forwarded image
      * @type {Array<BundleUploadTarget>}
      * @memberof DeploymentBundleUploadDeclareOutput
      */
