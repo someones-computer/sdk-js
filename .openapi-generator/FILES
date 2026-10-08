@@ -37,7 +37,6 @@ src/models/DeploymentBundleUploadDeclareOutput.ts
 src/models/DeploymentDeploymentEndpoint.ts
 src/models/DeploymentJsonMergePatch.ts
 src/models/DeploymentJsonMergePatchBuildContextsValueValue.ts
-src/models/DeploymentJsonMergePatchCanonicalSpecValue.ts
 src/models/Failure.ts
 src/models/Machine.ts
 src/models/ManagedService.ts
