@@ -157,7 +157,7 @@ export interface OrganizationJsonMergePatch {
      */
     swarms?: Array<string>;
     /**
-     * 
+     * Machines self-service-provisioned for this organization.
      * @type {Array<Machine>}
      * @memberof OrganizationJsonMergePatch
      */
@@ -169,7 +169,7 @@ export interface OrganizationJsonMergePatch {
      */
     creditTransactions?: Array<string>;
     /**
-     * 
+     * What this organization's own compose files have told the platform about it (#818).
      * @type {Array<OrganizationSignal>}
      * @memberof OrganizationJsonMergePatch
      */

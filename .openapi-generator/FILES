@@ -41,6 +41,7 @@ src/models/DeploymentJsonMergePatchCanonicalSpecValue.ts
 src/models/Failure.ts
 src/models/Machine.ts
 src/models/ManagedService.ts
+src/models/ManagedServiceEngine.ts
 src/models/ManagedServiceLastLoadMillis.ts
 src/models/ManagedServiceManagedServiceInput.ts
 src/models/ManagedServicePendingLoadMillis.ts
@@ -59,9 +60,6 @@ src/models/ServiceBindingServiceBindingInput.ts
 src/models/ServiceCpuLimit.ts
 src/models/ServiceCpuReservation.ts
 src/models/ServiceHealthcheckValue.ts
-src/models/ServiceInstance.ts
-src/models/ServiceInstanceCapacityBytes.ts
-src/models/ServiceInstanceObservedUsageBytes.ts
 src/models/ServiceMemLimit.ts
 src/models/ServiceMemReservation.ts
 src/models/ServicePortsInnerValue.ts

@@ -147,7 +147,9 @@ export interface Application {
      */
     deployments?: Array<string>;
     /**
-     * 
+     * the published ports this application
+     * holds cluster-wide, for as long as it exists
+     * ({@see \App\Entity\PortAllocation})
      * @type {Array<PortAllocation>}
      * @memberof Application
      */

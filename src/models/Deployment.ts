@@ -185,13 +185,16 @@ export interface Deployment {
      */
     createdBy?: User | null;
     /**
-     * 
+     * Projection of the compose services.
      * @type {Array<Service>}
      * @memberof Deployment
      */
     services?: Array<Service>;
     /**
-     * 
+     * Everything that has gone wrong with this
+     * revision, append-only. Distinct from
+     * {@see \App\Entity\self::$statusReason}, which is only ever
+     * the latest. See {@see \App\Entity\Failure} on why both exist.
      * @type {Array<Failure>}
      * @memberof Deployment
      */
