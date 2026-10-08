@@ -12,7 +12,7 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
+import { mapValues, parseDate, parseDateTime, serializeDate, serializeDateTime } from '../runtime';
 import type { BundleUploadTarget } from './BundleUploadTarget';
 import {
     BundleUploadTargetFromJSON,
@@ -29,26 +29,18 @@ import {
 export interface DeploymentBundleUploadDeclareOutput {
     /**
      * one per declared build context
-     * @type {Array<BundleUploadTarget>}
-     * @memberof DeploymentBundleUploadDeclareOutput
      */
     contexts?: Array<BundleUploadTarget>;
     /**
      * one per declared named additional context
-     * @type {Array<BundleUploadTarget>}
-     * @memberof DeploymentBundleUploadDeclareOutput
      */
     additionalContexts?: Array<BundleUploadTarget>;
     /**
      * one per declared forwarded image
-     * @type {Array<BundleUploadTarget>}
-     * @memberof DeploymentBundleUploadDeclareOutput
      */
     images?: Array<BundleUploadTarget>;
     /**
      * 
-     * @type {Date}
-     * @memberof DeploymentBundleUploadDeclareOutput
      */
     expiresAt?: Date;
 }
@@ -73,7 +65,7 @@ export function DeploymentBundleUploadDeclareOutputFromJSONTyped(json: any, igno
         'contexts': json['contexts'] == null ? undefined : ((json['contexts'] as Array<any>).map(BundleUploadTargetFromJSON)),
         'additionalContexts': json['additionalContexts'] == null ? undefined : ((json['additionalContexts'] as Array<any>).map(BundleUploadTargetFromJSON)),
         'images': json['images'] == null ? undefined : ((json['images'] as Array<any>).map(BundleUploadTargetFromJSON)),
-        'expiresAt': json['expiresAt'] == null ? undefined : (new Date(json['expiresAt'])),
+        'expiresAt': json['expiresAt'] == null ? undefined : (parseDateTime(json['expiresAt'])),
     };
 }
 
@@ -91,7 +83,7 @@ export function DeploymentBundleUploadDeclareOutputToJSONTyped(value?: Deploymen
         'contexts': value['contexts'] == null ? undefined : ((value['contexts'] as Array<any>).map(BundleUploadTargetToJSON)),
         'additionalContexts': value['additionalContexts'] == null ? undefined : ((value['additionalContexts'] as Array<any>).map(BundleUploadTargetToJSON)),
         'images': value['images'] == null ? undefined : ((value['images'] as Array<any>).map(BundleUploadTargetToJSON)),
-        'expiresAt': value['expiresAt'] == null ? undefined : ((value['expiresAt']).toISOString()),
+        'expiresAt': value['expiresAt'] == null ? value['expiresAt'] : serializeDateTime(value['expiresAt']),
     };
 }
 

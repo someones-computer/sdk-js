@@ -12,7 +12,7 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
+import { mapValues, parseDate, parseDateTime, serializeDate, serializeDateTime } from '../runtime';
 import type { User } from './User';
 import {
     UserFromJSON,
@@ -29,38 +29,26 @@ import {
 export interface Membership {
     /**
      * 
-     * @type {string}
-     * @memberof Membership
      */
     organization?: string;
     /**
      * 
-     * @type {User}
-     * @memberof Membership
      */
     user?: User;
     /**
      * 
-     * @type {string}
-     * @memberof Membership
      */
     role?: MembershipRoleEnum;
     /**
      * 
-     * @type {string}
-     * @memberof Membership
      */
     readonly id?: string;
     /**
      * 
-     * @type {Date}
-     * @memberof Membership
      */
     readonly createdAt?: Date;
     /**
      * 
-     * @type {Date}
-     * @memberof Membership
      */
     readonly updatedAt?: Date | null;
 }
@@ -72,7 +60,7 @@ export interface Membership {
 export const MembershipRoleEnum = {
     Owner: 'owner',
     Admin: 'admin',
-    Member: 'member'
+    Member: 'member',
 } as const;
 export type MembershipRoleEnum = typeof MembershipRoleEnum[keyof typeof MembershipRoleEnum];
 
@@ -98,8 +86,8 @@ export function MembershipFromJSONTyped(json: any, ignoreDiscriminator: boolean)
         'user': json['user'] == null ? undefined : UserFromJSON(json['user']),
         'role': json['role'] == null ? undefined : json['role'],
         'id': json['id'] == null ? undefined : json['id'],
-        'createdAt': json['createdAt'] == null ? undefined : (new Date(json['createdAt'])),
-        'updatedAt': json['updatedAt'] == null ? undefined : (new Date(json['updatedAt'])),
+        'createdAt': json['createdAt'] == null ? undefined : (parseDateTime(json['createdAt'])),
+        'updatedAt': json['updatedAt'] === undefined ? undefined : json['updatedAt'] === null ? null : (parseDateTime(json['updatedAt'])),
     };
 }
 

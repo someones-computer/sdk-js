@@ -12,47 +12,69 @@
  * Do not edit the class manually.
  */
 
-
 import * as runtime from '../runtime';
-import type {
-  ConstraintViolation,
-  ManagedService,
-  ManagedServiceManagedServiceInput,
-} from '../models/index';
 import {
+    type ConstraintViolation,
     ConstraintViolationFromJSON,
     ConstraintViolationToJSON,
+} from '../models/ConstraintViolation';
+import {
+    type ManagedService,
     ManagedServiceFromJSON,
     ManagedServiceToJSON,
+} from '../models/ManagedService';
+import {
+    type ManagedServiceManagedServiceInput,
     ManagedServiceManagedServiceInputFromJSON,
     ManagedServiceManagedServiceInputToJSON,
-} from '../models/index';
+} from '../models/ManagedServiceManagedServiceInput';
 
 export interface ManagedServicesCreateRequest {
+    /**
+     * 
+     */
     managedServiceManagedServiceInput: ManagedServiceManagedServiceInput;
 }
 
 export interface ManagedServicesDeleteRequest {
+    /**
+     * ManagedService identifier
+     */
     id: string;
 }
 
 export interface ManagedServicesGetRequest {
+    /**
+     * ManagedService identifier
+     */
     id: string;
 }
 
 export interface ManagedServicesListRequest {
+    /**
+     * The collection page number
+     */
     page?: number;
 }
 
 export interface ManagedServicesRestoreRequest {
+    /**
+     * ManagedService identifier
+     */
     id: string;
 }
 
 export interface ManagedServicesResumeRequest {
+    /**
+     * ManagedService identifier
+     */
     id: string;
 }
 
 export interface ManagedServicesSuspendRequest {
+    /**
+     * ManagedService identifier
+     */
     id: string;
 }
 
@@ -62,10 +84,9 @@ export interface ManagedServicesSuspendRequest {
 export class ManagedServiceApi extends runtime.BaseAPI {
 
     /**
-     * Creates a ManagedService resource.
-     * Creates a ManagedService resource.
+     * Creates request options for managedServicesCreate without sending the request
      */
-    async managedServicesCreateRaw(requestParameters: ManagedServicesCreateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<ManagedService>> {
+    async managedServicesCreateRequestOpts(requestParameters: ManagedServicesCreateRequest): Promise<runtime.RequestOpts> {
         if (requestParameters['managedServiceManagedServiceInput'] == null) {
             throw new runtime.RequiredError(
                 'managedServiceManagedServiceInput',
@@ -87,13 +108,25 @@ export class ManagedServiceApi extends runtime.BaseAPI {
                 headerParameters["Authorization"] = `Bearer ${tokenString}`;
             }
         }
-        const response = await this.request({
-            path: `/api/managed_services`,
+
+        let urlPath = `/api/managed_services`;
+
+        return {
+            path: urlPath,
             method: 'POST',
             headers: headerParameters,
             query: queryParameters,
             body: ManagedServiceManagedServiceInputToJSON(requestParameters['managedServiceManagedServiceInput']),
-        }, initOverrides);
+        };
+    }
+
+    /**
+     * Creates a ManagedService resource.
+     * Creates a ManagedService resource.
+     */
+    async managedServicesCreateRaw(requestParameters: ManagedServicesCreateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<ManagedService>> {
+        const requestOptions = await this.managedServicesCreateRequestOpts(requestParameters);
+        const response = await this.request(requestOptions, initOverrides);
 
         return new runtime.JSONApiResponse(response, (jsonValue) => ManagedServiceFromJSON(jsonValue));
     }
@@ -108,10 +141,9 @@ export class ManagedServiceApi extends runtime.BaseAPI {
     }
 
     /**
-     * Removes the ManagedService resource.
-     * Removes the ManagedService resource.
+     * Creates request options for managedServicesDelete without sending the request
      */
-    async managedServicesDeleteRaw(requestParameters: ManagedServicesDeleteRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>> {
+    async managedServicesDeleteRequestOpts(requestParameters: ManagedServicesDeleteRequest): Promise<runtime.RequestOpts> {
         if (requestParameters['id'] == null) {
             throw new runtime.RequiredError(
                 'id',
@@ -131,12 +163,25 @@ export class ManagedServiceApi extends runtime.BaseAPI {
                 headerParameters["Authorization"] = `Bearer ${tokenString}`;
             }
         }
-        const response = await this.request({
-            path: `/api/managed_services/{id}`.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters['id']))),
+
+        let urlPath = `/api/managed_services/{id}`;
+        urlPath = urlPath.replace('{id}', encodeURIComponent(String(requestParameters['id'])));
+
+        return {
+            path: urlPath,
             method: 'DELETE',
             headers: headerParameters,
             query: queryParameters,
-        }, initOverrides);
+        };
+    }
+
+    /**
+     * Removes the ManagedService resource.
+     * Removes the ManagedService resource.
+     */
+    async managedServicesDeleteRaw(requestParameters: ManagedServicesDeleteRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>> {
+        const requestOptions = await this.managedServicesDeleteRequestOpts(requestParameters);
+        const response = await this.request(requestOptions, initOverrides);
 
         return new runtime.VoidApiResponse(response);
     }
@@ -150,10 +195,9 @@ export class ManagedServiceApi extends runtime.BaseAPI {
     }
 
     /**
-     * Retrieves a ManagedService resource.
-     * Retrieves a ManagedService resource.
+     * Creates request options for managedServicesGet without sending the request
      */
-    async managedServicesGetRaw(requestParameters: ManagedServicesGetRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<ManagedService>> {
+    async managedServicesGetRequestOpts(requestParameters: ManagedServicesGetRequest): Promise<runtime.RequestOpts> {
         if (requestParameters['id'] == null) {
             throw new runtime.RequiredError(
                 'id',
@@ -173,12 +217,25 @@ export class ManagedServiceApi extends runtime.BaseAPI {
                 headerParameters["Authorization"] = `Bearer ${tokenString}`;
             }
         }
-        const response = await this.request({
-            path: `/api/managed_services/{id}`.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters['id']))),
+
+        let urlPath = `/api/managed_services/{id}`;
+        urlPath = urlPath.replace('{id}', encodeURIComponent(String(requestParameters['id'])));
+
+        return {
+            path: urlPath,
             method: 'GET',
             headers: headerParameters,
             query: queryParameters,
-        }, initOverrides);
+        };
+    }
+
+    /**
+     * Retrieves a ManagedService resource.
+     * Retrieves a ManagedService resource.
+     */
+    async managedServicesGetRaw(requestParameters: ManagedServicesGetRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<ManagedService>> {
+        const requestOptions = await this.managedServicesGetRequestOpts(requestParameters);
+        const response = await this.request(requestOptions, initOverrides);
 
         return new runtime.JSONApiResponse(response, (jsonValue) => ManagedServiceFromJSON(jsonValue));
     }
@@ -193,10 +250,9 @@ export class ManagedServiceApi extends runtime.BaseAPI {
     }
 
     /**
-     * Retrieves the collection of ManagedService resources.
-     * Retrieves the collection of ManagedService resources.
+     * Creates request options for managedServicesList without sending the request
      */
-    async managedServicesListRaw(requestParameters: ManagedServicesListRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Array<ManagedService>>> {
+    async managedServicesListRequestOpts(requestParameters: ManagedServicesListRequest): Promise<runtime.RequestOpts> {
         const queryParameters: any = {};
 
         if (requestParameters['page'] != null) {
@@ -213,12 +269,24 @@ export class ManagedServiceApi extends runtime.BaseAPI {
                 headerParameters["Authorization"] = `Bearer ${tokenString}`;
             }
         }
-        const response = await this.request({
-            path: `/api/managed_services`,
+
+        let urlPath = `/api/managed_services`;
+
+        return {
+            path: urlPath,
             method: 'GET',
             headers: headerParameters,
             query: queryParameters,
-        }, initOverrides);
+        };
+    }
+
+    /**
+     * Retrieves the collection of ManagedService resources.
+     * Retrieves the collection of ManagedService resources.
+     */
+    async managedServicesListRaw(requestParameters: ManagedServicesListRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Array<ManagedService>>> {
+        const requestOptions = await this.managedServicesListRequestOpts(requestParameters);
+        const response = await this.request(requestOptions, initOverrides);
 
         return new runtime.JSONApiResponse(response, (jsonValue) => jsonValue.map(ManagedServiceFromJSON));
     }
@@ -233,10 +301,9 @@ export class ManagedServiceApi extends runtime.BaseAPI {
     }
 
     /**
-     * Retrieves the collection of ManagedService resources.
-     * Retrieves the collection of ManagedService resources.
+     * Creates request options for managedServicesListRetired without sending the request
      */
-    async managedServicesListRetiredRaw(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Array<ManagedService>>> {
+    async managedServicesListRetiredRequestOpts(): Promise<runtime.RequestOpts> {
         const queryParameters: any = {};
 
         const headerParameters: runtime.HTTPHeaders = {};
@@ -249,12 +316,24 @@ export class ManagedServiceApi extends runtime.BaseAPI {
                 headerParameters["Authorization"] = `Bearer ${tokenString}`;
             }
         }
-        const response = await this.request({
-            path: `/api/managed_services/retired`,
+
+        let urlPath = `/api/managed_services/retired`;
+
+        return {
+            path: urlPath,
             method: 'GET',
             headers: headerParameters,
             query: queryParameters,
-        }, initOverrides);
+        };
+    }
+
+    /**
+     * Retrieves the collection of ManagedService resources.
+     * Retrieves the collection of ManagedService resources.
+     */
+    async managedServicesListRetiredRaw(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Array<ManagedService>>> {
+        const requestOptions = await this.managedServicesListRetiredRequestOpts();
+        const response = await this.request(requestOptions, initOverrides);
 
         return new runtime.JSONApiResponse(response, (jsonValue) => jsonValue.map(ManagedServiceFromJSON));
     }
@@ -269,10 +348,9 @@ export class ManagedServiceApi extends runtime.BaseAPI {
     }
 
     /**
-     * Creates a ManagedService resource.
-     * Creates a ManagedService resource.
+     * Creates request options for managedServicesRestore without sending the request
      */
-    async managedServicesRestoreRaw(requestParameters: ManagedServicesRestoreRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<ManagedService>> {
+    async managedServicesRestoreRequestOpts(requestParameters: ManagedServicesRestoreRequest): Promise<runtime.RequestOpts> {
         if (requestParameters['id'] == null) {
             throw new runtime.RequiredError(
                 'id',
@@ -292,12 +370,25 @@ export class ManagedServiceApi extends runtime.BaseAPI {
                 headerParameters["Authorization"] = `Bearer ${tokenString}`;
             }
         }
-        const response = await this.request({
-            path: `/api/managed_services/{id}/restore`.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters['id']))),
+
+        let urlPath = `/api/managed_services/{id}/restore`;
+        urlPath = urlPath.replace('{id}', encodeURIComponent(String(requestParameters['id'])));
+
+        return {
+            path: urlPath,
             method: 'POST',
             headers: headerParameters,
             query: queryParameters,
-        }, initOverrides);
+        };
+    }
+
+    /**
+     * Creates a ManagedService resource.
+     * Creates a ManagedService resource.
+     */
+    async managedServicesRestoreRaw(requestParameters: ManagedServicesRestoreRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<ManagedService>> {
+        const requestOptions = await this.managedServicesRestoreRequestOpts(requestParameters);
+        const response = await this.request(requestOptions, initOverrides);
 
         return new runtime.JSONApiResponse(response, (jsonValue) => ManagedServiceFromJSON(jsonValue));
     }
@@ -312,10 +403,9 @@ export class ManagedServiceApi extends runtime.BaseAPI {
     }
 
     /**
-     * Creates a ManagedService resource.
-     * Creates a ManagedService resource.
+     * Creates request options for managedServicesResume without sending the request
      */
-    async managedServicesResumeRaw(requestParameters: ManagedServicesResumeRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<ManagedService>> {
+    async managedServicesResumeRequestOpts(requestParameters: ManagedServicesResumeRequest): Promise<runtime.RequestOpts> {
         if (requestParameters['id'] == null) {
             throw new runtime.RequiredError(
                 'id',
@@ -335,12 +425,25 @@ export class ManagedServiceApi extends runtime.BaseAPI {
                 headerParameters["Authorization"] = `Bearer ${tokenString}`;
             }
         }
-        const response = await this.request({
-            path: `/api/managed_services/{id}/resume`.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters['id']))),
+
+        let urlPath = `/api/managed_services/{id}/resume`;
+        urlPath = urlPath.replace('{id}', encodeURIComponent(String(requestParameters['id'])));
+
+        return {
+            path: urlPath,
             method: 'POST',
             headers: headerParameters,
             query: queryParameters,
-        }, initOverrides);
+        };
+    }
+
+    /**
+     * Creates a ManagedService resource.
+     * Creates a ManagedService resource.
+     */
+    async managedServicesResumeRaw(requestParameters: ManagedServicesResumeRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<ManagedService>> {
+        const requestOptions = await this.managedServicesResumeRequestOpts(requestParameters);
+        const response = await this.request(requestOptions, initOverrides);
 
         return new runtime.JSONApiResponse(response, (jsonValue) => ManagedServiceFromJSON(jsonValue));
     }
@@ -355,10 +458,9 @@ export class ManagedServiceApi extends runtime.BaseAPI {
     }
 
     /**
-     * Creates a ManagedService resource.
-     * Creates a ManagedService resource.
+     * Creates request options for managedServicesSuspend without sending the request
      */
-    async managedServicesSuspendRaw(requestParameters: ManagedServicesSuspendRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<ManagedService>> {
+    async managedServicesSuspendRequestOpts(requestParameters: ManagedServicesSuspendRequest): Promise<runtime.RequestOpts> {
         if (requestParameters['id'] == null) {
             throw new runtime.RequiredError(
                 'id',
@@ -378,12 +480,25 @@ export class ManagedServiceApi extends runtime.BaseAPI {
                 headerParameters["Authorization"] = `Bearer ${tokenString}`;
             }
         }
-        const response = await this.request({
-            path: `/api/managed_services/{id}/suspend`.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters['id']))),
+
+        let urlPath = `/api/managed_services/{id}/suspend`;
+        urlPath = urlPath.replace('{id}', encodeURIComponent(String(requestParameters['id'])));
+
+        return {
+            path: urlPath,
             method: 'POST',
             headers: headerParameters,
             query: queryParameters,
-        }, initOverrides);
+        };
+    }
+
+    /**
+     * Creates a ManagedService resource.
+     * Creates a ManagedService resource.
+     */
+    async managedServicesSuspendRaw(requestParameters: ManagedServicesSuspendRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<ManagedService>> {
+        const requestOptions = await this.managedServicesSuspendRequestOpts(requestParameters);
+        const response = await this.request(requestOptions, initOverrides);
 
         return new runtime.JSONApiResponse(response, (jsonValue) => ManagedServiceFromJSON(jsonValue));
     }

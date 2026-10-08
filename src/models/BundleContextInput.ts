@@ -29,26 +29,18 @@ import {
 export interface BundleContextInput {
     /**
      * 
-     * @type {string}
-     * @memberof BundleContextInput
      */
     service: string;
     /**
      * 
-     * @type {string}
-     * @memberof BundleContextInput
      */
     contextSha256: string;
     /**
      * 
-     * @type {string}
-     * @memberof BundleContextInput
      */
     dockerfile?: string;
     /**
      * 
-     * @type {Array<BundleAdditionalContextInput>}
-     * @memberof BundleContextInput
      */
     additionalContexts?: Array<BundleAdditionalContextInput>;
 }

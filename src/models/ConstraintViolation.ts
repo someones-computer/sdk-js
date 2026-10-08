@@ -29,38 +29,26 @@ import {
 export interface ConstraintViolation {
     /**
      * 
-     * @type {number}
-     * @memberof ConstraintViolation
      */
     status?: number;
     /**
      * 
-     * @type {Array<ConstraintViolationViolationsInner>}
-     * @memberof ConstraintViolation
      */
     violations?: Array<ConstraintViolationViolationsInner>;
     /**
      * 
-     * @type {string}
-     * @memberof ConstraintViolation
      */
     readonly detail?: string;
     /**
      * 
-     * @type {string}
-     * @memberof ConstraintViolation
      */
     readonly type?: string;
     /**
      * 
-     * @type {string}
-     * @memberof ConstraintViolation
      */
     readonly title?: string | null;
     /**
      * 
-     * @type {string}
-     * @memberof ConstraintViolation
      */
     readonly instance?: string | null;
 }
@@ -86,8 +74,8 @@ export function ConstraintViolationFromJSONTyped(json: any, ignoreDiscriminator:
         'violations': json['violations'] == null ? undefined : ((json['violations'] as Array<any>).map(ConstraintViolationViolationsInnerFromJSON)),
         'detail': json['detail'] == null ? undefined : json['detail'],
         'type': json['type'] == null ? undefined : json['type'],
-        'title': json['title'] == null ? undefined : json['title'],
-        'instance': json['instance'] == null ? undefined : json['instance'],
+        'title': json['title'] === undefined ? undefined : json['title'] === null ? null : json['title'],
+        'instance': json['instance'] === undefined ? undefined : json['instance'] === null ? null : json['instance'],
     };
 }
 

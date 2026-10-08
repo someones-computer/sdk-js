@@ -12,7 +12,7 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
+import { mapValues, parseDate, parseDateTime, serializeDate, serializeDateTime } from '../runtime';
 /**
  * List adoption approval decisions the caller can see.
  * @export
@@ -21,32 +21,22 @@ import { mapValues } from '../runtime';
 export interface AdoptionApproval {
     /**
      * 
-     * @type {string}
-     * @memberof AdoptionApproval
      */
     application?: string;
     /**
      * The compose service name this decision is about — joined against a live plan by name.
-     * @type {string}
-     * @memberof AdoptionApproval
      */
     composeServiceName?: string;
     /**
      * 
-     * @type {boolean}
-     * @memberof AdoptionApproval
      */
     approved?: boolean;
     /**
      * 
-     * @type {Date}
-     * @memberof AdoptionApproval
      */
     decidedAt?: Date | null;
     /**
      * 
-     * @type {string}
-     * @memberof AdoptionApproval
      */
     readonly id?: string;
 }
@@ -71,7 +61,7 @@ export function AdoptionApprovalFromJSONTyped(json: any, ignoreDiscriminator: bo
         'application': json['application'] == null ? undefined : json['application'],
         'composeServiceName': json['composeServiceName'] == null ? undefined : json['composeServiceName'],
         'approved': json['approved'] == null ? undefined : json['approved'],
-        'decidedAt': json['decidedAt'] == null ? undefined : (new Date(json['decidedAt'])),
+        'decidedAt': json['decidedAt'] === undefined ? undefined : json['decidedAt'] === null ? null : (parseDateTime(json['decidedAt'])),
         'id': json['id'] == null ? undefined : json['id'],
     };
 }
@@ -90,7 +80,7 @@ export function AdoptionApprovalToJSONTyped(value?: Omit<AdoptionApproval, 'id'>
         'application': value['application'],
         'composeServiceName': value['composeServiceName'],
         'approved': value['approved'],
-        'decidedAt': value['decidedAt'] == null ? undefined : ((value['decidedAt'] as any).toISOString()),
+        'decidedAt': value['decidedAt'] == null ? value['decidedAt'] : serializeDateTime(value['decidedAt']),
     };
 }
 

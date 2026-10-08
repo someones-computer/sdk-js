@@ -12,40 +12,59 @@
  * Do not edit the class manually.
  */
 
-
 import * as runtime from '../runtime';
-import type {
-  ConstraintViolation,
-  DeploymentAccessGate,
-  DeploymentAccessGateJsonMergePatch,
-} from '../models/index';
 import {
+    type ConstraintViolation,
     ConstraintViolationFromJSON,
     ConstraintViolationToJSON,
+} from '../models/ConstraintViolation';
+import {
+    type DeploymentAccessGate,
     DeploymentAccessGateFromJSON,
     DeploymentAccessGateToJSON,
+} from '../models/DeploymentAccessGate';
+import {
+    type DeploymentAccessGateJsonMergePatch,
     DeploymentAccessGateJsonMergePatchFromJSON,
     DeploymentAccessGateJsonMergePatchToJSON,
-} from '../models/index';
+} from '../models/DeploymentAccessGateJsonMergePatch';
 
 export interface DeploymentAccessGatesCreateRequest {
+    /**
+     * 
+     */
     deploymentAccessGate: Omit<DeploymentAccessGate, 'id'|'createdAt'|'updatedAt'>;
 }
 
 export interface DeploymentAccessGatesDeleteRequest {
+    /**
+     * DeploymentAccessGate identifier
+     */
     id: string;
 }
 
 export interface DeploymentAccessGatesGetRequest {
+    /**
+     * DeploymentAccessGate identifier
+     */
     id: string;
 }
 
 export interface DeploymentAccessGatesListRequest {
+    /**
+     * The collection page number
+     */
     page?: number;
 }
 
 export interface DeploymentAccessGatesUpdateRequest {
+    /**
+     * DeploymentAccessGate identifier
+     */
     id: string;
+    /**
+     * 
+     */
     deploymentAccessGateJsonMergePatch: Omit<DeploymentAccessGateJsonMergePatch, 'id'|'createdAt'|'updatedAt'>;
 }
 
@@ -55,10 +74,9 @@ export interface DeploymentAccessGatesUpdateRequest {
 export class DeploymentAccessGateApi extends runtime.BaseAPI {
 
     /**
-     * Creates a DeploymentAccessGate resource.
-     * Creates a DeploymentAccessGate resource.
+     * Creates request options for deploymentAccessGatesCreate without sending the request
      */
-    async deploymentAccessGatesCreateRaw(requestParameters: DeploymentAccessGatesCreateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<DeploymentAccessGate>> {
+    async deploymentAccessGatesCreateRequestOpts(requestParameters: DeploymentAccessGatesCreateRequest): Promise<runtime.RequestOpts> {
         if (requestParameters['deploymentAccessGate'] == null) {
             throw new runtime.RequiredError(
                 'deploymentAccessGate',
@@ -80,13 +98,25 @@ export class DeploymentAccessGateApi extends runtime.BaseAPI {
                 headerParameters["Authorization"] = `Bearer ${tokenString}`;
             }
         }
-        const response = await this.request({
-            path: `/api/deployment_access_gates`,
+
+        let urlPath = `/api/deployment_access_gates`;
+
+        return {
+            path: urlPath,
             method: 'POST',
             headers: headerParameters,
             query: queryParameters,
             body: DeploymentAccessGateToJSON(requestParameters['deploymentAccessGate']),
-        }, initOverrides);
+        };
+    }
+
+    /**
+     * Creates a DeploymentAccessGate resource.
+     * Creates a DeploymentAccessGate resource.
+     */
+    async deploymentAccessGatesCreateRaw(requestParameters: DeploymentAccessGatesCreateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<DeploymentAccessGate>> {
+        const requestOptions = await this.deploymentAccessGatesCreateRequestOpts(requestParameters);
+        const response = await this.request(requestOptions, initOverrides);
 
         return new runtime.JSONApiResponse(response, (jsonValue) => DeploymentAccessGateFromJSON(jsonValue));
     }
@@ -101,10 +131,9 @@ export class DeploymentAccessGateApi extends runtime.BaseAPI {
     }
 
     /**
-     * Removes the DeploymentAccessGate resource.
-     * Removes the DeploymentAccessGate resource.
+     * Creates request options for deploymentAccessGatesDelete without sending the request
      */
-    async deploymentAccessGatesDeleteRaw(requestParameters: DeploymentAccessGatesDeleteRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>> {
+    async deploymentAccessGatesDeleteRequestOpts(requestParameters: DeploymentAccessGatesDeleteRequest): Promise<runtime.RequestOpts> {
         if (requestParameters['id'] == null) {
             throw new runtime.RequiredError(
                 'id',
@@ -124,12 +153,25 @@ export class DeploymentAccessGateApi extends runtime.BaseAPI {
                 headerParameters["Authorization"] = `Bearer ${tokenString}`;
             }
         }
-        const response = await this.request({
-            path: `/api/deployment_access_gates/{id}`.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters['id']))),
+
+        let urlPath = `/api/deployment_access_gates/{id}`;
+        urlPath = urlPath.replace('{id}', encodeURIComponent(String(requestParameters['id'])));
+
+        return {
+            path: urlPath,
             method: 'DELETE',
             headers: headerParameters,
             query: queryParameters,
-        }, initOverrides);
+        };
+    }
+
+    /**
+     * Removes the DeploymentAccessGate resource.
+     * Removes the DeploymentAccessGate resource.
+     */
+    async deploymentAccessGatesDeleteRaw(requestParameters: DeploymentAccessGatesDeleteRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>> {
+        const requestOptions = await this.deploymentAccessGatesDeleteRequestOpts(requestParameters);
+        const response = await this.request(requestOptions, initOverrides);
 
         return new runtime.VoidApiResponse(response);
     }
@@ -143,10 +185,9 @@ export class DeploymentAccessGateApi extends runtime.BaseAPI {
     }
 
     /**
-     * Retrieves a DeploymentAccessGate resource.
-     * Retrieves a DeploymentAccessGate resource.
+     * Creates request options for deploymentAccessGatesGet without sending the request
      */
-    async deploymentAccessGatesGetRaw(requestParameters: DeploymentAccessGatesGetRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<DeploymentAccessGate>> {
+    async deploymentAccessGatesGetRequestOpts(requestParameters: DeploymentAccessGatesGetRequest): Promise<runtime.RequestOpts> {
         if (requestParameters['id'] == null) {
             throw new runtime.RequiredError(
                 'id',
@@ -166,12 +207,25 @@ export class DeploymentAccessGateApi extends runtime.BaseAPI {
                 headerParameters["Authorization"] = `Bearer ${tokenString}`;
             }
         }
-        const response = await this.request({
-            path: `/api/deployment_access_gates/{id}`.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters['id']))),
+
+        let urlPath = `/api/deployment_access_gates/{id}`;
+        urlPath = urlPath.replace('{id}', encodeURIComponent(String(requestParameters['id'])));
+
+        return {
+            path: urlPath,
             method: 'GET',
             headers: headerParameters,
             query: queryParameters,
-        }, initOverrides);
+        };
+    }
+
+    /**
+     * Retrieves a DeploymentAccessGate resource.
+     * Retrieves a DeploymentAccessGate resource.
+     */
+    async deploymentAccessGatesGetRaw(requestParameters: DeploymentAccessGatesGetRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<DeploymentAccessGate>> {
+        const requestOptions = await this.deploymentAccessGatesGetRequestOpts(requestParameters);
+        const response = await this.request(requestOptions, initOverrides);
 
         return new runtime.JSONApiResponse(response, (jsonValue) => DeploymentAccessGateFromJSON(jsonValue));
     }
@@ -186,10 +240,9 @@ export class DeploymentAccessGateApi extends runtime.BaseAPI {
     }
 
     /**
-     * Retrieves the collection of DeploymentAccessGate resources.
-     * Retrieves the collection of DeploymentAccessGate resources.
+     * Creates request options for deploymentAccessGatesList without sending the request
      */
-    async deploymentAccessGatesListRaw(requestParameters: DeploymentAccessGatesListRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Array<DeploymentAccessGate>>> {
+    async deploymentAccessGatesListRequestOpts(requestParameters: DeploymentAccessGatesListRequest): Promise<runtime.RequestOpts> {
         const queryParameters: any = {};
 
         if (requestParameters['page'] != null) {
@@ -206,12 +259,24 @@ export class DeploymentAccessGateApi extends runtime.BaseAPI {
                 headerParameters["Authorization"] = `Bearer ${tokenString}`;
             }
         }
-        const response = await this.request({
-            path: `/api/deployment_access_gates`,
+
+        let urlPath = `/api/deployment_access_gates`;
+
+        return {
+            path: urlPath,
             method: 'GET',
             headers: headerParameters,
             query: queryParameters,
-        }, initOverrides);
+        };
+    }
+
+    /**
+     * Retrieves the collection of DeploymentAccessGate resources.
+     * Retrieves the collection of DeploymentAccessGate resources.
+     */
+    async deploymentAccessGatesListRaw(requestParameters: DeploymentAccessGatesListRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Array<DeploymentAccessGate>>> {
+        const requestOptions = await this.deploymentAccessGatesListRequestOpts(requestParameters);
+        const response = await this.request(requestOptions, initOverrides);
 
         return new runtime.JSONApiResponse(response, (jsonValue) => jsonValue.map(DeploymentAccessGateFromJSON));
     }
@@ -226,10 +291,9 @@ export class DeploymentAccessGateApi extends runtime.BaseAPI {
     }
 
     /**
-     * Updates the DeploymentAccessGate resource.
-     * Updates the DeploymentAccessGate resource.
+     * Creates request options for deploymentAccessGatesUpdate without sending the request
      */
-    async deploymentAccessGatesUpdateRaw(requestParameters: DeploymentAccessGatesUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<DeploymentAccessGate>> {
+    async deploymentAccessGatesUpdateRequestOpts(requestParameters: DeploymentAccessGatesUpdateRequest): Promise<runtime.RequestOpts> {
         if (requestParameters['id'] == null) {
             throw new runtime.RequiredError(
                 'id',
@@ -258,13 +322,26 @@ export class DeploymentAccessGateApi extends runtime.BaseAPI {
                 headerParameters["Authorization"] = `Bearer ${tokenString}`;
             }
         }
-        const response = await this.request({
-            path: `/api/deployment_access_gates/{id}`.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters['id']))),
+
+        let urlPath = `/api/deployment_access_gates/{id}`;
+        urlPath = urlPath.replace('{id}', encodeURIComponent(String(requestParameters['id'])));
+
+        return {
+            path: urlPath,
             method: 'PATCH',
             headers: headerParameters,
             query: queryParameters,
             body: DeploymentAccessGateJsonMergePatchToJSON(requestParameters['deploymentAccessGateJsonMergePatch']),
-        }, initOverrides);
+        };
+    }
+
+    /**
+     * Updates the DeploymentAccessGate resource.
+     * Updates the DeploymentAccessGate resource.
+     */
+    async deploymentAccessGatesUpdateRaw(requestParameters: DeploymentAccessGatesUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<DeploymentAccessGate>> {
+        const requestOptions = await this.deploymentAccessGatesUpdateRequestOpts(requestParameters);
+        const response = await this.request(requestOptions, initOverrides);
 
         return new runtime.JSONApiResponse(response, (jsonValue) => DeploymentAccessGateFromJSON(jsonValue));
     }

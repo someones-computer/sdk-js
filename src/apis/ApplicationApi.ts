@@ -12,47 +12,84 @@
  * Do not edit the class manually.
  */
 
-
 import * as runtime from '../runtime';
-import type {
-  Application,
-  ApplicationJsonMergePatch,
-  ConstraintViolation,
-} from '../models/index';
 import {
+    type Application,
     ApplicationFromJSON,
     ApplicationToJSON,
+} from '../models/Application';
+import {
+    type ApplicationJsonMergePatch,
     ApplicationJsonMergePatchFromJSON,
     ApplicationJsonMergePatchToJSON,
+} from '../models/ApplicationJsonMergePatch';
+import {
+    type ConstraintViolation,
     ConstraintViolationFromJSON,
     ConstraintViolationToJSON,
-} from '../models/index';
+} from '../models/ConstraintViolation';
 
 export interface ApplicationsCreateRequest {
-    application: Omit<Application, 'firstRunningAt'|'iconKey'|'iconSource'|'poolDomain'|'poolShortNameDeployment'|'poolShortNameService'|'id'|'deletedAt'|'createdAt'|'updatedAt'|'operatorChosenIcon'|'iconVersion'|'deleted'>;
+    /**
+     * 
+     */
+    application: Omit<Application, 'firstRunningAt'|'iconKey'|'iconSource'|'deployments'|'portAllocations'|'poolDomain'|'poolShortNameDeployment'|'poolShortNameService'|'id'|'deletedAt'|'createdAt'|'updatedAt'|'operatorChosenIcon'|'iconVersion'|'deleted'>;
 }
 
 export interface ApplicationsDeleteRequest {
+    /**
+     * Application identifier
+     */
     id: string;
 }
 
 export interface ApplicationsGetRequest {
+    /**
+     * Application identifier
+     */
     id: string;
 }
 
 export interface ApplicationsListRequest {
+    /**
+     * The collection page number
+     */
     page?: number;
+    /**
+     * 
+     */
     slug?: string;
+    /**
+     * 
+     */
     slug2?: Array<string>;
+    /**
+     * 
+     */
     organization?: string;
+    /**
+     * 
+     */
     organization2?: Array<string>;
+    /**
+     * 
+     */
     organizationSlug?: string;
+    /**
+     * 
+     */
     organizationSlug2?: Array<string>;
 }
 
 export interface ApplicationsUpdateRequest {
+    /**
+     * Application identifier
+     */
     id: string;
-    applicationJsonMergePatch: Omit<ApplicationJsonMergePatch, 'firstRunningAt'|'iconKey'|'iconSource'|'poolDomain'|'poolShortNameDeployment'|'poolShortNameService'|'id'|'deletedAt'|'createdAt'|'updatedAt'|'operatorChosenIcon'|'iconVersion'|'deleted'>;
+    /**
+     * 
+     */
+    applicationJsonMergePatch: Omit<ApplicationJsonMergePatch, 'firstRunningAt'|'iconKey'|'iconSource'|'deployments'|'portAllocations'|'poolDomain'|'poolShortNameDeployment'|'poolShortNameService'|'id'|'deletedAt'|'createdAt'|'updatedAt'|'operatorChosenIcon'|'iconVersion'|'deleted'>;
 }
 
 /**
@@ -61,10 +98,9 @@ export interface ApplicationsUpdateRequest {
 export class ApplicationApi extends runtime.BaseAPI {
 
     /**
-     * Creates a Application resource.
-     * Creates a Application resource.
+     * Creates request options for applicationsCreate without sending the request
      */
-    async applicationsCreateRaw(requestParameters: ApplicationsCreateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Application>> {
+    async applicationsCreateRequestOpts(requestParameters: ApplicationsCreateRequest): Promise<runtime.RequestOpts> {
         if (requestParameters['application'] == null) {
             throw new runtime.RequiredError(
                 'application',
@@ -86,13 +122,25 @@ export class ApplicationApi extends runtime.BaseAPI {
                 headerParameters["Authorization"] = `Bearer ${tokenString}`;
             }
         }
-        const response = await this.request({
-            path: `/api/applications`,
+
+        let urlPath = `/api/applications`;
+
+        return {
+            path: urlPath,
             method: 'POST',
             headers: headerParameters,
             query: queryParameters,
             body: ApplicationToJSON(requestParameters['application']),
-        }, initOverrides);
+        };
+    }
+
+    /**
+     * Creates a Application resource.
+     * Creates a Application resource.
+     */
+    async applicationsCreateRaw(requestParameters: ApplicationsCreateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Application>> {
+        const requestOptions = await this.applicationsCreateRequestOpts(requestParameters);
+        const response = await this.request(requestOptions, initOverrides);
 
         return new runtime.JSONApiResponse(response, (jsonValue) => ApplicationFromJSON(jsonValue));
     }
@@ -107,10 +155,9 @@ export class ApplicationApi extends runtime.BaseAPI {
     }
 
     /**
-     * Removes the Application resource.
-     * Removes the Application resource.
+     * Creates request options for applicationsDelete without sending the request
      */
-    async applicationsDeleteRaw(requestParameters: ApplicationsDeleteRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>> {
+    async applicationsDeleteRequestOpts(requestParameters: ApplicationsDeleteRequest): Promise<runtime.RequestOpts> {
         if (requestParameters['id'] == null) {
             throw new runtime.RequiredError(
                 'id',
@@ -130,12 +177,25 @@ export class ApplicationApi extends runtime.BaseAPI {
                 headerParameters["Authorization"] = `Bearer ${tokenString}`;
             }
         }
-        const response = await this.request({
-            path: `/api/applications/{id}`.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters['id']))),
+
+        let urlPath = `/api/applications/{id}`;
+        urlPath = urlPath.replace('{id}', encodeURIComponent(String(requestParameters['id'])));
+
+        return {
+            path: urlPath,
             method: 'DELETE',
             headers: headerParameters,
             query: queryParameters,
-        }, initOverrides);
+        };
+    }
+
+    /**
+     * Removes the Application resource.
+     * Removes the Application resource.
+     */
+    async applicationsDeleteRaw(requestParameters: ApplicationsDeleteRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>> {
+        const requestOptions = await this.applicationsDeleteRequestOpts(requestParameters);
+        const response = await this.request(requestOptions, initOverrides);
 
         return new runtime.VoidApiResponse(response);
     }
@@ -149,10 +209,9 @@ export class ApplicationApi extends runtime.BaseAPI {
     }
 
     /**
-     * Retrieves a Application resource.
-     * Retrieves a Application resource.
+     * Creates request options for applicationsGet without sending the request
      */
-    async applicationsGetRaw(requestParameters: ApplicationsGetRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Application>> {
+    async applicationsGetRequestOpts(requestParameters: ApplicationsGetRequest): Promise<runtime.RequestOpts> {
         if (requestParameters['id'] == null) {
             throw new runtime.RequiredError(
                 'id',
@@ -172,12 +231,25 @@ export class ApplicationApi extends runtime.BaseAPI {
                 headerParameters["Authorization"] = `Bearer ${tokenString}`;
             }
         }
-        const response = await this.request({
-            path: `/api/applications/{id}`.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters['id']))),
+
+        let urlPath = `/api/applications/{id}`;
+        urlPath = urlPath.replace('{id}', encodeURIComponent(String(requestParameters['id'])));
+
+        return {
+            path: urlPath,
             method: 'GET',
             headers: headerParameters,
             query: queryParameters,
-        }, initOverrides);
+        };
+    }
+
+    /**
+     * Retrieves a Application resource.
+     * Retrieves a Application resource.
+     */
+    async applicationsGetRaw(requestParameters: ApplicationsGetRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Application>> {
+        const requestOptions = await this.applicationsGetRequestOpts(requestParameters);
+        const response = await this.request(requestOptions, initOverrides);
 
         return new runtime.JSONApiResponse(response, (jsonValue) => ApplicationFromJSON(jsonValue));
     }
@@ -192,10 +264,9 @@ export class ApplicationApi extends runtime.BaseAPI {
     }
 
     /**
-     * Retrieves the collection of Application resources.
-     * Retrieves the collection of Application resources.
+     * Creates request options for applicationsList without sending the request
      */
-    async applicationsListRaw(requestParameters: ApplicationsListRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Array<Application>>> {
+    async applicationsListRequestOpts(requestParameters: ApplicationsListRequest): Promise<runtime.RequestOpts> {
         const queryParameters: any = {};
 
         if (requestParameters['page'] != null) {
@@ -236,12 +307,24 @@ export class ApplicationApi extends runtime.BaseAPI {
                 headerParameters["Authorization"] = `Bearer ${tokenString}`;
             }
         }
-        const response = await this.request({
-            path: `/api/applications`,
+
+        let urlPath = `/api/applications`;
+
+        return {
+            path: urlPath,
             method: 'GET',
             headers: headerParameters,
             query: queryParameters,
-        }, initOverrides);
+        };
+    }
+
+    /**
+     * Retrieves the collection of Application resources.
+     * Retrieves the collection of Application resources.
+     */
+    async applicationsListRaw(requestParameters: ApplicationsListRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Array<Application>>> {
+        const requestOptions = await this.applicationsListRequestOpts(requestParameters);
+        const response = await this.request(requestOptions, initOverrides);
 
         return new runtime.JSONApiResponse(response, (jsonValue) => jsonValue.map(ApplicationFromJSON));
     }
@@ -256,10 +339,9 @@ export class ApplicationApi extends runtime.BaseAPI {
     }
 
     /**
-     * Updates the Application resource.
-     * Updates the Application resource.
+     * Creates request options for applicationsUpdate without sending the request
      */
-    async applicationsUpdateRaw(requestParameters: ApplicationsUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Application>> {
+    async applicationsUpdateRequestOpts(requestParameters: ApplicationsUpdateRequest): Promise<runtime.RequestOpts> {
         if (requestParameters['id'] == null) {
             throw new runtime.RequiredError(
                 'id',
@@ -288,13 +370,26 @@ export class ApplicationApi extends runtime.BaseAPI {
                 headerParameters["Authorization"] = `Bearer ${tokenString}`;
             }
         }
-        const response = await this.request({
-            path: `/api/applications/{id}`.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters['id']))),
+
+        let urlPath = `/api/applications/{id}`;
+        urlPath = urlPath.replace('{id}', encodeURIComponent(String(requestParameters['id'])));
+
+        return {
+            path: urlPath,
             method: 'PATCH',
             headers: headerParameters,
             query: queryParameters,
             body: ApplicationJsonMergePatchToJSON(requestParameters['applicationJsonMergePatch']),
-        }, initOverrides);
+        };
+    }
+
+    /**
+     * Updates the Application resource.
+     * Updates the Application resource.
+     */
+    async applicationsUpdateRaw(requestParameters: ApplicationsUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Application>> {
+        const requestOptions = await this.applicationsUpdateRequestOpts(requestParameters);
+        const response = await this.request(requestOptions, initOverrides);
 
         return new runtime.JSONApiResponse(response, (jsonValue) => ApplicationFromJSON(jsonValue));
     }

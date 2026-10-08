@@ -12,7 +12,7 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
+import { mapValues, parseDate, parseDateTime, serializeDate, serializeDateTime } from '../runtime';
 /**
  * 
  * @export
@@ -23,14 +23,10 @@ export interface PortAllocation {
      * The cluster this port is claimed on. Deleting the cluster takes its
      * allocations with it — a reservation on a swarm that no longer exists is not
      * holding anything back.
-     * @type {string}
-     * @memberof PortAllocation
      */
     swarm?: string;
     /**
      * 
-     * @type {string}
-     * @memberof PortAllocation
      */
     application?: string;
     /**
@@ -39,56 +35,38 @@ export interface PortAllocation {
      * client that never sent one), which is its own stable scope rather than a
      * wildcard: every unnamed revision of an application shares it, exactly the
      * single continuous scope every application had before this column existed.
-     * @type {string}
-     * @memberof PortAllocation
      */
     deploymentName?: string;
     /**
      * The compose service name, as the customer's file spells it.
-     * @type {string}
-     * @memberof PortAllocation
      */
     serviceName?: string;
     /**
      * The container port traffic is forwarded to.
-     * @type {number}
-     * @memberof PortAllocation
      */
     targetPort?: number;
     /**
      * 
-     * @type {string}
-     * @memberof PortAllocation
      */
     protocol?: PortAllocationProtocolEnum;
     /**
      * What the world connects to. Unique per protocol on this cluster.
-     * @type {number}
-     * @memberof PortAllocation
      */
     publishedPort?: number;
     /**
      * Whether the platform chose this number or the compose file did.
-     * @type {boolean}
-     * @memberof PortAllocation
      */
     assigned?: boolean;
     /**
      * 
-     * @type {string}
-     * @memberof PortAllocation
      */
     readonly id?: string;
     /**
      * 
-     * @type {Date}
-     * @memberof PortAllocation
      */
     readonly createdAt?: Date;
     /**
      * 
-     * @type {Date}
-     * @memberof PortAllocation
      */
     readonly updatedAt?: Date | null;
 }
@@ -99,7 +77,7 @@ export interface PortAllocation {
  */
 export const PortAllocationProtocolEnum = {
     Tcp: 'tcp',
-    Udp: 'udp'
+    Udp: 'udp',
 } as const;
 export type PortAllocationProtocolEnum = typeof PortAllocationProtocolEnum[keyof typeof PortAllocationProtocolEnum];
 
@@ -130,8 +108,8 @@ export function PortAllocationFromJSONTyped(json: any, ignoreDiscriminator: bool
         'publishedPort': json['publishedPort'] == null ? undefined : json['publishedPort'],
         'assigned': json['assigned'] == null ? undefined : json['assigned'],
         'id': json['id'] == null ? undefined : json['id'],
-        'createdAt': json['createdAt'] == null ? undefined : (new Date(json['createdAt'])),
-        'updatedAt': json['updatedAt'] == null ? undefined : (new Date(json['updatedAt'])),
+        'createdAt': json['createdAt'] == null ? undefined : (parseDateTime(json['createdAt'])),
+        'updatedAt': json['updatedAt'] === undefined ? undefined : json['updatedAt'] === null ? null : (parseDateTime(json['updatedAt'])),
     };
 }
 

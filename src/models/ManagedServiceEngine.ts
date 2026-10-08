@@ -21,14 +21,10 @@ import { mapValues } from '../runtime';
 export interface ManagedServiceEngine {
     /**
      * The engine's handle, such as `pg17-1`.
-     * @type {string}
-     * @memberof ManagedServiceEngine
      */
     name?: string;
     /**
      * The state of the engine, such as `serving` or `failed`.
-     * @type {string}
-     * @memberof ManagedServiceEngine
      */
     state?: ManagedServiceEngineStateEnum;
 }
@@ -44,7 +40,7 @@ export const ManagedServiceEngineStateEnum = {
     Serving: 'serving',
     Draining: 'draining',
     Retired: 'retired',
-    Failed: 'failed'
+    Failed: 'failed',
 } as const;
 export type ManagedServiceEngineStateEnum = typeof ManagedServiceEngineStateEnum[keyof typeof ManagedServiceEngineStateEnum];
 

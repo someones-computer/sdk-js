@@ -12,35 +12,48 @@
  * Do not edit the class manually.
  */
 
-
 import * as runtime from '../runtime';
-import type {
-  AdoptionApproval,
-  AdoptionApprovalAdoptionApprovalInput,
-  ConstraintViolation,
-} from '../models/index';
 import {
+    type AdoptionApproval,
     AdoptionApprovalFromJSON,
     AdoptionApprovalToJSON,
+} from '../models/AdoptionApproval';
+import {
+    type AdoptionApprovalAdoptionApprovalInput,
     AdoptionApprovalAdoptionApprovalInputFromJSON,
     AdoptionApprovalAdoptionApprovalInputToJSON,
+} from '../models/AdoptionApprovalAdoptionApprovalInput';
+import {
+    type ConstraintViolation,
     ConstraintViolationFromJSON,
     ConstraintViolationToJSON,
-} from '../models/index';
+} from '../models/ConstraintViolation';
 
 export interface AdoptionApprovalsDecideRequest {
+    /**
+     * 
+     */
     adoptionApprovalAdoptionApprovalInput: AdoptionApprovalAdoptionApprovalInput;
 }
 
 export interface AdoptionApprovalsGetRequest {
+    /**
+     * AdoptionApproval identifier
+     */
     id: string;
 }
 
 export interface AdoptionApprovalsListRequest {
+    /**
+     * The collection page number
+     */
     page?: number;
 }
 
 export interface AdoptionApprovalsWithdrawRequest {
+    /**
+     * AdoptionApproval identifier
+     */
     id: string;
 }
 
@@ -50,10 +63,9 @@ export interface AdoptionApprovalsWithdrawRequest {
 export class AdoptionApprovalApi extends runtime.BaseAPI {
 
     /**
-     * Creates a AdoptionApproval resource.
-     * Creates a AdoptionApproval resource.
+     * Creates request options for adoptionApprovalsDecide without sending the request
      */
-    async adoptionApprovalsDecideRaw(requestParameters: AdoptionApprovalsDecideRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<AdoptionApproval>> {
+    async adoptionApprovalsDecideRequestOpts(requestParameters: AdoptionApprovalsDecideRequest): Promise<runtime.RequestOpts> {
         if (requestParameters['adoptionApprovalAdoptionApprovalInput'] == null) {
             throw new runtime.RequiredError(
                 'adoptionApprovalAdoptionApprovalInput',
@@ -75,13 +87,25 @@ export class AdoptionApprovalApi extends runtime.BaseAPI {
                 headerParameters["Authorization"] = `Bearer ${tokenString}`;
             }
         }
-        const response = await this.request({
-            path: `/api/adoption_approvals`,
+
+        let urlPath = `/api/adoption_approvals`;
+
+        return {
+            path: urlPath,
             method: 'POST',
             headers: headerParameters,
             query: queryParameters,
             body: AdoptionApprovalAdoptionApprovalInputToJSON(requestParameters['adoptionApprovalAdoptionApprovalInput']),
-        }, initOverrides);
+        };
+    }
+
+    /**
+     * Creates a AdoptionApproval resource.
+     * Creates a AdoptionApproval resource.
+     */
+    async adoptionApprovalsDecideRaw(requestParameters: AdoptionApprovalsDecideRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<AdoptionApproval>> {
+        const requestOptions = await this.adoptionApprovalsDecideRequestOpts(requestParameters);
+        const response = await this.request(requestOptions, initOverrides);
 
         return new runtime.JSONApiResponse(response, (jsonValue) => AdoptionApprovalFromJSON(jsonValue));
     }
@@ -96,10 +120,9 @@ export class AdoptionApprovalApi extends runtime.BaseAPI {
     }
 
     /**
-     * Retrieves a AdoptionApproval resource.
-     * Retrieves a AdoptionApproval resource.
+     * Creates request options for adoptionApprovalsGet without sending the request
      */
-    async adoptionApprovalsGetRaw(requestParameters: AdoptionApprovalsGetRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<AdoptionApproval>> {
+    async adoptionApprovalsGetRequestOpts(requestParameters: AdoptionApprovalsGetRequest): Promise<runtime.RequestOpts> {
         if (requestParameters['id'] == null) {
             throw new runtime.RequiredError(
                 'id',
@@ -119,12 +142,25 @@ export class AdoptionApprovalApi extends runtime.BaseAPI {
                 headerParameters["Authorization"] = `Bearer ${tokenString}`;
             }
         }
-        const response = await this.request({
-            path: `/api/adoption_approvals/{id}`.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters['id']))),
+
+        let urlPath = `/api/adoption_approvals/{id}`;
+        urlPath = urlPath.replace('{id}', encodeURIComponent(String(requestParameters['id'])));
+
+        return {
+            path: urlPath,
             method: 'GET',
             headers: headerParameters,
             query: queryParameters,
-        }, initOverrides);
+        };
+    }
+
+    /**
+     * Retrieves a AdoptionApproval resource.
+     * Retrieves a AdoptionApproval resource.
+     */
+    async adoptionApprovalsGetRaw(requestParameters: AdoptionApprovalsGetRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<AdoptionApproval>> {
+        const requestOptions = await this.adoptionApprovalsGetRequestOpts(requestParameters);
+        const response = await this.request(requestOptions, initOverrides);
 
         return new runtime.JSONApiResponse(response, (jsonValue) => AdoptionApprovalFromJSON(jsonValue));
     }
@@ -139,10 +175,9 @@ export class AdoptionApprovalApi extends runtime.BaseAPI {
     }
 
     /**
-     * Retrieves the collection of AdoptionApproval resources.
-     * Retrieves the collection of AdoptionApproval resources.
+     * Creates request options for adoptionApprovalsList without sending the request
      */
-    async adoptionApprovalsListRaw(requestParameters: AdoptionApprovalsListRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Array<AdoptionApproval>>> {
+    async adoptionApprovalsListRequestOpts(requestParameters: AdoptionApprovalsListRequest): Promise<runtime.RequestOpts> {
         const queryParameters: any = {};
 
         if (requestParameters['page'] != null) {
@@ -159,12 +194,24 @@ export class AdoptionApprovalApi extends runtime.BaseAPI {
                 headerParameters["Authorization"] = `Bearer ${tokenString}`;
             }
         }
-        const response = await this.request({
-            path: `/api/adoption_approvals`,
+
+        let urlPath = `/api/adoption_approvals`;
+
+        return {
+            path: urlPath,
             method: 'GET',
             headers: headerParameters,
             query: queryParameters,
-        }, initOverrides);
+        };
+    }
+
+    /**
+     * Retrieves the collection of AdoptionApproval resources.
+     * Retrieves the collection of AdoptionApproval resources.
+     */
+    async adoptionApprovalsListRaw(requestParameters: AdoptionApprovalsListRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Array<AdoptionApproval>>> {
+        const requestOptions = await this.adoptionApprovalsListRequestOpts(requestParameters);
+        const response = await this.request(requestOptions, initOverrides);
 
         return new runtime.JSONApiResponse(response, (jsonValue) => jsonValue.map(AdoptionApprovalFromJSON));
     }
@@ -179,10 +226,9 @@ export class AdoptionApprovalApi extends runtime.BaseAPI {
     }
 
     /**
-     * Removes the AdoptionApproval resource.
-     * Removes the AdoptionApproval resource.
+     * Creates request options for adoptionApprovalsWithdraw without sending the request
      */
-    async adoptionApprovalsWithdrawRaw(requestParameters: AdoptionApprovalsWithdrawRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>> {
+    async adoptionApprovalsWithdrawRequestOpts(requestParameters: AdoptionApprovalsWithdrawRequest): Promise<runtime.RequestOpts> {
         if (requestParameters['id'] == null) {
             throw new runtime.RequiredError(
                 'id',
@@ -202,12 +248,25 @@ export class AdoptionApprovalApi extends runtime.BaseAPI {
                 headerParameters["Authorization"] = `Bearer ${tokenString}`;
             }
         }
-        const response = await this.request({
-            path: `/api/adoption_approvals/{id}`.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters['id']))),
+
+        let urlPath = `/api/adoption_approvals/{id}`;
+        urlPath = urlPath.replace('{id}', encodeURIComponent(String(requestParameters['id'])));
+
+        return {
+            path: urlPath,
             method: 'DELETE',
             headers: headerParameters,
             query: queryParameters,
-        }, initOverrides);
+        };
+    }
+
+    /**
+     * Removes the AdoptionApproval resource.
+     * Removes the AdoptionApproval resource.
+     */
+    async adoptionApprovalsWithdrawRaw(requestParameters: AdoptionApprovalsWithdrawRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>> {
+        const requestOptions = await this.adoptionApprovalsWithdrawRequestOpts(requestParameters);
+        const response = await this.request(requestOptions, initOverrides);
 
         return new runtime.VoidApiResponse(response);
     }

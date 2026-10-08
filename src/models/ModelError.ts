@@ -21,32 +21,22 @@ import { mapValues } from '../runtime';
 export interface ModelError {
     /**
      * A short, human-readable summary of the problem.
-     * @type {string}
-     * @memberof ModelError
      */
     readonly title?: string | null;
     /**
      * A human-readable explanation specific to this occurrence of the problem.
-     * @type {string}
-     * @memberof ModelError
      */
     readonly detail?: string | null;
     /**
      * 
-     * @type {number}
-     * @memberof ModelError
      */
     status?: number | null;
     /**
      * A URI reference that identifies the specific occurrence of the problem. It may or may not yield further information if dereferenced.
-     * @type {string}
-     * @memberof ModelError
      */
     readonly instance?: string | null;
     /**
      * A URI reference that identifies the problem type
-     * @type {string}
-     * @memberof ModelError
      */
     readonly type?: string;
 }
@@ -68,10 +58,10 @@ export function ModelErrorFromJSONTyped(json: any, ignoreDiscriminator: boolean)
     }
     return {
         
-        'title': json['title'] == null ? undefined : json['title'],
-        'detail': json['detail'] == null ? undefined : json['detail'],
-        'status': json['status'] == null ? undefined : json['status'],
-        'instance': json['instance'] == null ? undefined : json['instance'],
+        'title': json['title'] === undefined ? undefined : json['title'] === null ? null : json['title'],
+        'detail': json['detail'] === undefined ? undefined : json['detail'] === null ? null : json['detail'],
+        'status': json['status'] === undefined ? undefined : json['status'] === null ? null : json['status'],
+        'instance': json['instance'] === undefined ? undefined : json['instance'] === null ? null : json['instance'],
         'type': json['type'] == null ? undefined : json['type'],
     };
 }

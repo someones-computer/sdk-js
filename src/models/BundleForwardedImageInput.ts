@@ -21,20 +21,14 @@ import { mapValues } from '../runtime';
 export interface BundleForwardedImageInput {
     /**
      * 
-     * @type {string}
-     * @memberof BundleForwardedImageInput
      */
     service: string;
     /**
      * 
-     * @type {string}
-     * @memberof BundleForwardedImageInput
      */
     image: string;
     /**
      * 
-     * @type {string}
-     * @memberof BundleForwardedImageInput
      */
     contextSha256: string;
 }

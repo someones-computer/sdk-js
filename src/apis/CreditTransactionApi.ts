@@ -12,21 +12,24 @@
  * Do not edit the class manually.
  */
 
-
 import * as runtime from '../runtime';
-import type {
-  CreditTransaction,
-} from '../models/index';
 import {
+    type CreditTransaction,
     CreditTransactionFromJSON,
     CreditTransactionToJSON,
-} from '../models/index';
+} from '../models/CreditTransaction';
 
 export interface CreditTransactionsGetRequest {
+    /**
+     * CreditTransaction identifier
+     */
     id: string;
 }
 
 export interface CreditTransactionsListRequest {
+    /**
+     * The collection page number
+     */
     page?: number;
 }
 
@@ -36,10 +39,9 @@ export interface CreditTransactionsListRequest {
 export class CreditTransactionApi extends runtime.BaseAPI {
 
     /**
-     * Retrieves a CreditTransaction resource.
-     * Retrieves a CreditTransaction resource.
+     * Creates request options for creditTransactionsGet without sending the request
      */
-    async creditTransactionsGetRaw(requestParameters: CreditTransactionsGetRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<CreditTransaction>> {
+    async creditTransactionsGetRequestOpts(requestParameters: CreditTransactionsGetRequest): Promise<runtime.RequestOpts> {
         if (requestParameters['id'] == null) {
             throw new runtime.RequiredError(
                 'id',
@@ -59,12 +61,25 @@ export class CreditTransactionApi extends runtime.BaseAPI {
                 headerParameters["Authorization"] = `Bearer ${tokenString}`;
             }
         }
-        const response = await this.request({
-            path: `/api/credit_transactions/{id}`.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters['id']))),
+
+        let urlPath = `/api/credit_transactions/{id}`;
+        urlPath = urlPath.replace('{id}', encodeURIComponent(String(requestParameters['id'])));
+
+        return {
+            path: urlPath,
             method: 'GET',
             headers: headerParameters,
             query: queryParameters,
-        }, initOverrides);
+        };
+    }
+
+    /**
+     * Retrieves a CreditTransaction resource.
+     * Retrieves a CreditTransaction resource.
+     */
+    async creditTransactionsGetRaw(requestParameters: CreditTransactionsGetRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<CreditTransaction>> {
+        const requestOptions = await this.creditTransactionsGetRequestOpts(requestParameters);
+        const response = await this.request(requestOptions, initOverrides);
 
         return new runtime.JSONApiResponse(response, (jsonValue) => CreditTransactionFromJSON(jsonValue));
     }
@@ -79,10 +94,9 @@ export class CreditTransactionApi extends runtime.BaseAPI {
     }
 
     /**
-     * Retrieves the collection of CreditTransaction resources.
-     * Retrieves the collection of CreditTransaction resources.
+     * Creates request options for creditTransactionsList without sending the request
      */
-    async creditTransactionsListRaw(requestParameters: CreditTransactionsListRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Array<CreditTransaction>>> {
+    async creditTransactionsListRequestOpts(requestParameters: CreditTransactionsListRequest): Promise<runtime.RequestOpts> {
         const queryParameters: any = {};
 
         if (requestParameters['page'] != null) {
@@ -99,12 +113,24 @@ export class CreditTransactionApi extends runtime.BaseAPI {
                 headerParameters["Authorization"] = `Bearer ${tokenString}`;
             }
         }
-        const response = await this.request({
-            path: `/api/credit_transactions`,
+
+        let urlPath = `/api/credit_transactions`;
+
+        return {
+            path: urlPath,
             method: 'GET',
             headers: headerParameters,
             query: queryParameters,
-        }, initOverrides);
+        };
+    }
+
+    /**
+     * Retrieves the collection of CreditTransaction resources.
+     * Retrieves the collection of CreditTransaction resources.
+     */
+    async creditTransactionsListRaw(requestParameters: CreditTransactionsListRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Array<CreditTransaction>>> {
+        const requestOptions = await this.creditTransactionsListRequestOpts(requestParameters);
+        const response = await this.request(requestOptions, initOverrides);
 
         return new runtime.JSONApiResponse(response, (jsonValue) => jsonValue.map(CreditTransactionFromJSON));
     }

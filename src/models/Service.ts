@@ -12,7 +12,7 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
+import { mapValues, parseDate, parseDateTime, serializeDate, serializeDateTime } from '../runtime';
 import type { ServiceMemReservation } from './ServiceMemReservation';
 import {
     ServiceMemReservationFromJSON,
@@ -64,56 +64,38 @@ import {
 export interface Service {
     /**
      * 
-     * @type {string}
-     * @memberof Service
      */
     deployment?: string;
     /**
      * 
-     * @type {string}
-     * @memberof Service
      */
     name?: string;
     /**
      * 
-     * @type {string}
-     * @memberof Service
      */
     image?: string;
     /**
      * 
-     * @type {number}
-     * @memberof Service
      */
     replicas?: number;
     /**
      * 
-     * @type {ServiceCpuLimit}
-     * @memberof Service
      */
     cpuLimit?: ServiceCpuLimit | null;
     /**
      * 
-     * @type {ServiceMemLimit}
-     * @memberof Service
      */
     memLimit?: ServiceMemLimit | null;
     /**
      * 
-     * @type {ServiceCpuReservation}
-     * @memberof Service
      */
     cpuReservation?: ServiceCpuReservation | null;
     /**
      * 
-     * @type {ServiceMemReservation}
-     * @memberof Service
      */
     memReservation?: ServiceMemReservation | null;
     /**
      * 
-     * @type {Array<{ [key: string]: ServicePortsInnerValue; }>}
-     * @memberof Service
      */
     ports?: Array<{ [key: string]: ServicePortsInnerValue; }> | null;
     /**
@@ -121,22 +103,16 @@ export interface Service {
      * `x-someones.http` declared it — null means nothing was declared and
      * {@see \App\Service\Ingress\IngressPlanner} falls back to the well-known
      * ports.
-     * @type {number}
-     * @memberof Service
      */
     httpPort?: number | null;
     /**
      * The container's argv, as compose `command:` declared it — already split into
      * words by the parser, because Swarm's `Args` is argv rather than a line.
-     * @type {Array<string>}
-     * @memberof Service
      */
     command?: Array<string> | null;
     /**
      * The container's `Command` — compose `entrypoint:`, which replaces the
      * image's own `ENTRYPOINT` rather than feeding it, unlike {@see $command}.
-     * @type {Array<string>}
-     * @memberof Service
      */
     entrypoint?: Array<string> | null;
     /**
@@ -147,14 +123,10 @@ export interface Service {
      * image's own baked-in `HEALTHCHECK` (or none) stands; `disable: true` in
      * the compose file is not null, it is `test: ["NONE"]` — an explicit
      * instruction rather than silence.
-     * @type {{ [key: string]: ServiceHealthcheckValue; }}
-     * @memberof Service
      */
-    healthcheck?: { [key: string]: ServiceHealthcheckValue; };
+    healthcheck?: { [key: string]: ServiceHealthcheckValue; } | null;
     /**
      * What happens when a container exits; also decides service vs job.
-     * @type {string}
-     * @memberof Service
      */
     restart?: ServiceRestartEnum;
     /**
@@ -167,26 +139,18 @@ export interface Service {
      * set is a forwarded image that reached deploy unvetted, which
      * {@see \App\MessageHandler\DeployRevisionHandler} refuses to run
      * (docs/image-scanning.md).
-     * @type {boolean}
-     * @memberof Service
      */
     forwardedUnscanned?: boolean;
     /**
      * 
-     * @type {string}
-     * @memberof Service
      */
     readonly id?: string;
     /**
      * 
-     * @type {Date}
-     * @memberof Service
      */
     readonly createdAt?: Date;
     /**
      * 
-     * @type {Date}
-     * @memberof Service
      */
     readonly updatedAt?: Date | null;
 }
@@ -198,7 +162,7 @@ export interface Service {
 export const ServiceRestartEnum = {
     Always: 'always',
     OnFailure: 'on-failure',
-    Never: 'never'
+    Never: 'never',
 } as const;
 export type ServiceRestartEnum = typeof ServiceRestartEnum[keyof typeof ServiceRestartEnum];
 
@@ -224,20 +188,20 @@ export function ServiceFromJSONTyped(json: any, ignoreDiscriminator: boolean): S
         'name': json['name'] == null ? undefined : json['name'],
         'image': json['image'] == null ? undefined : json['image'],
         'replicas': json['replicas'] == null ? undefined : json['replicas'],
-        'cpuLimit': json['cpuLimit'] == null ? undefined : ServiceCpuLimitFromJSON(json['cpuLimit']),
-        'memLimit': json['memLimit'] == null ? undefined : ServiceMemLimitFromJSON(json['memLimit']),
-        'cpuReservation': json['cpuReservation'] == null ? undefined : ServiceCpuReservationFromJSON(json['cpuReservation']),
-        'memReservation': json['memReservation'] == null ? undefined : ServiceMemReservationFromJSON(json['memReservation']),
-        'ports': json['ports'] == null ? undefined : json['ports'],
-        'httpPort': json['httpPort'] == null ? undefined : json['httpPort'],
-        'command': json['command'] == null ? undefined : json['command'],
-        'entrypoint': json['entrypoint'] == null ? undefined : json['entrypoint'],
-        'healthcheck': json['healthcheck'] == null ? undefined : (mapValues(json['healthcheck'], ServiceHealthcheckValueFromJSON)),
+        'cpuLimit': json['cpuLimit'] === undefined ? undefined : json['cpuLimit'] === null ? null : ServiceCpuLimitFromJSON(json['cpuLimit']),
+        'memLimit': json['memLimit'] === undefined ? undefined : json['memLimit'] === null ? null : ServiceMemLimitFromJSON(json['memLimit']),
+        'cpuReservation': json['cpuReservation'] === undefined ? undefined : json['cpuReservation'] === null ? null : ServiceCpuReservationFromJSON(json['cpuReservation']),
+        'memReservation': json['memReservation'] === undefined ? undefined : json['memReservation'] === null ? null : ServiceMemReservationFromJSON(json['memReservation']),
+        'ports': json['ports'] === undefined ? undefined : json['ports'] === null ? null : json['ports'],
+        'httpPort': json['httpPort'] === undefined ? undefined : json['httpPort'] === null ? null : json['httpPort'],
+        'command': json['command'] === undefined ? undefined : json['command'] === null ? null : json['command'],
+        'entrypoint': json['entrypoint'] === undefined ? undefined : json['entrypoint'] === null ? null : json['entrypoint'],
+        'healthcheck': json['healthcheck'] === undefined ? undefined : json['healthcheck'] === null ? null : (mapValues(json['healthcheck'], ServiceHealthcheckValueFromJSON)),
         'restart': json['restart'] == null ? undefined : json['restart'],
         'forwardedUnscanned': json['forwardedUnscanned'] == null ? undefined : json['forwardedUnscanned'],
         'id': json['id'] == null ? undefined : json['id'],
-        'createdAt': json['createdAt'] == null ? undefined : (new Date(json['createdAt'])),
-        'updatedAt': json['updatedAt'] == null ? undefined : (new Date(json['updatedAt'])),
+        'createdAt': json['createdAt'] == null ? undefined : (parseDateTime(json['createdAt'])),
+        'updatedAt': json['updatedAt'] === undefined ? undefined : json['updatedAt'] === null ? null : (parseDateTime(json['updatedAt'])),
     };
 }
 

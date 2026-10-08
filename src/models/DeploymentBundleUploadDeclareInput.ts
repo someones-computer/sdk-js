@@ -36,45 +36,31 @@ import {
 export interface DeploymentBundleUploadDeclareInput {
     /**
      * 
-     * @type {string}
-     * @memberof DeploymentBundleUploadDeclareInput
      */
     application: string | null;
     /**
      * Matches `App\Service\Bundle\BundleManifest::$client` — which client produced this.
-     * @type {string}
-     * @memberof DeploymentBundleUploadDeclareInput
      */
     client: string;
     /**
      * 
-     * @type {string}
-     * @memberof DeploymentBundleUploadDeclareInput
      */
     name?: string | null;
     /**
      * Ask for a new revision even if this digest already matches one —
      * {@see BundleManifest::$force}'s own meaning, unchanged.
-     * @type {boolean}
-     * @memberof DeploymentBundleUploadDeclareInput
      */
     force?: boolean;
     /**
      * 
-     * @type {string}
-     * @memberof DeploymentBundleUploadDeclareInput
      */
     compose: string;
     /**
      * 
-     * @type {Array<BundleContextInput>}
-     * @memberof DeploymentBundleUploadDeclareInput
      */
     contexts?: Array<BundleContextInput>;
     /**
      * 
-     * @type {Array<BundleForwardedImageInput>}
-     * @memberof DeploymentBundleUploadDeclareInput
      */
     images?: Array<BundleForwardedImageInput>;
 }
@@ -101,7 +87,7 @@ export function DeploymentBundleUploadDeclareInputFromJSONTyped(json: any, ignor
         
         'application': json['application'],
         'client': json['client'],
-        'name': json['name'] == null ? undefined : json['name'],
+        'name': json['name'] === undefined ? undefined : json['name'] === null ? null : json['name'],
         'force': json['force'] == null ? undefined : json['force'],
         'compose': json['compose'],
         'contexts': json['contexts'] == null ? undefined : ((json['contexts'] as Array<any>).map(BundleContextInputFromJSON)),

@@ -12,7 +12,7 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
+import { mapValues, parseDate, parseDateTime, serializeDate, serializeDateTime } from '../runtime';
 import type { ProxmoxInstance } from './ProxmoxInstance';
 import {
     ProxmoxInstanceFromJSON,
@@ -29,40 +29,28 @@ import {
 export interface Machine {
     /**
      * 
-     * @type {ProxmoxInstance}
-     * @memberof Machine
      */
     instance?: ProxmoxInstance;
     /**
      * The node within the instance — same string `app:proxmox:template` builds on.
-     * @type {string}
-     * @memberof Machine
      */
     node?: string;
     /**
      * 
-     * @type {number}
-     * @memberof Machine
      */
     vmid?: number;
     /**
      * How an operator addresses it; also the guest hostname the seed sets.
-     * @type {string}
-     * @memberof Machine
      */
     name?: string;
     /**
      * 
-     * @type {string}
-     * @memberof Machine
      */
     size?: MachineSizeEnum;
     /**
      * Disk as a block count, never gigabytes: a thin volume grows and never
      * shrinks, so the invariant worth enforcing is "this number only goes up",
      * and a count makes that checkable where a free-form size would not.
-     * @type {number}
-     * @memberof Machine
      */
     readonly diskBlocks?: number;
     /**
@@ -70,8 +58,6 @@ export interface Machine {
      * decides when a superseded template may be deleted (§03): linked clones
      * pin their base disk, and Proxmox will refuse — rightly — to delete a
      * template that still has children.
-     * @type {number}
-     * @memberof Machine
      */
     templateVmid?: number;
     /**
@@ -80,20 +66,14 @@ export interface Machine {
      * request with (docs/island-network.md — Proxmox's IPAM cannot allocate,
      * so the platform still picks). Null until allocation; unique so the pool
      * cannot double-allocate even if two provisions race.
-     * @type {string}
-     * @memberof Machine
      */
     address?: string | null;
     /**
      * 
-     * @type {string}
-     * @memberof Machine
      */
     state?: MachineStateEnum;
     /**
      * Why `Failed`, when it is. Carries the task's own words, never a paraphrase.
-     * @type {string}
-     * @memberof Machine
      */
     readonly failure?: string | null;
     /**
@@ -102,8 +82,6 @@ export interface Machine {
      * tags each captured line with the value that was current when it was
      * written, so a retry's transcript starts fresh rather than appending to
      * the failed attempt before it.
-     * @type {number}
-     * @memberof Machine
      */
     readonly provisionAttempt?: number;
     /**
@@ -115,14 +93,10 @@ export interface Machine {
      * `BOOT_DEADLINE`/`TASK_DEADLINE`), and a run still going past
      * {@see self::PROVISION_PRESUMED_DEAD_AFTER} is a worker that died holding
      * it — a crash, an OOM, a deploy restart — rather than one still working.
-     * @type {Date}
-     * @memberof Machine
      */
     readonly provisionStartedAt?: Date | null;
     /**
      * The context this machine serves, if any. Nullable on purpose — see the class docblock.
-     * @type {string}
-     * @memberof Machine
      */
     swarm?: string | null;
     /**
@@ -133,32 +107,22 @@ export interface Machine {
      * same organization that owns the paired `$swarm` — {@see Organization::markDeleted()}
      * detaches it rather than deleting the row, matching how a BYO context's
      * owner is handled.
-     * @type {string}
-     * @memberof Machine
      */
     organization?: string | null;
     /**
      * 
-     * @type {string}
-     * @memberof Machine
      */
     readonly id?: string;
     /**
      * 
-     * @type {Date}
-     * @memberof Machine
      */
     readonly createdAt?: Date;
     /**
      * 
-     * @type {Date}
-     * @memberof Machine
      */
     readonly updatedAt?: Date | null;
     /**
      * 
-     * @type {number}
-     * @memberof Machine
      */
     readonly diskGigabytes?: number;
     /**
@@ -168,8 +132,6 @@ export interface Machine {
      * row exactly where it stood; nothing else ever revisits it, since the
      * handler's own guard is "state is Requested" and every other step only
      * ever moves the flow forward.
-     * @type {boolean}
-     * @memberof Machine
      */
     readonly provisioningStale?: boolean;
 }
@@ -181,7 +143,7 @@ export interface Machine {
 export const MachineSizeEnum = {
     S: 's',
     M: 'm',
-    L: 'l'
+    L: 'l',
 } as const;
 export type MachineSizeEnum = typeof MachineSizeEnum[keyof typeof MachineSizeEnum];
 
@@ -197,7 +159,7 @@ export const MachineStateEnum = {
     Running: 'running',
     Serving: 'serving',
     Retiring: 'retiring',
-    Failed: 'failed'
+    Failed: 'failed',
 } as const;
 export type MachineStateEnum = typeof MachineStateEnum[keyof typeof MachineStateEnum];
 
@@ -226,16 +188,16 @@ export function MachineFromJSONTyped(json: any, ignoreDiscriminator: boolean): M
         'size': json['size'] == null ? undefined : json['size'],
         'diskBlocks': json['diskBlocks'] == null ? undefined : json['diskBlocks'],
         'templateVmid': json['templateVmid'] == null ? undefined : json['templateVmid'],
-        'address': json['address'] == null ? undefined : json['address'],
+        'address': json['address'] === undefined ? undefined : json['address'] === null ? null : json['address'],
         'state': json['state'] == null ? undefined : json['state'],
-        'failure': json['failure'] == null ? undefined : json['failure'],
+        'failure': json['failure'] === undefined ? undefined : json['failure'] === null ? null : json['failure'],
         'provisionAttempt': json['provisionAttempt'] == null ? undefined : json['provisionAttempt'],
-        'provisionStartedAt': json['provisionStartedAt'] == null ? undefined : (new Date(json['provisionStartedAt'])),
-        'swarm': json['swarm'] == null ? undefined : json['swarm'],
-        'organization': json['organization'] == null ? undefined : json['organization'],
+        'provisionStartedAt': json['provisionStartedAt'] === undefined ? undefined : json['provisionStartedAt'] === null ? null : (parseDateTime(json['provisionStartedAt'])),
+        'swarm': json['swarm'] === undefined ? undefined : json['swarm'] === null ? null : json['swarm'],
+        'organization': json['organization'] === undefined ? undefined : json['organization'] === null ? null : json['organization'],
         'id': json['id'] == null ? undefined : json['id'],
-        'createdAt': json['createdAt'] == null ? undefined : (new Date(json['createdAt'])),
-        'updatedAt': json['updatedAt'] == null ? undefined : (new Date(json['updatedAt'])),
+        'createdAt': json['createdAt'] == null ? undefined : (parseDateTime(json['createdAt'])),
+        'updatedAt': json['updatedAt'] === undefined ? undefined : json['updatedAt'] === null ? null : (parseDateTime(json['updatedAt'])),
         'diskGigabytes': json['diskGigabytes'] == null ? undefined : json['diskGigabytes'],
         'provisioningStale': json['provisioningStale'] == null ? undefined : json['provisioningStale'],
     };

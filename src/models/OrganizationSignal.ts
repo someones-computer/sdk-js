@@ -12,7 +12,7 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
+import { mapValues, parseDate, parseDateTime, serializeDate, serializeDateTime } from '../runtime';
 /**
  * 
  * @export
@@ -21,38 +21,26 @@ import { mapValues } from '../runtime';
 export interface OrganizationSignal {
     /**
      * 
-     * @type {string}
-     * @memberof OrganizationSignal
      */
     organization?: string;
     /**
      * Which application's compose file produced it — deleting the application does not un-say what it asked for.
-     * @type {string}
-     * @memberof OrganizationSignal
      */
     application?: string | null;
     /**
      * Verbatim, as {@see \App\Service\Compose\ComposeParser::parse()} produced it.
-     * @type {string}
-     * @memberof OrganizationSignal
      */
     reason?: string;
     /**
      * 
-     * @type {string}
-     * @memberof OrganizationSignal
      */
     readonly id?: string;
     /**
      * 
-     * @type {Date}
-     * @memberof OrganizationSignal
      */
     readonly createdAt?: Date;
     /**
      * 
-     * @type {Date}
-     * @memberof OrganizationSignal
      */
     readonly updatedAt?: Date | null;
 }
@@ -75,11 +63,11 @@ export function OrganizationSignalFromJSONTyped(json: any, ignoreDiscriminator: 
     return {
         
         'organization': json['organization'] == null ? undefined : json['organization'],
-        'application': json['application'] == null ? undefined : json['application'],
+        'application': json['application'] === undefined ? undefined : json['application'] === null ? null : json['application'],
         'reason': json['reason'] == null ? undefined : json['reason'],
         'id': json['id'] == null ? undefined : json['id'],
-        'createdAt': json['createdAt'] == null ? undefined : (new Date(json['createdAt'])),
-        'updatedAt': json['updatedAt'] == null ? undefined : (new Date(json['updatedAt'])),
+        'createdAt': json['createdAt'] == null ? undefined : (parseDateTime(json['createdAt'])),
+        'updatedAt': json['updatedAt'] === undefined ? undefined : json['updatedAt'] === null ? null : (parseDateTime(json['updatedAt'])),
     };
 }
 

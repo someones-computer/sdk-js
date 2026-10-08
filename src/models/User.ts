@@ -21,20 +21,14 @@ import { mapValues } from '../runtime';
 export interface User {
     /**
      * 
-     * @type {string}
-     * @memberof User
      */
     readonly id?: string;
     /**
      * Handle the user can sign in with instead of their email.
-     * @type {string}
-     * @memberof User
      */
     username?: string;
     /**
      * 
-     * @type {string}
-     * @memberof User
      */
     displayName?: string | null;
 }
@@ -58,7 +52,7 @@ export function UserFromJSONTyped(json: any, ignoreDiscriminator: boolean): User
         
         'id': json['id'] == null ? undefined : json['id'],
         'username': json['username'] == null ? undefined : json['username'],
-        'displayName': json['displayName'] == null ? undefined : json['displayName'],
+        'displayName': json['displayName'] === undefined ? undefined : json['displayName'] === null ? null : json['displayName'],
     };
 }
 

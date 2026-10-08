@@ -12,7 +12,7 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
+import { mapValues, parseDate, parseDateTime, serializeDate, serializeDateTime } from '../runtime';
 /**
  * List service bindings (application-to-managed-service links) the caller can see.
  * @export
@@ -21,59 +21,41 @@ import { mapValues } from '../runtime';
 export interface ServiceBinding {
     /**
      * 
-     * @type {string}
-     * @memberof ServiceBinding
      */
     application?: string;
     /**
      * 
-     * @type {string}
-     * @memberof ServiceBinding
      */
     service?: string;
     /**
      * The environment variable names this binding contributes — one
      * `DATABASE_URL` for a database, the four `S3_*` names for a bucket.
-     * @type {Array<string>}
-     * @memberof ServiceBinding
      */
     injectedKeys?: Array<string>;
     /**
      * What the sidecar is called inside the tenant's stack — `db` unless something
      * else claimed the name first.
-     * @type {string}
-     * @memberof ServiceBinding
      */
     sidecarServiceName?: string;
     /**
      * The compose service this binding replaced, or null for a binding somebody
      * asked for directly.
-     * @type {string}
-     * @memberof ServiceBinding
      */
     adoptedComposeService?: string | null;
     /**
      * 
-     * @type {string}
-     * @memberof ServiceBinding
      */
     readonly id?: string;
     /**
      * 
-     * @type {Date}
-     * @memberof ServiceBinding
      */
     readonly createdAt?: Date;
     /**
      * 
-     * @type {Date}
-     * @memberof ServiceBinding
      */
     readonly updatedAt?: Date | null;
     /**
      * 
-     * @type {boolean}
-     * @memberof ServiceBinding
      */
     readonly adopted?: boolean;
 }
@@ -99,10 +81,10 @@ export function ServiceBindingFromJSONTyped(json: any, ignoreDiscriminator: bool
         'service': json['service'] == null ? undefined : json['service'],
         'injectedKeys': json['injectedKeys'] == null ? undefined : json['injectedKeys'],
         'sidecarServiceName': json['sidecarServiceName'] == null ? undefined : json['sidecarServiceName'],
-        'adoptedComposeService': json['adoptedComposeService'] == null ? undefined : json['adoptedComposeService'],
+        'adoptedComposeService': json['adoptedComposeService'] === undefined ? undefined : json['adoptedComposeService'] === null ? null : json['adoptedComposeService'],
         'id': json['id'] == null ? undefined : json['id'],
-        'createdAt': json['createdAt'] == null ? undefined : (new Date(json['createdAt'])),
-        'updatedAt': json['updatedAt'] == null ? undefined : (new Date(json['updatedAt'])),
+        'createdAt': json['createdAt'] == null ? undefined : (parseDateTime(json['createdAt'])),
+        'updatedAt': json['updatedAt'] === undefined ? undefined : json['updatedAt'] === null ? null : (parseDateTime(json['updatedAt'])),
         'adopted': json['adopted'] == null ? undefined : json['adopted'],
     };
 }

@@ -12,7 +12,7 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
+import { mapValues, parseDate, parseDateTime, serializeDate, serializeDateTime } from '../runtime';
 import type { Machine } from './Machine';
 import {
     MachineFromJSON,
@@ -36,156 +36,110 @@ import {
 export interface SwarmJsonMergePatch {
     /**
      * Null for the platform pool; set for a customer BYO cluster.
-     * @type {string}
-     * @memberof SwarmJsonMergePatch
      */
     owner?: string | null;
     /**
      * 
-     * @type {string}
-     * @memberof SwarmJsonMergePatch
      */
     readonly kind?: SwarmJsonMergePatchKindEnum;
     /**
      * 
-     * @type {string}
-     * @memberof SwarmJsonMergePatch
      */
     name?: string;
     /**
      * Manager API endpoint (tcp+TLS) or SSH target.
-     * @type {string}
-     * @memberof SwarmJsonMergePatch
      */
     endpoint?: string;
     /**
      * 
-     * @type {string}
-     * @memberof SwarmJsonMergePatch
      */
     status?: SwarmJsonMergePatchStatusEnum;
     /**
      * The address a client *outside* the cluster reaches this context's published
      * ports on — a hostname or an IP, no scheme and no port.
-     * @type {string}
-     * @memberof SwarmJsonMergePatch
      */
     publicHost?: string | null;
     /**
      * What this context is used for — builds, runtime, or both. Stored as the
      * enum's string values rather than a relation: it is a small fixed set, and a
      * json column needs no join to answer "where can I build?".
-     * @type {Array<string>}
-     * @memberof SwarmJsonMergePatch
      */
     roles?: Array<string>;
     /**
      * 
-     * @type {Date}
-     * @memberof SwarmJsonMergePatch
      */
     lastSeenAt?: Date | null;
     /**
      * Observed capacity snapshot (cpu/mem/nodes), reconciled from the swarm —
      * whatever {@see \App\Service\Swarm\SwarmHealth::$capacity} carried at the
      * last successful probe.
-     * @type {{ [key: string]: string | null; }}
-     * @memberof SwarmJsonMergePatch
      */
-    capacity?: { [key: string]: string | null; };
+    capacity?: { [key: string]: string | null; } | null;
     /**
      * 
-     * @type {{ [key: string]: string; }}
-     * @memberof SwarmJsonMergePatch
      */
-    readonly labels?: { [key: string]: string; };
+    readonly labels?: { [key: string]: string; } | null;
     /**
      * When {@see \App\Service\Ingress\TraefikInstaller} last stood up (or
      * confirmed) the edge on this context, dispatched automatically once it
      * becomes a platform-owned runtime context.
-     * @type {Date}
-     * @memberof SwarmJsonMergePatch
      */
     readonly ingressInstalledAt?: Date | null;
     /**
      * What the last automatic install attempt said, when it failed. Cleared on
      * a success so the row never shows a stale complaint next to a working edge.
-     * @type {string}
-     * @memberof SwarmJsonMergePatch
      */
     readonly ingressError?: string | null;
     /**
      * The shared overlay that install put the edge on — the one Traefik's
      * `--providers.swarm.network` names, and therefore the only network a
      * service can be routed from.
-     * @type {string}
-     * @memberof SwarmJsonMergePatch
      */
     readonly ingressNetwork?: string | null;
     /**
      * When the edge was last *observed* routing — the overlay present, the edge
      * service on it, watching it, with a task running
      * ({@see \App\Service\Ingress\IngressVerifier}).
-     * @type {Date}
-     * @memberof SwarmJsonMergePatch
      */
     readonly ingressVerifiedAt?: Date | null;
     /**
      * What the last verification found wrong, or null when the edge was routing.
-     * @type {string}
-     * @memberof SwarmJsonMergePatch
      */
     readonly ingressVerificationError?: string | null;
     /**
      * 
-     * @type {Array<SwarmNode>}
-     * @memberof SwarmJsonMergePatch
      */
-    nodes?: Array<SwarmNode>;
+    readonly nodes?: Array<SwarmNode>;
     /**
      * The machines that serve this context. Mapped only so a delete can let go
      * of them. See {@see self::markDeleted()}.
-     * @type {Array<Machine>}
-     * @memberof SwarmJsonMergePatch
      */
-    machines?: Array<Machine>;
+    readonly machines?: Array<Machine>;
     /**
      * The revisions placed here. Mapped for the same single reason as
      * {@see self::$machines} — so a delete can let go of them — rather than as
      * a collection anything reads; {@see \App\Repository\DeploymentRepository}
      * is where a caller asks what is on a context.
-     * @type {Array<string>}
-     * @memberof SwarmJsonMergePatch
      */
-    deployments?: Array<string>;
+    readonly deployments?: Array<string>;
     /**
      * 
-     * @type {string}
-     * @memberof SwarmJsonMergePatch
      */
     readonly id?: string;
     /**
      * 
-     * @type {Date}
-     * @memberof SwarmJsonMergePatch
      */
     readonly deletedAt?: Date | null;
     /**
      * 
-     * @type {Date}
-     * @memberof SwarmJsonMergePatch
      */
     readonly createdAt?: Date;
     /**
      * 
-     * @type {Date}
-     * @memberof SwarmJsonMergePatch
      */
     readonly updatedAt?: Date | null;
     /**
      * 
-     * @type {boolean}
-     * @memberof SwarmJsonMergePatch
      */
     readonly platformOwned?: boolean;
     /**
@@ -194,20 +148,14 @@ export interface SwarmJsonMergePatch {
      * provisioned, running this platform's own trusted image, versus a
      * customer's own cluster registered straight through
      * {@see \App\Controller\Admin\SwarmController}.
-     * @type {boolean}
-     * @memberof SwarmJsonMergePatch
      */
     readonly platformProvisioned?: boolean;
     /**
      * Whether a revision that publishes a port can be routed here.
-     * @type {boolean}
-     * @memberof SwarmJsonMergePatch
      */
     readonly workingEdge?: boolean;
     /**
      * 
-     * @type {boolean}
-     * @memberof SwarmJsonMergePatch
      */
     readonly deleted?: boolean;
 }
@@ -218,7 +166,7 @@ export interface SwarmJsonMergePatch {
  */
 export const SwarmJsonMergePatchKindEnum = {
     Platform: 'platform',
-    Customer: 'customer'
+    Customer: 'customer',
 } as const;
 export type SwarmJsonMergePatchKindEnum = typeof SwarmJsonMergePatchKindEnum[keyof typeof SwarmJsonMergePatchKindEnum];
 
@@ -228,7 +176,7 @@ export type SwarmJsonMergePatchKindEnum = typeof SwarmJsonMergePatchKindEnum[key
 export const SwarmJsonMergePatchStatusEnum = {
     Reachable: 'reachable',
     Unreachable: 'unreachable',
-    Draining: 'draining'
+    Draining: 'draining',
 } as const;
 export type SwarmJsonMergePatchStatusEnum = typeof SwarmJsonMergePatchStatusEnum[keyof typeof SwarmJsonMergePatchStatusEnum];
 
@@ -250,28 +198,28 @@ export function SwarmJsonMergePatchFromJSONTyped(json: any, ignoreDiscriminator:
     }
     return {
         
-        'owner': json['owner'] == null ? undefined : json['owner'],
+        'owner': json['owner'] === undefined ? undefined : json['owner'] === null ? null : json['owner'],
         'kind': json['kind'] == null ? undefined : json['kind'],
         'name': json['name'] == null ? undefined : json['name'],
         'endpoint': json['endpoint'] == null ? undefined : json['endpoint'],
         'status': json['status'] == null ? undefined : json['status'],
-        'publicHost': json['publicHost'] == null ? undefined : json['publicHost'],
+        'publicHost': json['publicHost'] === undefined ? undefined : json['publicHost'] === null ? null : json['publicHost'],
         'roles': json['roles'] == null ? undefined : json['roles'],
-        'lastSeenAt': json['lastSeenAt'] == null ? undefined : (new Date(json['lastSeenAt'])),
-        'capacity': json['capacity'] == null ? undefined : json['capacity'],
-        'labels': json['labels'] == null ? undefined : json['labels'],
-        'ingressInstalledAt': json['ingressInstalledAt'] == null ? undefined : (new Date(json['ingressInstalledAt'])),
-        'ingressError': json['ingressError'] == null ? undefined : json['ingressError'],
-        'ingressNetwork': json['ingressNetwork'] == null ? undefined : json['ingressNetwork'],
-        'ingressVerifiedAt': json['ingressVerifiedAt'] == null ? undefined : (new Date(json['ingressVerifiedAt'])),
-        'ingressVerificationError': json['ingressVerificationError'] == null ? undefined : json['ingressVerificationError'],
+        'lastSeenAt': json['lastSeenAt'] === undefined ? undefined : json['lastSeenAt'] === null ? null : (parseDateTime(json['lastSeenAt'])),
+        'capacity': json['capacity'] === undefined ? undefined : json['capacity'] === null ? null : json['capacity'],
+        'labels': json['labels'] === undefined ? undefined : json['labels'] === null ? null : json['labels'],
+        'ingressInstalledAt': json['ingressInstalledAt'] === undefined ? undefined : json['ingressInstalledAt'] === null ? null : (parseDateTime(json['ingressInstalledAt'])),
+        'ingressError': json['ingressError'] === undefined ? undefined : json['ingressError'] === null ? null : json['ingressError'],
+        'ingressNetwork': json['ingressNetwork'] === undefined ? undefined : json['ingressNetwork'] === null ? null : json['ingressNetwork'],
+        'ingressVerifiedAt': json['ingressVerifiedAt'] === undefined ? undefined : json['ingressVerifiedAt'] === null ? null : (parseDateTime(json['ingressVerifiedAt'])),
+        'ingressVerificationError': json['ingressVerificationError'] === undefined ? undefined : json['ingressVerificationError'] === null ? null : json['ingressVerificationError'],
         'nodes': json['nodes'] == null ? undefined : ((json['nodes'] as Array<any>).map(SwarmNodeFromJSON)),
         'machines': json['machines'] == null ? undefined : ((json['machines'] as Array<any>).map(MachineFromJSON)),
         'deployments': json['deployments'] == null ? undefined : json['deployments'],
         'id': json['id'] == null ? undefined : json['id'],
-        'deletedAt': json['deletedAt'] == null ? undefined : (new Date(json['deletedAt'])),
-        'createdAt': json['createdAt'] == null ? undefined : (new Date(json['createdAt'])),
-        'updatedAt': json['updatedAt'] == null ? undefined : (new Date(json['updatedAt'])),
+        'deletedAt': json['deletedAt'] === undefined ? undefined : json['deletedAt'] === null ? null : (parseDateTime(json['deletedAt'])),
+        'createdAt': json['createdAt'] == null ? undefined : (parseDateTime(json['createdAt'])),
+        'updatedAt': json['updatedAt'] === undefined ? undefined : json['updatedAt'] === null ? null : (parseDateTime(json['updatedAt'])),
         'platformOwned': json['platformOwned'] == null ? undefined : json['platformOwned'],
         'platformProvisioned': json['platformProvisioned'] == null ? undefined : json['platformProvisioned'],
         'workingEdge': json['workingEdge'] == null ? undefined : json['workingEdge'],
@@ -283,7 +231,7 @@ export function SwarmJsonMergePatchToJSON(json: any): SwarmJsonMergePatch {
     return SwarmJsonMergePatchToJSONTyped(json, false);
 }
 
-export function SwarmJsonMergePatchToJSONTyped(value?: Omit<SwarmJsonMergePatch, 'kind'|'labels'|'ingressInstalledAt'|'ingressError'|'ingressNetwork'|'ingressVerifiedAt'|'ingressVerificationError'|'id'|'deletedAt'|'createdAt'|'updatedAt'|'platformOwned'|'platformProvisioned'|'workingEdge'|'deleted'> | null, ignoreDiscriminator: boolean = false): any {
+export function SwarmJsonMergePatchToJSONTyped(value?: Omit<SwarmJsonMergePatch, 'kind'|'labels'|'ingressInstalledAt'|'ingressError'|'ingressNetwork'|'ingressVerifiedAt'|'ingressVerificationError'|'nodes'|'machines'|'deployments'|'id'|'deletedAt'|'createdAt'|'updatedAt'|'platformOwned'|'platformProvisioned'|'workingEdge'|'deleted'> | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
@@ -296,11 +244,8 @@ export function SwarmJsonMergePatchToJSONTyped(value?: Omit<SwarmJsonMergePatch,
         'status': value['status'],
         'publicHost': value['publicHost'],
         'roles': value['roles'],
-        'lastSeenAt': value['lastSeenAt'] == null ? undefined : ((value['lastSeenAt'] as any).toISOString()),
+        'lastSeenAt': value['lastSeenAt'] == null ? value['lastSeenAt'] : serializeDateTime(value['lastSeenAt']),
         'capacity': value['capacity'],
-        'nodes': value['nodes'] == null ? undefined : ((value['nodes'] as Array<any>).map(SwarmNodeToJSON)),
-        'machines': value['machines'] == null ? undefined : ((value['machines'] as Array<any>).map(MachineToJSON)),
-        'deployments': value['deployments'],
     };
 }
 

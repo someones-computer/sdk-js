@@ -12,7 +12,7 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
+import { mapValues, parseDate, parseDateTime, serializeDate, serializeDateTime } from '../runtime';
 import type { DeploymentJsonMergePatchBuildContextsValueValue } from './DeploymentJsonMergePatchBuildContextsValueValue';
 import {
     DeploymentJsonMergePatchBuildContextsValueValueFromJSON,
@@ -50,34 +50,24 @@ import {
 export interface DeploymentJsonMergePatch {
     /**
      * 
-     * @type {string}
-     * @memberof DeploymentJsonMergePatch
      */
     application?: string;
     /**
      * Monotonic per-application revision number.
-     * @type {number}
-     * @memberof DeploymentJsonMergePatch
      */
     sequence?: number;
     /**
      * What this revision is called — `sc` defaults it to the slugified branch,
      * so the normal shape is a deployment per branch. Null for revisions created
      * before the field existed, or by a client that doesn't send one.
-     * @type {string}
-     * @memberof DeploymentJsonMergePatch
      */
     name?: string | null;
     /**
      * Exactly what the user submitted.
-     * @type {string}
-     * @memberof DeploymentJsonMergePatch
      */
     rawCompose?: string;
     /**
      * Parsed, supported-subset-only canonical representation of the compose file, as the parser produced it. Keys are `services` and `warnings`. A revision that predates a key omits it.
-     * @type {{ [key: string]: any; }}
-     * @memberof DeploymentJsonMergePatch
      */
     canonicalSpec?: { [key: string]: any; };
     /**
@@ -88,8 +78,6 @@ export interface DeploymentJsonMergePatch {
      * worker will walk. `dockerfileContent` is a best-effort text preview
      * extracted at ingest ({@see \App\Service\Bundle\ContextDockerfileReader}) — null
      * when the context was too large to preview or predates this field.
-     * @type {{ [key: string]: { [key: string]: DeploymentJsonMergePatchBuildContextsValueValue; }; }}
-     * @memberof DeploymentJsonMergePatch
      */
     buildContexts?: { [key: string]: { [key: string]: DeploymentJsonMergePatchBuildContextsValueValue; }; };
     /**
@@ -105,27 +93,19 @@ export interface DeploymentJsonMergePatch {
      * is filled in once the loader has pushed it to the internal registry,
      * the same way `buildContexts[]['image']` is. `{}` for every revision
      * that forwarded nothing, which is most of them.
-     * @type {{ [key: string]: { [key: string]: string | null; }; }}
-     * @memberof DeploymentJsonMergePatch
      */
     forwardedImages?: { [key: string]: { [key: string]: string | null; }; };
     /**
      * Resolved by the placement engine; null until placed.
-     * @type {string}
-     * @memberof DeploymentJsonMergePatch
      */
     targetSwarm?: string | null;
     /**
      * 
-     * @type {string}
-     * @memberof DeploymentJsonMergePatch
      */
     status?: DeploymentJsonMergePatchStatusEnum;
     /**
      * Why the revision is in its current status — the build worker's failure
      * message, typically. Null whenever there is nothing to explain.
-     * @type {string}
-     * @memberof DeploymentJsonMergePatch
      */
     statusReason?: string | null;
     /**
@@ -136,16 +116,12 @@ export interface DeploymentJsonMergePatch {
      * cannot see: whatever partially landed still has to be reachable to a
      * manual Teardown and countable by the stray-container sweep, which is
      * why every other status leaves this false rather than tracking it.
-     * @type {boolean}
-     * @memberof DeploymentJsonMergePatch
      */
     failedOnSwarm?: boolean;
     /**
      * When {@see \App\Service\Reconcile\RevisionDegradationDetector} first
      * found this `Running` revision with no task actually running on its
      * swarm — null while at least one is, or before it was ever checked.
-     * @type {Date}
-     * @memberof DeploymentJsonMergePatch
      */
     zeroTaskObservedAt?: Date | null;
     /**
@@ -158,26 +134,18 @@ export interface DeploymentJsonMergePatch {
      * state — the same desired/observed separation
      * {@see \App\Service\Reconcile\DriftDetector} already keeps at read
      * time, made durable here so it survives past one page view.
-     * @type {boolean}
-     * @memberof DeploymentJsonMergePatch
      */
     degraded?: boolean;
     /**
      * Content digest of the canonical spec, for dedupe/audit.
-     * @type {string}
-     * @memberof DeploymentJsonMergePatch
      */
     digest?: string | null;
     /**
      * 
-     * @type {User}
-     * @memberof DeploymentJsonMergePatch
      */
     createdBy?: User | null;
     /**
      * Projection of the compose services.
-     * @type {Array<Service>}
-     * @memberof DeploymentJsonMergePatch
      */
     services?: Array<Service>;
     /**
@@ -185,44 +153,30 @@ export interface DeploymentJsonMergePatch {
      * revision, append-only. Distinct from
      * {@see \App\Entity\self::$statusReason}, which is only ever
      * the latest. See {@see \App\Entity\Failure} on why both exist.
-     * @type {Array<Failure>}
-     * @memberof DeploymentJsonMergePatch
      */
-    failures?: Array<Failure>;
+    readonly failures?: Array<Failure>;
     /**
      * 
-     * @type {string}
-     * @memberof DeploymentJsonMergePatch
      */
     readonly id?: string;
     /**
      * 
-     * @type {Date}
-     * @memberof DeploymentJsonMergePatch
      */
     readonly deletedAt?: Date | null;
     /**
      * 
-     * @type {Date}
-     * @memberof DeploymentJsonMergePatch
      */
     readonly createdAt?: Date;
     /**
      * 
-     * @type {Date}
-     * @memberof DeploymentJsonMergePatch
      */
     readonly updatedAt?: Date | null;
     /**
      * Whether this revision has a stack of its own on a swarm right now.
-     * @type {boolean}
-     * @memberof DeploymentJsonMergePatch
      */
     readonly onASwarm?: boolean;
     /**
      * 
-     * @type {boolean}
-     * @memberof DeploymentJsonMergePatch
      */
     readonly deleted?: boolean;
 }
@@ -240,7 +194,7 @@ export const DeploymentJsonMergePatchStatusEnum = {
     Failed: 'failed',
     RolledBack: 'rolled_back',
     Quarantined: 'quarantined',
-    Cancelled: 'cancelled'
+    Cancelled: 'cancelled',
 } as const;
 export type DeploymentJsonMergePatchStatusEnum = typeof DeploymentJsonMergePatchStatusEnum[keyof typeof DeploymentJsonMergePatchStatusEnum];
 
@@ -264,25 +218,25 @@ export function DeploymentJsonMergePatchFromJSONTyped(json: any, ignoreDiscrimin
         
         'application': json['application'] == null ? undefined : json['application'],
         'sequence': json['sequence'] == null ? undefined : json['sequence'],
-        'name': json['name'] == null ? undefined : json['name'],
+        'name': json['name'] === undefined ? undefined : json['name'] === null ? null : json['name'],
         'rawCompose': json['rawCompose'] == null ? undefined : json['rawCompose'],
         'canonicalSpec': json['canonicalSpec'] == null ? undefined : json['canonicalSpec'],
         'buildContexts': json['buildContexts'] == null ? undefined : json['buildContexts'],
         'forwardedImages': json['forwardedImages'] == null ? undefined : json['forwardedImages'],
-        'targetSwarm': json['targetSwarm'] == null ? undefined : json['targetSwarm'],
+        'targetSwarm': json['targetSwarm'] === undefined ? undefined : json['targetSwarm'] === null ? null : json['targetSwarm'],
         'status': json['status'] == null ? undefined : json['status'],
-        'statusReason': json['statusReason'] == null ? undefined : json['statusReason'],
+        'statusReason': json['statusReason'] === undefined ? undefined : json['statusReason'] === null ? null : json['statusReason'],
         'failedOnSwarm': json['failedOnSwarm'] == null ? undefined : json['failedOnSwarm'],
-        'zeroTaskObservedAt': json['zeroTaskObservedAt'] == null ? undefined : (new Date(json['zeroTaskObservedAt'])),
+        'zeroTaskObservedAt': json['zeroTaskObservedAt'] === undefined ? undefined : json['zeroTaskObservedAt'] === null ? null : (parseDateTime(json['zeroTaskObservedAt'])),
         'degraded': json['degraded'] == null ? undefined : json['degraded'],
-        'digest': json['digest'] == null ? undefined : json['digest'],
-        'createdBy': json['createdBy'] == null ? undefined : UserFromJSON(json['createdBy']),
+        'digest': json['digest'] === undefined ? undefined : json['digest'] === null ? null : json['digest'],
+        'createdBy': json['createdBy'] === undefined ? undefined : json['createdBy'] === null ? null : UserFromJSON(json['createdBy']),
         'services': json['services'] == null ? undefined : ((json['services'] as Array<any>).map(ServiceFromJSON)),
         'failures': json['failures'] == null ? undefined : ((json['failures'] as Array<any>).map(FailureFromJSON)),
         'id': json['id'] == null ? undefined : json['id'],
-        'deletedAt': json['deletedAt'] == null ? undefined : (new Date(json['deletedAt'])),
-        'createdAt': json['createdAt'] == null ? undefined : (new Date(json['createdAt'])),
-        'updatedAt': json['updatedAt'] == null ? undefined : (new Date(json['updatedAt'])),
+        'deletedAt': json['deletedAt'] === undefined ? undefined : json['deletedAt'] === null ? null : (parseDateTime(json['deletedAt'])),
+        'createdAt': json['createdAt'] == null ? undefined : (parseDateTime(json['createdAt'])),
+        'updatedAt': json['updatedAt'] === undefined ? undefined : json['updatedAt'] === null ? null : (parseDateTime(json['updatedAt'])),
         'onASwarm': json['onASwarm'] == null ? undefined : json['onASwarm'],
         'deleted': json['deleted'] == null ? undefined : json['deleted'],
     };
@@ -292,7 +246,7 @@ export function DeploymentJsonMergePatchToJSON(json: any): DeploymentJsonMergePa
     return DeploymentJsonMergePatchToJSONTyped(json, false);
 }
 
-export function DeploymentJsonMergePatchToJSONTyped(value?: Omit<DeploymentJsonMergePatch, 'id'|'deletedAt'|'createdAt'|'updatedAt'|'onASwarm'|'deleted'> | null, ignoreDiscriminator: boolean = false): any {
+export function DeploymentJsonMergePatchToJSONTyped(value?: Omit<DeploymentJsonMergePatch, 'failures'|'id'|'deletedAt'|'createdAt'|'updatedAt'|'onASwarm'|'deleted'> | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
@@ -310,12 +264,11 @@ export function DeploymentJsonMergePatchToJSONTyped(value?: Omit<DeploymentJsonM
         'status': value['status'],
         'statusReason': value['statusReason'],
         'failedOnSwarm': value['failedOnSwarm'],
-        'zeroTaskObservedAt': value['zeroTaskObservedAt'] == null ? undefined : ((value['zeroTaskObservedAt'] as any).toISOString()),
+        'zeroTaskObservedAt': value['zeroTaskObservedAt'] == null ? value['zeroTaskObservedAt'] : serializeDateTime(value['zeroTaskObservedAt']),
         'degraded': value['degraded'],
         'digest': value['digest'],
         'createdBy': UserToJSON(value['createdBy']),
         'services': value['services'] == null ? undefined : ((value['services'] as Array<any>).map(ServiceToJSON)),
-        'failures': value['failures'] == null ? undefined : ((value['failures'] as Array<any>).map(FailureToJSON)),
     };
 }
 

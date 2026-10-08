@@ -12,7 +12,7 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
+import { mapValues, parseDate, parseDateTime, serializeDate, serializeDateTime } from '../runtime';
 /**
  * List an application's per-deployment access-gate overrides.
  * @export
@@ -21,38 +21,26 @@ import { mapValues } from '../runtime';
 export interface DeploymentAccessGate {
     /**
      * 
-     * @type {string}
-     * @memberof DeploymentAccessGate
      */
     application?: string;
     /**
      * 
-     * @type {string}
-     * @memberof DeploymentAccessGate
      */
     name?: string;
     /**
      * 
-     * @type {string}
-     * @memberof DeploymentAccessGate
      */
     accessGate?: DeploymentAccessGateAccessGateEnum;
     /**
      * 
-     * @type {string}
-     * @memberof DeploymentAccessGate
      */
     readonly id?: string;
     /**
      * 
-     * @type {Date}
-     * @memberof DeploymentAccessGate
      */
     readonly createdAt?: Date;
     /**
      * 
-     * @type {Date}
-     * @memberof DeploymentAccessGate
      */
     readonly updatedAt?: Date | null;
 }
@@ -65,7 +53,7 @@ export const DeploymentAccessGateAccessGateEnum = {
     None: 'none',
     BasicAuth: 'basic_auth',
     Token: 'token',
-    SomeonesAuth: 'someones_auth'
+    SomeonesAuth: 'someones_auth',
 } as const;
 export type DeploymentAccessGateAccessGateEnum = typeof DeploymentAccessGateAccessGateEnum[keyof typeof DeploymentAccessGateAccessGateEnum];
 
@@ -91,8 +79,8 @@ export function DeploymentAccessGateFromJSONTyped(json: any, ignoreDiscriminator
         'name': json['name'] == null ? undefined : json['name'],
         'accessGate': json['accessGate'] == null ? undefined : json['accessGate'],
         'id': json['id'] == null ? undefined : json['id'],
-        'createdAt': json['createdAt'] == null ? undefined : (new Date(json['createdAt'])),
-        'updatedAt': json['updatedAt'] == null ? undefined : (new Date(json['updatedAt'])),
+        'createdAt': json['createdAt'] == null ? undefined : (parseDateTime(json['createdAt'])),
+        'updatedAt': json['updatedAt'] === undefined ? undefined : json['updatedAt'] === null ? null : (parseDateTime(json['updatedAt'])),
     };
 }
 

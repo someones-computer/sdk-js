@@ -21,14 +21,10 @@ import { mapValues } from '../runtime';
 export interface BundleAdditionalContextInput {
     /**
      * 
-     * @type {string}
-     * @memberof BundleAdditionalContextInput
      */
     name: string;
     /**
      * 
-     * @type {string}
-     * @memberof BundleAdditionalContextInput
      */
     contextSha256: string;
 }

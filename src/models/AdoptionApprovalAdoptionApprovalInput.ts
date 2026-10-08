@@ -21,20 +21,14 @@ import { mapValues } from '../runtime';
 export interface AdoptionApprovalAdoptionApprovalInput {
     /**
      * 
-     * @type {string}
-     * @memberof AdoptionApprovalAdoptionApprovalInput
      */
     application: string | null;
     /**
      * 
-     * @type {string}
-     * @memberof AdoptionApprovalAdoptionApprovalInput
      */
     composeServiceName: string;
     /**
      * 
-     * @type {boolean}
-     * @memberof AdoptionApprovalAdoptionApprovalInput
      */
     approved?: boolean;
 }

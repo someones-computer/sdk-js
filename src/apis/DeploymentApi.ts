@@ -12,75 +12,134 @@
  * Do not edit the class manually.
  */
 
-
 import * as runtime from '../runtime';
-import type {
-  ConstraintViolation,
-  Deployment,
-  DeploymentBundleUploadConfirmInput,
-  DeploymentBundleUploadConfirmOutput,
-  DeploymentBundleUploadDeclareInput,
-  DeploymentBundleUploadDeclareOutput,
-  DeploymentDeploymentEndpoint,
-  DeploymentJsonMergePatch,
-} from '../models/index';
 import {
+    type ConstraintViolation,
     ConstraintViolationFromJSON,
     ConstraintViolationToJSON,
+} from '../models/ConstraintViolation';
+import {
+    type Deployment,
     DeploymentFromJSON,
     DeploymentToJSON,
+} from '../models/Deployment';
+import {
+    type DeploymentBundleUploadConfirmInput,
     DeploymentBundleUploadConfirmInputFromJSON,
     DeploymentBundleUploadConfirmInputToJSON,
+} from '../models/DeploymentBundleUploadConfirmInput';
+import {
+    type DeploymentBundleUploadConfirmOutput,
     DeploymentBundleUploadConfirmOutputFromJSON,
     DeploymentBundleUploadConfirmOutputToJSON,
+} from '../models/DeploymentBundleUploadConfirmOutput';
+import {
+    type DeploymentBundleUploadDeclareInput,
     DeploymentBundleUploadDeclareInputFromJSON,
     DeploymentBundleUploadDeclareInputToJSON,
+} from '../models/DeploymentBundleUploadDeclareInput';
+import {
+    type DeploymentBundleUploadDeclareOutput,
     DeploymentBundleUploadDeclareOutputFromJSON,
     DeploymentBundleUploadDeclareOutputToJSON,
+} from '../models/DeploymentBundleUploadDeclareOutput';
+import {
+    type DeploymentDeploymentEndpoint,
     DeploymentDeploymentEndpointFromJSON,
     DeploymentDeploymentEndpointToJSON,
+} from '../models/DeploymentDeploymentEndpoint';
+import {
+    type DeploymentJsonMergePatch,
     DeploymentJsonMergePatchFromJSON,
     DeploymentJsonMergePatchToJSON,
-} from '../models/index';
+} from '../models/DeploymentJsonMergePatch';
 
 export interface DeploymentsBundleUploadConfirmRequest {
+    /**
+     * 
+     */
     deploymentBundleUploadConfirmInput: DeploymentBundleUploadConfirmInput;
 }
 
 export interface DeploymentsBundleUploadDeclareRequest {
+    /**
+     * 
+     */
     deploymentBundleUploadDeclareInput: DeploymentBundleUploadDeclareInput;
 }
 
 export interface DeploymentsCreateRequest {
-    deployment: Omit<Deployment, 'id'|'deletedAt'|'createdAt'|'updatedAt'|'onASwarm'|'deleted'>;
+    /**
+     * 
+     */
+    deployment: Omit<Deployment, 'failures'|'id'|'deletedAt'|'createdAt'|'updatedAt'|'onASwarm'|'deleted'>;
 }
 
 export interface DeploymentsDeleteRequest {
+    /**
+     * Deployment identifier
+     */
     id: string;
 }
 
 export interface DeploymentsEndpointsRequest {
+    /**
+     * Deployment identifier
+     */
     id: string;
 }
 
 export interface DeploymentsGetRequest {
+    /**
+     * Deployment identifier
+     */
     id: string;
 }
 
 export interface DeploymentsListRequest {
+    /**
+     * The collection page number
+     */
     page?: number;
+    /**
+     * Only revisions of this application, by IRI (`/api/applications/{id}`).
+     */
     application?: string;
+    /**
+     * Only revisions of this application, by IRI (`/api/applications/{id}`).
+     */
     application2?: Array<string>;
+    /**
+     * Only the revision with this sequence number.
+     */
     sequence?: string;
+    /**
+     * Only the revision with this sequence number.
+     */
     sequence2?: Array<string>;
+    /**
+     * Only revisions with this exact name.
+     */
     name?: string;
+    /**
+     * Only revisions with this exact name.
+     */
     name2?: Array<string>;
+    /**
+     * Rows per page.
+     */
     itemsPerPage?: string;
 }
 
 export interface DeploymentsUpdateRequest {
+    /**
+     * Deployment identifier
+     */
     id: string;
-    deploymentJsonMergePatch: Omit<DeploymentJsonMergePatch, 'id'|'deletedAt'|'createdAt'|'updatedAt'|'onASwarm'|'deleted'>;
+    /**
+     * 
+     */
+    deploymentJsonMergePatch: Omit<DeploymentJsonMergePatch, 'failures'|'id'|'deletedAt'|'createdAt'|'updatedAt'|'onASwarm'|'deleted'>;
 }
 
 /**
@@ -89,10 +148,9 @@ export interface DeploymentsUpdateRequest {
 export class DeploymentApi extends runtime.BaseAPI {
 
     /**
-     * Creates a Deployment resource.
-     * Creates a Deployment resource.
+     * Creates request options for deploymentsBundleUploadConfirm without sending the request
      */
-    async deploymentsBundleUploadConfirmRaw(requestParameters: DeploymentsBundleUploadConfirmRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<DeploymentBundleUploadConfirmOutput>> {
+    async deploymentsBundleUploadConfirmRequestOpts(requestParameters: DeploymentsBundleUploadConfirmRequest): Promise<runtime.RequestOpts> {
         if (requestParameters['deploymentBundleUploadConfirmInput'] == null) {
             throw new runtime.RequiredError(
                 'deploymentBundleUploadConfirmInput',
@@ -114,13 +172,25 @@ export class DeploymentApi extends runtime.BaseAPI {
                 headerParameters["Authorization"] = `Bearer ${tokenString}`;
             }
         }
-        const response = await this.request({
-            path: `/api/deployments/bundle_uploads/confirm`,
+
+        let urlPath = `/api/deployments/bundle_uploads/confirm`;
+
+        return {
+            path: urlPath,
             method: 'POST',
             headers: headerParameters,
             query: queryParameters,
             body: DeploymentBundleUploadConfirmInputToJSON(requestParameters['deploymentBundleUploadConfirmInput']),
-        }, initOverrides);
+        };
+    }
+
+    /**
+     * Creates a Deployment resource.
+     * Creates a Deployment resource.
+     */
+    async deploymentsBundleUploadConfirmRaw(requestParameters: DeploymentsBundleUploadConfirmRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<DeploymentBundleUploadConfirmOutput>> {
+        const requestOptions = await this.deploymentsBundleUploadConfirmRequestOpts(requestParameters);
+        const response = await this.request(requestOptions, initOverrides);
 
         return new runtime.JSONApiResponse(response, (jsonValue) => DeploymentBundleUploadConfirmOutputFromJSON(jsonValue));
     }
@@ -135,10 +205,9 @@ export class DeploymentApi extends runtime.BaseAPI {
     }
 
     /**
-     * Creates a Deployment resource.
-     * Creates a Deployment resource.
+     * Creates request options for deploymentsBundleUploadDeclare without sending the request
      */
-    async deploymentsBundleUploadDeclareRaw(requestParameters: DeploymentsBundleUploadDeclareRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<DeploymentBundleUploadDeclareOutput>> {
+    async deploymentsBundleUploadDeclareRequestOpts(requestParameters: DeploymentsBundleUploadDeclareRequest): Promise<runtime.RequestOpts> {
         if (requestParameters['deploymentBundleUploadDeclareInput'] == null) {
             throw new runtime.RequiredError(
                 'deploymentBundleUploadDeclareInput',
@@ -160,13 +229,25 @@ export class DeploymentApi extends runtime.BaseAPI {
                 headerParameters["Authorization"] = `Bearer ${tokenString}`;
             }
         }
-        const response = await this.request({
-            path: `/api/deployments/bundle_uploads`,
+
+        let urlPath = `/api/deployments/bundle_uploads`;
+
+        return {
+            path: urlPath,
             method: 'POST',
             headers: headerParameters,
             query: queryParameters,
             body: DeploymentBundleUploadDeclareInputToJSON(requestParameters['deploymentBundleUploadDeclareInput']),
-        }, initOverrides);
+        };
+    }
+
+    /**
+     * Creates a Deployment resource.
+     * Creates a Deployment resource.
+     */
+    async deploymentsBundleUploadDeclareRaw(requestParameters: DeploymentsBundleUploadDeclareRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<DeploymentBundleUploadDeclareOutput>> {
+        const requestOptions = await this.deploymentsBundleUploadDeclareRequestOpts(requestParameters);
+        const response = await this.request(requestOptions, initOverrides);
 
         return new runtime.JSONApiResponse(response, (jsonValue) => DeploymentBundleUploadDeclareOutputFromJSON(jsonValue));
     }
@@ -181,10 +262,9 @@ export class DeploymentApi extends runtime.BaseAPI {
     }
 
     /**
-     * Creates a Deployment resource.
-     * Creates a Deployment resource.
+     * Creates request options for deploymentsCreate without sending the request
      */
-    async deploymentsCreateRaw(requestParameters: DeploymentsCreateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Deployment>> {
+    async deploymentsCreateRequestOpts(requestParameters: DeploymentsCreateRequest): Promise<runtime.RequestOpts> {
         if (requestParameters['deployment'] == null) {
             throw new runtime.RequiredError(
                 'deployment',
@@ -206,13 +286,25 @@ export class DeploymentApi extends runtime.BaseAPI {
                 headerParameters["Authorization"] = `Bearer ${tokenString}`;
             }
         }
-        const response = await this.request({
-            path: `/api/deployments`,
+
+        let urlPath = `/api/deployments`;
+
+        return {
+            path: urlPath,
             method: 'POST',
             headers: headerParameters,
             query: queryParameters,
             body: DeploymentToJSON(requestParameters['deployment']),
-        }, initOverrides);
+        };
+    }
+
+    /**
+     * Creates a Deployment resource.
+     * Creates a Deployment resource.
+     */
+    async deploymentsCreateRaw(requestParameters: DeploymentsCreateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Deployment>> {
+        const requestOptions = await this.deploymentsCreateRequestOpts(requestParameters);
+        const response = await this.request(requestOptions, initOverrides);
 
         return new runtime.JSONApiResponse(response, (jsonValue) => DeploymentFromJSON(jsonValue));
     }
@@ -227,10 +319,9 @@ export class DeploymentApi extends runtime.BaseAPI {
     }
 
     /**
-     * Removes the Deployment resource.
-     * Removes the Deployment resource.
+     * Creates request options for deploymentsDelete without sending the request
      */
-    async deploymentsDeleteRaw(requestParameters: DeploymentsDeleteRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>> {
+    async deploymentsDeleteRequestOpts(requestParameters: DeploymentsDeleteRequest): Promise<runtime.RequestOpts> {
         if (requestParameters['id'] == null) {
             throw new runtime.RequiredError(
                 'id',
@@ -250,12 +341,25 @@ export class DeploymentApi extends runtime.BaseAPI {
                 headerParameters["Authorization"] = `Bearer ${tokenString}`;
             }
         }
-        const response = await this.request({
-            path: `/api/deployments/{id}`.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters['id']))),
+
+        let urlPath = `/api/deployments/{id}`;
+        urlPath = urlPath.replace('{id}', encodeURIComponent(String(requestParameters['id'])));
+
+        return {
+            path: urlPath,
             method: 'DELETE',
             headers: headerParameters,
             query: queryParameters,
-        }, initOverrides);
+        };
+    }
+
+    /**
+     * Removes the Deployment resource.
+     * Removes the Deployment resource.
+     */
+    async deploymentsDeleteRaw(requestParameters: DeploymentsDeleteRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>> {
+        const requestOptions = await this.deploymentsDeleteRequestOpts(requestParameters);
+        const response = await this.request(requestOptions, initOverrides);
 
         return new runtime.VoidApiResponse(response);
     }
@@ -269,10 +373,9 @@ export class DeploymentApi extends runtime.BaseAPI {
     }
 
     /**
-     * Retrieves the collection of Deployment resources.
-     * Retrieves the collection of Deployment resources.
+     * Creates request options for deploymentsEndpoints without sending the request
      */
-    async deploymentsEndpointsRaw(requestParameters: DeploymentsEndpointsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Array<DeploymentDeploymentEndpoint>>> {
+    async deploymentsEndpointsRequestOpts(requestParameters: DeploymentsEndpointsRequest): Promise<runtime.RequestOpts> {
         if (requestParameters['id'] == null) {
             throw new runtime.RequiredError(
                 'id',
@@ -292,12 +395,25 @@ export class DeploymentApi extends runtime.BaseAPI {
                 headerParameters["Authorization"] = `Bearer ${tokenString}`;
             }
         }
-        const response = await this.request({
-            path: `/api/deployments/{id}/endpoints`.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters['id']))),
+
+        let urlPath = `/api/deployments/{id}/endpoints`;
+        urlPath = urlPath.replace('{id}', encodeURIComponent(String(requestParameters['id'])));
+
+        return {
+            path: urlPath,
             method: 'GET',
             headers: headerParameters,
             query: queryParameters,
-        }, initOverrides);
+        };
+    }
+
+    /**
+     * Retrieves the collection of Deployment resources.
+     * Retrieves the collection of Deployment resources.
+     */
+    async deploymentsEndpointsRaw(requestParameters: DeploymentsEndpointsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Array<DeploymentDeploymentEndpoint>>> {
+        const requestOptions = await this.deploymentsEndpointsRequestOpts(requestParameters);
+        const response = await this.request(requestOptions, initOverrides);
 
         return new runtime.JSONApiResponse(response, (jsonValue) => jsonValue.map(DeploymentDeploymentEndpointFromJSON));
     }
@@ -312,10 +428,9 @@ export class DeploymentApi extends runtime.BaseAPI {
     }
 
     /**
-     * Retrieves a Deployment resource.
-     * Retrieves a Deployment resource.
+     * Creates request options for deploymentsGet without sending the request
      */
-    async deploymentsGetRaw(requestParameters: DeploymentsGetRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Deployment>> {
+    async deploymentsGetRequestOpts(requestParameters: DeploymentsGetRequest): Promise<runtime.RequestOpts> {
         if (requestParameters['id'] == null) {
             throw new runtime.RequiredError(
                 'id',
@@ -335,12 +450,25 @@ export class DeploymentApi extends runtime.BaseAPI {
                 headerParameters["Authorization"] = `Bearer ${tokenString}`;
             }
         }
-        const response = await this.request({
-            path: `/api/deployments/{id}`.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters['id']))),
+
+        let urlPath = `/api/deployments/{id}`;
+        urlPath = urlPath.replace('{id}', encodeURIComponent(String(requestParameters['id'])));
+
+        return {
+            path: urlPath,
             method: 'GET',
             headers: headerParameters,
             query: queryParameters,
-        }, initOverrides);
+        };
+    }
+
+    /**
+     * Retrieves a Deployment resource.
+     * Retrieves a Deployment resource.
+     */
+    async deploymentsGetRaw(requestParameters: DeploymentsGetRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Deployment>> {
+        const requestOptions = await this.deploymentsGetRequestOpts(requestParameters);
+        const response = await this.request(requestOptions, initOverrides);
 
         return new runtime.JSONApiResponse(response, (jsonValue) => DeploymentFromJSON(jsonValue));
     }
@@ -355,10 +483,9 @@ export class DeploymentApi extends runtime.BaseAPI {
     }
 
     /**
-     * Retrieves the collection of Deployment resources.
-     * Retrieves the collection of Deployment resources.
+     * Creates request options for deploymentsList without sending the request
      */
-    async deploymentsListRaw(requestParameters: DeploymentsListRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Array<Deployment>>> {
+    async deploymentsListRequestOpts(requestParameters: DeploymentsListRequest): Promise<runtime.RequestOpts> {
         const queryParameters: any = {};
 
         if (requestParameters['page'] != null) {
@@ -403,12 +530,24 @@ export class DeploymentApi extends runtime.BaseAPI {
                 headerParameters["Authorization"] = `Bearer ${tokenString}`;
             }
         }
-        const response = await this.request({
-            path: `/api/deployments`,
+
+        let urlPath = `/api/deployments`;
+
+        return {
+            path: urlPath,
             method: 'GET',
             headers: headerParameters,
             query: queryParameters,
-        }, initOverrides);
+        };
+    }
+
+    /**
+     * Retrieves the collection of Deployment resources.
+     * Retrieves the collection of Deployment resources.
+     */
+    async deploymentsListRaw(requestParameters: DeploymentsListRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Array<Deployment>>> {
+        const requestOptions = await this.deploymentsListRequestOpts(requestParameters);
+        const response = await this.request(requestOptions, initOverrides);
 
         return new runtime.JSONApiResponse(response, (jsonValue) => jsonValue.map(DeploymentFromJSON));
     }
@@ -423,10 +562,9 @@ export class DeploymentApi extends runtime.BaseAPI {
     }
 
     /**
-     * Updates the Deployment resource.
-     * Updates the Deployment resource.
+     * Creates request options for deploymentsUpdate without sending the request
      */
-    async deploymentsUpdateRaw(requestParameters: DeploymentsUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Deployment>> {
+    async deploymentsUpdateRequestOpts(requestParameters: DeploymentsUpdateRequest): Promise<runtime.RequestOpts> {
         if (requestParameters['id'] == null) {
             throw new runtime.RequiredError(
                 'id',
@@ -455,13 +593,26 @@ export class DeploymentApi extends runtime.BaseAPI {
                 headerParameters["Authorization"] = `Bearer ${tokenString}`;
             }
         }
-        const response = await this.request({
-            path: `/api/deployments/{id}`.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters['id']))),
+
+        let urlPath = `/api/deployments/{id}`;
+        urlPath = urlPath.replace('{id}', encodeURIComponent(String(requestParameters['id'])));
+
+        return {
+            path: urlPath,
             method: 'PATCH',
             headers: headerParameters,
             query: queryParameters,
             body: DeploymentJsonMergePatchToJSON(requestParameters['deploymentJsonMergePatch']),
-        }, initOverrides);
+        };
+    }
+
+    /**
+     * Updates the Deployment resource.
+     * Updates the Deployment resource.
+     */
+    async deploymentsUpdateRaw(requestParameters: DeploymentsUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Deployment>> {
+        const requestOptions = await this.deploymentsUpdateRequestOpts(requestParameters);
+        const response = await this.request(requestOptions, initOverrides);
 
         return new runtime.JSONApiResponse(response, (jsonValue) => DeploymentFromJSON(jsonValue));
     }

@@ -21,44 +21,30 @@ import { mapValues } from '../runtime';
 export interface DeploymentBundleUploadConfirmOutput {
     /**
      * 
-     * @type {string}
-     * @memberof DeploymentBundleUploadConfirmOutput
      */
     id?: string;
     /**
      * 
-     * @type {number}
-     * @memberof DeploymentBundleUploadConfirmOutput
      */
     sequence?: number;
     /**
      * 
-     * @type {string}
-     * @memberof DeploymentBundleUploadConfirmOutput
      */
     status?: string;
     /**
      * 
-     * @type {string}
-     * @memberof DeploymentBundleUploadConfirmOutput
      */
     digest?: string | null;
     /**
      * 
-     * @type {string}
-     * @memberof DeploymentBundleUploadConfirmOutput
      */
     url?: string;
     /**
      * True when this upload restarted an existing failed revision rather than minting one.
-     * @type {boolean}
-     * @memberof DeploymentBundleUploadConfirmOutput
      */
     retried?: boolean;
     /**
      * A deploy this organization can still afford, but is projected to run out of paying for soon — null on every ordinary deploy.
-     * @type {string}
-     * @memberof DeploymentBundleUploadConfirmOutput
      */
     warning?: string | null;
 }
@@ -83,10 +69,10 @@ export function DeploymentBundleUploadConfirmOutputFromJSONTyped(json: any, igno
         'id': json['id'] == null ? undefined : json['id'],
         'sequence': json['sequence'] == null ? undefined : json['sequence'],
         'status': json['status'] == null ? undefined : json['status'],
-        'digest': json['digest'] == null ? undefined : json['digest'],
+        'digest': json['digest'] === undefined ? undefined : json['digest'] === null ? null : json['digest'],
         'url': json['url'] == null ? undefined : json['url'],
         'retried': json['retried'] == null ? undefined : json['retried'],
-        'warning': json['warning'] == null ? undefined : json['warning'],
+        'warning': json['warning'] === undefined ? undefined : json['warning'] === null ? null : json['warning'],
     };
 }
 

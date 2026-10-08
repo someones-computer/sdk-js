@@ -12,7 +12,7 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
+import { mapValues, parseDate, parseDateTime, serializeDate, serializeDateTime } from '../runtime';
 import type { ManagedServiceEngine } from './ManagedServiceEngine';
 import {
     ManagedServiceEngineFromJSON,
@@ -57,33 +57,23 @@ import {
 export interface ManagedService {
     /**
      * 
-     * @type {string}
-     * @memberof ManagedService
      */
     organization?: string;
     /**
      * 
-     * @type {string}
-     * @memberof ManagedService
      */
     slug?: string;
     /**
      * The catalogue entry the tenant picked, as `(kind, majorVersion)`.
-     * @type {string}
-     * @memberof ManagedService
      */
     kind?: ManagedServiceKindEnum;
     /**
      * 
-     * @type {string}
-     * @memberof ManagedService
      */
     majorVersion?: string;
     /**
      * What the object is actually called inside the engine — `acme_hearth_db` for a
      * database, `acme-hearth-media` for a bucket.
-     * @type {string}
-     * @memberof ManagedService
      */
     backingName?: string;
     /**
@@ -91,14 +81,10 @@ export interface ManagedService {
      * {@see $credentialCiphertext}'s sealed secret access key. Null for every
      * database kind, which has no such pair: its one credential is a password,
      * sealed whole into the four columns above.
-     * @type {string}
-     * @memberof ManagedService
      */
     externalKeyId?: string | null;
     /**
      * 
-     * @type {ManagedServiceQuotaBytes}
-     * @memberof ManagedService
      */
     quotaBytes?: ManagedServiceQuotaBytes | null;
     /**
@@ -108,8 +94,6 @@ export interface ManagedService {
      * generator's own default; the effective number is always asked of the
      * generator ({@see \App\Service\ManagedService\Sidecar\SidecarConfigGenerator::poolSizeFor()}),
      * never read from here directly, so the default lives in one place.
-     * @type {number}
-     * @memberof ManagedService
      */
     poolSizeOverride?: number | null;
     /**
@@ -117,111 +101,75 @@ export interface ManagedService {
      * connections each proxy will accept (`max_client_conn` on pgbouncer,
      * `mysql-max_connections` on ProxySQL). Same null-means-default and
      * ask-the-generator contract as {@see $poolSizeOverride}.
-     * @type {number}
-     * @memberof ManagedService
      */
     clientConnectionsOverride?: number | null;
     /**
      * 
-     * @type {string}
-     * @memberof ManagedService
      */
     state?: ManagedServiceStateEnum;
     /**
      * 
-     * @type {string}
-     * @memberof ManagedService
      */
     readonly failureReason?: string | null;
     /**
      * Why the service is suspended, or null when a state of `suspended` was put
      * there by an operator or the tenant rather than by the platform.
-     * @type {string}
-     * @memberof ManagedService
      */
     suspensionReason?: ManagedServiceSuspensionReasonEnum | null;
     /**
      * 
-     * @type {ManagedServiceUsageBytes}
-     * @memberof ManagedService
      */
     usageBytes?: ManagedServiceUsageBytes | null;
     /**
      * 
-     * @type {Date}
-     * @memberof ManagedService
      */
     readonly usageSampledAt?: Date | null;
     /**
      * 
-     * @type {ManagedServiceLastLoadMillis}
-     * @memberof ManagedService
      */
     lastLoadMillis?: ManagedServiceLastLoadMillis | null;
     /**
      * 
-     * @type {Date}
-     * @memberof ManagedService
      */
     readonly lastLoadSampledAt?: Date | null;
     /**
      * 
-     * @type {ManagedServicePendingLoadMillis}
-     * @memberof ManagedService
      */
     pendingLoadMillis?: ManagedServicePendingLoadMillis;
     /**
      * 
-     * @type {Array<string>}
-     * @memberof ManagedService
      */
-    bindings?: Array<string>;
+    readonly bindings?: Array<string>;
     /**
      * 
-     * @type {string}
-     * @memberof ManagedService
      */
     readonly id?: string;
     /**
      * 
-     * @type {Date}
-     * @memberof ManagedService
      */
     readonly deletedAt?: Date | null;
     /**
      * 
-     * @type {Date}
-     * @memberof ManagedService
      */
     readonly createdAt?: Date;
     /**
      * 
-     * @type {Date}
-     * @memberof ManagedService
      */
     readonly updatedAt?: Date | null;
     /**
      * `postgres 17`, `mysql 8.0` — the catalogue entry, as one string.
-     * @type {string}
-     * @memberof ManagedService
      */
     readonly catalogueEntry?: string;
     /**
-     * 
-     * @type {ManagedServiceEngine}
-     * @memberof ManagedService
+     * The engine as a tenant reads it: its name and its state, and nothing else.
      */
-    instance?: ManagedServiceEngine | null;
+    readonly instance?: ManagedServiceEngine | null;
     /**
      * 
-     * @type {boolean}
-     * @memberof ManagedService
      */
     readonly available?: boolean;
     /**
      * 
-     * @type {boolean}
-     * @memberof ManagedService
      */
     readonly deleted?: boolean;
 }
@@ -234,7 +182,7 @@ export const ManagedServiceKindEnum = {
     Postgres: 'postgres',
     Mariadb: 'mariadb',
     Mysql: 'mysql',
-    Garage: 'garage'
+    Garage: 'garage',
 } as const;
 export type ManagedServiceKindEnum = typeof ManagedServiceKindEnum[keyof typeof ManagedServiceKindEnum];
 
@@ -248,7 +196,7 @@ export const ManagedServiceStateEnum = {
     Suspended: 'suspended',
     Dropping: 'dropping',
     Dropped: 'dropped',
-    Failed: 'failed'
+    Failed: 'failed',
 } as const;
 export type ManagedServiceStateEnum = typeof ManagedServiceStateEnum[keyof typeof ManagedServiceStateEnum];
 
@@ -258,7 +206,7 @@ export type ManagedServiceStateEnum = typeof ManagedServiceStateEnum[keyof typeo
 export const ManagedServiceSuspensionReasonEnum = {
     CreditExhausted: 'credit_exhausted',
     OverQuota: 'over_quota',
-    Retired: 'retired'
+    Retired: 'retired',
 } as const;
 export type ManagedServiceSuspensionReasonEnum = typeof ManagedServiceSuspensionReasonEnum[keyof typeof ManagedServiceSuspensionReasonEnum];
 
@@ -285,25 +233,25 @@ export function ManagedServiceFromJSONTyped(json: any, ignoreDiscriminator: bool
         'kind': json['kind'] == null ? undefined : json['kind'],
         'majorVersion': json['majorVersion'] == null ? undefined : json['majorVersion'],
         'backingName': json['backingName'] == null ? undefined : json['backingName'],
-        'externalKeyId': json['externalKeyId'] == null ? undefined : json['externalKeyId'],
-        'quotaBytes': json['quotaBytes'] == null ? undefined : ManagedServiceQuotaBytesFromJSON(json['quotaBytes']),
-        'poolSizeOverride': json['poolSizeOverride'] == null ? undefined : json['poolSizeOverride'],
-        'clientConnectionsOverride': json['clientConnectionsOverride'] == null ? undefined : json['clientConnectionsOverride'],
+        'externalKeyId': json['externalKeyId'] === undefined ? undefined : json['externalKeyId'] === null ? null : json['externalKeyId'],
+        'quotaBytes': json['quotaBytes'] === undefined ? undefined : json['quotaBytes'] === null ? null : ManagedServiceQuotaBytesFromJSON(json['quotaBytes']),
+        'poolSizeOverride': json['poolSizeOverride'] === undefined ? undefined : json['poolSizeOverride'] === null ? null : json['poolSizeOverride'],
+        'clientConnectionsOverride': json['clientConnectionsOverride'] === undefined ? undefined : json['clientConnectionsOverride'] === null ? null : json['clientConnectionsOverride'],
         'state': json['state'] == null ? undefined : json['state'],
-        'failureReason': json['failureReason'] == null ? undefined : json['failureReason'],
-        'suspensionReason': json['suspensionReason'] == null ? undefined : json['suspensionReason'],
-        'usageBytes': json['usageBytes'] == null ? undefined : ManagedServiceUsageBytesFromJSON(json['usageBytes']),
-        'usageSampledAt': json['usageSampledAt'] == null ? undefined : (new Date(json['usageSampledAt'])),
-        'lastLoadMillis': json['lastLoadMillis'] == null ? undefined : ManagedServiceLastLoadMillisFromJSON(json['lastLoadMillis']),
-        'lastLoadSampledAt': json['lastLoadSampledAt'] == null ? undefined : (new Date(json['lastLoadSampledAt'])),
+        'failureReason': json['failureReason'] === undefined ? undefined : json['failureReason'] === null ? null : json['failureReason'],
+        'suspensionReason': json['suspensionReason'] === undefined ? undefined : json['suspensionReason'] === null ? null : json['suspensionReason'],
+        'usageBytes': json['usageBytes'] === undefined ? undefined : json['usageBytes'] === null ? null : ManagedServiceUsageBytesFromJSON(json['usageBytes']),
+        'usageSampledAt': json['usageSampledAt'] === undefined ? undefined : json['usageSampledAt'] === null ? null : (parseDateTime(json['usageSampledAt'])),
+        'lastLoadMillis': json['lastLoadMillis'] === undefined ? undefined : json['lastLoadMillis'] === null ? null : ManagedServiceLastLoadMillisFromJSON(json['lastLoadMillis']),
+        'lastLoadSampledAt': json['lastLoadSampledAt'] === undefined ? undefined : json['lastLoadSampledAt'] === null ? null : (parseDateTime(json['lastLoadSampledAt'])),
         'pendingLoadMillis': json['pendingLoadMillis'] == null ? undefined : ManagedServicePendingLoadMillisFromJSON(json['pendingLoadMillis']),
         'bindings': json['bindings'] == null ? undefined : json['bindings'],
         'id': json['id'] == null ? undefined : json['id'],
-        'deletedAt': json['deletedAt'] == null ? undefined : (new Date(json['deletedAt'])),
-        'createdAt': json['createdAt'] == null ? undefined : (new Date(json['createdAt'])),
-        'updatedAt': json['updatedAt'] == null ? undefined : (new Date(json['updatedAt'])),
+        'deletedAt': json['deletedAt'] === undefined ? undefined : json['deletedAt'] === null ? null : (parseDateTime(json['deletedAt'])),
+        'createdAt': json['createdAt'] == null ? undefined : (parseDateTime(json['createdAt'])),
+        'updatedAt': json['updatedAt'] === undefined ? undefined : json['updatedAt'] === null ? null : (parseDateTime(json['updatedAt'])),
         'catalogueEntry': json['catalogueEntry'] == null ? undefined : json['catalogueEntry'],
-        'instance': json['instance'] == null ? undefined : ManagedServiceEngineFromJSON(json['instance']),
+        'instance': json['instance'] === undefined ? undefined : json['instance'] === null ? null : ManagedServiceEngineFromJSON(json['instance']),
         'available': json['available'] == null ? undefined : json['available'],
         'deleted': json['deleted'] == null ? undefined : json['deleted'],
     };
@@ -313,7 +261,7 @@ export function ManagedServiceToJSON(json: any): ManagedService {
     return ManagedServiceToJSONTyped(json, false);
 }
 
-export function ManagedServiceToJSONTyped(value?: Omit<ManagedService, 'failureReason'|'usageSampledAt'|'lastLoadSampledAt'|'id'|'deletedAt'|'createdAt'|'updatedAt'|'catalogueEntry'|'available'|'deleted'> | null, ignoreDiscriminator: boolean = false): any {
+export function ManagedServiceToJSONTyped(value?: Omit<ManagedService, 'failureReason'|'usageSampledAt'|'lastLoadSampledAt'|'bindings'|'id'|'deletedAt'|'createdAt'|'updatedAt'|'catalogueEntry'|'instance'|'available'|'deleted'> | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
@@ -334,8 +282,6 @@ export function ManagedServiceToJSONTyped(value?: Omit<ManagedService, 'failureR
         'usageBytes': ManagedServiceUsageBytesToJSON(value['usageBytes']),
         'lastLoadMillis': ManagedServiceLastLoadMillisToJSON(value['lastLoadMillis']),
         'pendingLoadMillis': ManagedServicePendingLoadMillisToJSON(value['pendingLoadMillis']),
-        'bindings': value['bindings'],
-        'instance': ManagedServiceEngineToJSON(value['instance']),
     };
 }
 
