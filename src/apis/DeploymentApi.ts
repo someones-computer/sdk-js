@@ -69,6 +69,13 @@ export interface DeploymentsGetRequest {
 
 export interface DeploymentsListRequest {
     page?: number;
+    application?: string;
+    application2?: Array<string>;
+    sequence?: string;
+    sequence2?: Array<string>;
+    name?: string;
+    name2?: Array<string>;
+    itemsPerPage?: string;
 }
 
 export interface DeploymentsUpdateRequest {
@@ -356,6 +363,34 @@ export class DeploymentApi extends runtime.BaseAPI {
 
         if (requestParameters['page'] != null) {
             queryParameters['page'] = requestParameters['page'];
+        }
+
+        if (requestParameters['application'] != null) {
+            queryParameters['application'] = requestParameters['application'];
+        }
+
+        if (requestParameters['application2'] != null) {
+            queryParameters['application[]'] = requestParameters['application2']!.join(runtime.COLLECTION_FORMATS["csv"]);
+        }
+
+        if (requestParameters['sequence'] != null) {
+            queryParameters['sequence'] = requestParameters['sequence'];
+        }
+
+        if (requestParameters['sequence2'] != null) {
+            queryParameters['sequence[]'] = requestParameters['sequence2']!.join(runtime.COLLECTION_FORMATS["csv"]);
+        }
+
+        if (requestParameters['name'] != null) {
+            queryParameters['name'] = requestParameters['name'];
+        }
+
+        if (requestParameters['name2'] != null) {
+            queryParameters['name[]'] = requestParameters['name2']!.join(runtime.COLLECTION_FORMATS["csv"]);
+        }
+
+        if (requestParameters['itemsPerPage'] != null) {
+            queryParameters['itemsPerPage'] = requestParameters['itemsPerPage'];
         }
 
         const headerParameters: runtime.HTTPHeaders = {};
