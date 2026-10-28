@@ -104,6 +104,10 @@ export interface CreditTransaction {
      */
     readonly usageRows?: number | null;
     /**
+     * The Stripe PaymentIntent that paid a top-up. Set when the payment clears.
+     */
+    stripePaymentIntentId?: string | null;
+    /**
      * Stripe Event id that last transitioned this row; secondary idempotency guard for webhook delivery.
      */
     stripeEventId?: string | null;
@@ -144,6 +148,7 @@ export const CreditTransactionStatusEnum = {
     Pending: 'pending',
     Succeeded: 'succeeded',
     Failed: 'failed',
+    Reversed: 'reversed',
 } as const;
 export type CreditTransactionStatusEnum = typeof CreditTransactionStatusEnum[keyof typeof CreditTransactionStatusEnum];
 
@@ -191,6 +196,7 @@ export function CreditTransactionFromJSONTyped(json: any, ignoreDiscriminator: b
         'usageBytes': json['usageBytes'] === undefined ? undefined : json['usageBytes'] === null ? null : CreditTransactionUsageBytesFromJSON(json['usageBytes']),
         'engineMillis': json['engineMillis'] === undefined ? undefined : json['engineMillis'] === null ? null : CreditTransactionEngineMillisFromJSON(json['engineMillis']),
         'usageRows': json['usageRows'] === undefined ? undefined : json['usageRows'] === null ? null : json['usageRows'],
+        'stripePaymentIntentId': json['stripePaymentIntentId'] === undefined ? undefined : json['stripePaymentIntentId'] === null ? null : json['stripePaymentIntentId'],
         'stripeEventId': json['stripeEventId'] === undefined ? undefined : json['stripeEventId'] === null ? null : json['stripeEventId'],
         'createdBy': json['createdBy'] === undefined ? undefined : json['createdBy'] === null ? null : UserFromJSON(json['createdBy']),
         'id': json['id'] == null ? undefined : json['id'],
@@ -218,6 +224,7 @@ export function CreditTransactionToJSONTyped(value?: Omit<CreditTransaction, 'us
         'stripeCheckoutSessionId': value['stripeCheckoutSessionId'],
         'usageBytes': CreditTransactionUsageBytesToJSON(value['usageBytes']),
         'engineMillis': CreditTransactionEngineMillisToJSON(value['engineMillis']),
+        'stripePaymentIntentId': value['stripePaymentIntentId'],
         'stripeEventId': value['stripeEventId'],
         'createdBy': UserToJSON(value['createdBy']),
     };

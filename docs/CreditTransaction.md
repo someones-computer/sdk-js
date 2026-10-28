@@ -20,6 +20,7 @@ Name | Type
 `usageBytes` | [CreditTransactionUsageBytes](CreditTransactionUsageBytes.md)
 `engineMillis` | [CreditTransactionEngineMillis](CreditTransactionEngineMillis.md)
 `usageRows` | number
+`stripePaymentIntentId` | string
 `stripeEventId` | string
 `createdBy` | [User](User.md)
 `id` | string
@@ -46,6 +47,7 @@ const example = {
   "usageBytes": null,
   "engineMillis": null,
   "usageRows": null,
+  "stripePaymentIntentId": null,
   "stripeEventId": null,
   "createdBy": null,
   "id": null,
