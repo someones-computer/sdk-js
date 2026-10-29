@@ -100,6 +100,10 @@ All URIs are relative to *http://localhost*
 *SwarmApi* | [**swarmsGet**](docs/SwarmApi.md#swarmsget) | **GET** /api/swarms/{id} | Retrieves a Swarm resource.
 *SwarmApi* | [**swarmsList**](docs/SwarmApi.md#swarmslist) | **GET** /api/swarms | Retrieves the collection of Swarm resources.
 *SwarmApi* | [**swarmsUpdate**](docs/SwarmApi.md#swarmsupdate) | **PATCH** /api/swarms/{id} | Updates the Swarm resource.
+*VolumeApi* | [**volumesCreate**](docs/VolumeApi.md#volumescreate) | **POST** /api/volumes | Creates a Volume resource.
+*VolumeApi* | [**volumesDelete**](docs/VolumeApi.md#volumesdelete) | **DELETE** /api/volumes/{id} | Removes the Volume resource.
+*VolumeApi* | [**volumesGet**](docs/VolumeApi.md#volumesget) | **GET** /api/volumes/{id} | Retrieves a Volume resource.
+*VolumeApi* | [**volumesList**](docs/VolumeApi.md#volumeslist) | **GET** /api/volumes | Retrieves the collection of Volume resources.
 
 
 ### Models
@@ -156,6 +160,8 @@ All URIs are relative to *http://localhost*
 - [SwarmJsonMergePatch](docs/SwarmJsonMergePatch.md)
 - [SwarmNode](docs/SwarmNode.md)
 - [User](docs/User.md)
+- [Volume](docs/Volume.md)
+- [VolumeVolumeInput](docs/VolumeVolumeInput.md)
 
 ### Authorization
 

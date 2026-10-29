@@ -63,6 +63,9 @@ docs/SwarmApi.md
 docs/SwarmJsonMergePatch.md
 docs/SwarmNode.md
 docs/User.md
+docs/Volume.md
+docs/VolumeApi.md
+docs/VolumeVolumeInput.md
 package.json
 src/apis/AdoptionApprovalApi.ts
 src/apis/ApplicationApi.ts
@@ -73,6 +76,7 @@ src/apis/ManagedServiceApi.ts
 src/apis/OrganizationApi.ts
 src/apis/ServiceBindingApi.ts
 src/apis/SwarmApi.ts
+src/apis/VolumeApi.ts
 src/apis/index.ts
 src/index.ts
 src/models/AdoptionApproval.ts
@@ -127,6 +131,8 @@ src/models/Swarm.ts
 src/models/SwarmJsonMergePatch.ts
 src/models/SwarmNode.ts
 src/models/User.ts
+src/models/Volume.ts
+src/models/VolumeVolumeInput.ts
 src/models/index.ts
 src/runtime.ts
 tsconfig.esm.json

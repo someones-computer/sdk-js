@@ -9,3 +9,4 @@ export * from './ManagedServiceApi';
 export * from './OrganizationApi';
 export * from './ServiceBindingApi';
 export * from './SwarmApi';
+export * from './VolumeApi';
