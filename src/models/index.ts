@@ -52,3 +52,5 @@ export * from './Swarm';
 export * from './SwarmJsonMergePatch';
 export * from './SwarmNode';
 export * from './User';
+export * from './Volume';
+export * from './VolumeVolumeInput';
