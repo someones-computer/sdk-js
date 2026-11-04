@@ -14,13 +14,14 @@
 
 import { mapValues } from '../runtime';
 /**
- * Create a volume: a named store for a game server, held in a Garage bucket.
+ * Create a volume: a named store of files that S3 holds.
  * @export
  * @interface VolumeVolumeInput
  */
 export interface VolumeVolumeInput {
     /**
-     * The tenant's own name for it. It shows in the panel and in a game server's settings.
+     * The tenant's own name for it. The bucket under it takes this name after a prefix
+     * ({@see VolumeProvisioner::BUCKET_PREFIX}), so the limit is shorter than a service slug's.
      */
     slug: string;
     /**

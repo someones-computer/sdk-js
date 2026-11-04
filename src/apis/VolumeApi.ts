@@ -57,6 +57,13 @@ export interface VolumesListRequest {
     page?: number;
 }
 
+export interface VolumesRestoreRequest {
+    /**
+     * Volume identifier
+     */
+    id: string;
+}
+
 /**
  * 
  */
@@ -276,6 +283,108 @@ export class VolumeApi extends runtime.BaseAPI {
      */
     async volumesList(requestParameters: VolumesListRequest = {}, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Array<Volume>> {
         const response = await this.volumesListRaw(requestParameters, initOverrides);
+        return await response.value();
+    }
+
+    /**
+     * Creates request options for volumesListRetired without sending the request
+     */
+    async volumesListRetiredRequestOpts(): Promise<runtime.RequestOpts> {
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("bearerAuth", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
+
+        let urlPath = `/api/volumes/retired`;
+
+        return {
+            path: urlPath,
+            method: 'GET',
+            headers: headerParameters,
+            query: queryParameters,
+        };
+    }
+
+    /**
+     * Retrieves the collection of Volume resources.
+     * Retrieves the collection of Volume resources.
+     */
+    async volumesListRetiredRaw(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Array<Volume>>> {
+        const requestOptions = await this.volumesListRetiredRequestOpts();
+        const response = await this.request(requestOptions, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) => jsonValue.map(VolumeFromJSON));
+    }
+
+    /**
+     * Retrieves the collection of Volume resources.
+     * Retrieves the collection of Volume resources.
+     */
+    async volumesListRetired(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Array<Volume>> {
+        const response = await this.volumesListRetiredRaw(initOverrides);
+        return await response.value();
+    }
+
+    /**
+     * Creates request options for volumesRestore without sending the request
+     */
+    async volumesRestoreRequestOpts(requestParameters: VolumesRestoreRequest): Promise<runtime.RequestOpts> {
+        if (requestParameters['id'] == null) {
+            throw new runtime.RequiredError(
+                'id',
+                'Required parameter "id" was null or undefined when calling volumesRestore().'
+            );
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("bearerAuth", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
+
+        let urlPath = `/api/volumes/{id}/restore`;
+        urlPath = urlPath.replace('{id}', encodeURIComponent(String(requestParameters['id'])));
+
+        return {
+            path: urlPath,
+            method: 'POST',
+            headers: headerParameters,
+            query: queryParameters,
+        };
+    }
+
+    /**
+     * Creates a Volume resource.
+     * Creates a Volume resource.
+     */
+    async volumesRestoreRaw(requestParameters: VolumesRestoreRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Volume>> {
+        const requestOptions = await this.volumesRestoreRequestOpts(requestParameters);
+        const response = await this.request(requestOptions, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) => VolumeFromJSON(jsonValue));
+    }
+
+    /**
+     * Creates a Volume resource.
+     * Creates a Volume resource.
+     */
+    async volumesRestore(requestParameters: VolumesRestoreRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Volume> {
+        const response = await this.volumesRestoreRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
