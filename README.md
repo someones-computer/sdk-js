@@ -104,6 +104,8 @@ All URIs are relative to *http://localhost*
 *VolumeApi* | [**volumesDelete**](docs/VolumeApi.md#volumesdelete) | **DELETE** /api/volumes/{id} | Removes the Volume resource.
 *VolumeApi* | [**volumesGet**](docs/VolumeApi.md#volumesget) | **GET** /api/volumes/{id} | Retrieves a Volume resource.
 *VolumeApi* | [**volumesList**](docs/VolumeApi.md#volumeslist) | **GET** /api/volumes | Retrieves the collection of Volume resources.
+*VolumeApi* | [**volumesListRetired**](docs/VolumeApi.md#volumeslistretired) | **GET** /api/volumes/retired | Retrieves the collection of Volume resources.
+*VolumeApi* | [**volumesRestore**](docs/VolumeApi.md#volumesrestore) | **POST** /api/volumes/{id}/restore | Creates a Volume resource.
 
 
 ### Models

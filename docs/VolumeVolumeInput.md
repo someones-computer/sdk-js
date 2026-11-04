@@ -1,7 +1,7 @@
 
 # VolumeVolumeInput
 
-Create a volume: a named store for a game server, held in a Garage bucket.
+Create a volume: a named store of files that S3 holds.
 
 ## Properties
 
