@@ -1,7 +1,7 @@
 
 # Volume
 
-List the volumes the caller can see.
+List retired volumes that a restore can still bring back. A volume stays restorable for 7 days after deletedAt.
 
 ## Properties
 
@@ -15,6 +15,7 @@ Name | Type
 `updatedAt` | Date
 `state` | string
 `usageBytes` | number
+`failureReason` | string
 `deleted` | boolean
 
 ## Example
@@ -32,6 +33,7 @@ const example = {
   "updatedAt": null,
   "state": null,
   "usageBytes": null,
+  "failureReason": null,
   "deleted": null,
 } satisfies Volume
 
