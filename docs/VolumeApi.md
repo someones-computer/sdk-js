@@ -8,6 +8,8 @@ All URIs are relative to *http://localhost*
 | [**volumesDelete**](VolumeApi.md#volumesdelete) | **DELETE** /api/volumes/{id} | Removes the Volume resource. |
 | [**volumesGet**](VolumeApi.md#volumesget) | **GET** /api/volumes/{id} | Retrieves a Volume resource. |
 | [**volumesList**](VolumeApi.md#volumeslist) | **GET** /api/volumes | Retrieves the collection of Volume resources. |
+| [**volumesListRetired**](VolumeApi.md#volumeslistretired) | **GET** /api/volumes/retired | Retrieves the collection of Volume resources. |
+| [**volumesRestore**](VolumeApi.md#volumesrestore) | **POST** /api/volumes/{id}/restore | Creates a Volume resource. |
 
 
 
@@ -295,6 +297,142 @@ example().catch(console.error);
 | Status code | Description | Response headers |
 |-------------|-------------|------------------|
 | **200** | Volume collection |  -  |
+
+[[Back to top]](#) [[Back to API list]](../README.md#api-endpoints) [[Back to Model list]](../README.md#models) [[Back to README]](../README.md)
+
+
+## volumesListRetired
+
+> Array&lt;Volume&gt; volumesListRetired()
+
+Retrieves the collection of Volume resources.
+
+Retrieves the collection of Volume resources.
+
+### Example
+
+```ts
+import {
+  Configuration,
+  VolumeApi,
+} from '@someones-computer/sdk-js';
+import type { VolumesListRetiredRequest } from '@someones-computer/sdk-js';
+
+async function example() {
+  console.log("🚀 Testing @someones-computer/sdk-js SDK...");
+  const config = new Configuration({ 
+    // Configure HTTP bearer authorization: bearerAuth
+    accessToken: "YOUR BEARER TOKEN",
+  });
+  const api = new VolumeApi(config);
+
+  try {
+    const data = await api.volumesListRetired();
+    console.log(data);
+  } catch (error) {
+    console.error(error);
+  }
+}
+
+// Run the test
+example().catch(console.error);
+```
+
+### Parameters
+
+This endpoint does not need any parameter.
+
+### Return type
+
+[**Array&lt;Volume&gt;**](Volume.md)
+
+### Authorization
+
+[bearerAuth](../README.md#bearerAuth)
+
+### HTTP request headers
+
+- **Content-Type**: Not defined
+- **Accept**: `application/json`
+
+
+### HTTP response details
+| Status code | Description | Response headers |
+|-------------|-------------|------------------|
+| **200** | Volume collection |  -  |
+
+[[Back to top]](#) [[Back to API list]](../README.md#api-endpoints) [[Back to Model list]](../README.md#models) [[Back to README]](../README.md)
+
+
+## volumesRestore
+
+> Volume volumesRestore(id)
+
+Creates a Volume resource.
+
+Creates a Volume resource.
+
+### Example
+
+```ts
+import {
+  Configuration,
+  VolumeApi,
+} from '@someones-computer/sdk-js';
+import type { VolumesRestoreRequest } from '@someones-computer/sdk-js';
+
+async function example() {
+  console.log("🚀 Testing @someones-computer/sdk-js SDK...");
+  const config = new Configuration({ 
+    // Configure HTTP bearer authorization: bearerAuth
+    accessToken: "YOUR BEARER TOKEN",
+  });
+  const api = new VolumeApi(config);
+
+  const body = {
+    // string | Volume identifier
+    id: id_example,
+  } satisfies VolumesRestoreRequest;
+
+  try {
+    const data = await api.volumesRestore(body);
+    console.log(data);
+  } catch (error) {
+    console.error(error);
+  }
+}
+
+// Run the test
+example().catch(console.error);
+```
+
+### Parameters
+
+
+| Name | Type | Description  | Notes |
+|------------- | ------------- | ------------- | -------------|
+| **id** | `string` | Volume identifier | [Defaults to `undefined`] |
+
+### Return type
+
+[**Volume**](Volume.md)
+
+### Authorization
+
+[bearerAuth](../README.md#bearerAuth)
+
+### HTTP request headers
+
+- **Content-Type**: Not defined
+- **Accept**: `application/json`, `application/problem+json`
+
+
+### HTTP response details
+| Status code | Description | Response headers |
+|-------------|-------------|------------------|
+| **200** | Volume resource created |  -  |
+| **400** | Invalid input |  -  |
+| **422** | An error occurred |  -  |
 
 [[Back to top]](#) [[Back to API list]](../README.md#api-endpoints) [[Back to Model list]](../README.md#models) [[Back to README]](../README.md)
 

@@ -78,6 +78,14 @@ All URIs are relative to *http://localhost*
 *DeploymentAccessGateApi* | [**deploymentAccessGatesGet**](docs/DeploymentAccessGateApi.md#deploymentaccessgatesget) | **GET** /api/deployment_access_gates/{id} | Retrieves a DeploymentAccessGate resource.
 *DeploymentAccessGateApi* | [**deploymentAccessGatesList**](docs/DeploymentAccessGateApi.md#deploymentaccessgateslist) | **GET** /api/deployment_access_gates | Retrieves the collection of DeploymentAccessGate resources.
 *DeploymentAccessGateApi* | [**deploymentAccessGatesUpdate**](docs/DeploymentAccessGateApi.md#deploymentaccessgatesupdate) | **PATCH** /api/deployment_access_gates/{id} | Updates the DeploymentAccessGate resource.
+*GameServerApi* | [**gameServersCreate**](docs/GameServerApi.md#gameserverscreate) | **POST** /api/game_servers | Creates a GameServer resource.
+*GameServerApi* | [**gameServersDelete**](docs/GameServerApi.md#gameserversdelete) | **DELETE** /api/game_servers/{id} | Removes the GameServer resource.
+*GameServerApi* | [**gameServersGet**](docs/GameServerApi.md#gameserversget) | **GET** /api/game_servers/{id} | Retrieves a GameServer resource.
+*GameServerApi* | [**gameServersList**](docs/GameServerApi.md#gameserverslist) | **GET** /api/game_servers | Retrieves the collection of GameServer resources.
+*GameServerApi* | [**gameServersRestart**](docs/GameServerApi.md#gameserversrestart) | **POST** /api/game_servers/{id}/restart | Creates a GameServer resource.
+*GameServerApi* | [**gameServersStart**](docs/GameServerApi.md#gameserversstart) | **POST** /api/game_servers/{id}/start | Creates a GameServer resource.
+*GameServerApi* | [**gameServersStop**](docs/GameServerApi.md#gameserversstop) | **POST** /api/game_servers/{id}/stop | Creates a GameServer resource.
+*GameServerApi* | [**gameServersUpdate**](docs/GameServerApi.md#gameserversupdate) | **PATCH** /api/game_servers/{id} | Updates the GameServer resource.
 *ManagedServiceApi* | [**managedServicesCreate**](docs/ManagedServiceApi.md#managedservicescreate) | **POST** /api/managed_services | Creates a ManagedService resource.
 *ManagedServiceApi* | [**managedServicesDelete**](docs/ManagedServiceApi.md#managedservicesdelete) | **DELETE** /api/managed_services/{id} | Removes the ManagedService resource.
 *ManagedServiceApi* | [**managedServicesGet**](docs/ManagedServiceApi.md#managedservicesget) | **GET** /api/managed_services/{id} | Retrieves a ManagedService resource.
@@ -104,6 +112,8 @@ All URIs are relative to *http://localhost*
 *VolumeApi* | [**volumesDelete**](docs/VolumeApi.md#volumesdelete) | **DELETE** /api/volumes/{id} | Removes the Volume resource.
 *VolumeApi* | [**volumesGet**](docs/VolumeApi.md#volumesget) | **GET** /api/volumes/{id} | Retrieves a Volume resource.
 *VolumeApi* | [**volumesList**](docs/VolumeApi.md#volumeslist) | **GET** /api/volumes | Retrieves the collection of Volume resources.
+*VolumeApi* | [**volumesListRetired**](docs/VolumeApi.md#volumeslistretired) | **GET** /api/volumes/retired | Retrieves the collection of Volume resources.
+*VolumeApi* | [**volumesRestore**](docs/VolumeApi.md#volumesrestore) | **POST** /api/volumes/{id}/restore | Creates a Volume resource.
 
 
 ### Models
@@ -132,6 +142,10 @@ All URIs are relative to *http://localhost*
 - [DeploymentJsonMergePatch](docs/DeploymentJsonMergePatch.md)
 - [DeploymentJsonMergePatchBuildContextsValueValue](docs/DeploymentJsonMergePatchBuildContextsValueValue.md)
 - [Failure](docs/Failure.md)
+- [GameServerGameServerInput](docs/GameServerGameServerInput.md)
+- [GameServerGameServerRead](docs/GameServerGameServerRead.md)
+- [GameServerGameServerReadSettingsValue](docs/GameServerGameServerReadSettingsValue.md)
+- [GameServerGameServerSettingsInputJsonMergePatch](docs/GameServerGameServerSettingsInputJsonMergePatch.md)
 - [Machine](docs/Machine.md)
 - [ManagedService](docs/ManagedService.md)
 - [ManagedServiceEngine](docs/ManagedServiceEngine.md)

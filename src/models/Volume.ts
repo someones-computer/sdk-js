@@ -14,7 +14,7 @@
 
 import { mapValues, parseDate, parseDateTime, serializeDate, serializeDateTime } from '../runtime';
 /**
- * List the volumes the caller can see.
+ * List retired volumes that a restore can still bring back. A volume stays restorable for 7 days after deletedAt.
  * @export
  * @interface Volume
  */
@@ -44,13 +44,17 @@ export interface Volume {
      */
     readonly updatedAt?: Date | null;
     /**
-     * The bucket's state, as the volume's own.
+     * The bucket's state, which is the volume's.
      */
     readonly state?: VolumeStateEnum;
     /**
-     * Bytes the bucket holds at the last measurement, or null before the first.
+     * 
      */
     readonly usageBytes?: number | null;
+    /**
+     * 
+     */
+    readonly failureReason?: string | null;
     /**
      * 
      */
@@ -98,6 +102,7 @@ export function VolumeFromJSONTyped(json: any, ignoreDiscriminator: boolean): Vo
         'updatedAt': json['updatedAt'] === undefined ? undefined : json['updatedAt'] === null ? null : (parseDateTime(json['updatedAt'])),
         'state': json['state'] == null ? undefined : json['state'],
         'usageBytes': json['usageBytes'] === undefined ? undefined : json['usageBytes'] === null ? null : json['usageBytes'],
+        'failureReason': json['failureReason'] === undefined ? undefined : json['failureReason'] === null ? null : json['failureReason'],
         'deleted': json['deleted'] == null ? undefined : json['deleted'],
     };
 }
@@ -106,7 +111,7 @@ export function VolumeToJSON(json: any): Volume {
     return VolumeToJSONTyped(json, false);
 }
 
-export function VolumeToJSONTyped(value?: Omit<Volume, 'id'|'deletedAt'|'createdAt'|'updatedAt'|'state'|'usageBytes'|'deleted'> | null, ignoreDiscriminator: boolean = false): any {
+export function VolumeToJSONTyped(value?: Omit<Volume, 'id'|'deletedAt'|'createdAt'|'updatedAt'|'state'|'usageBytes'|'failureReason'|'deleted'> | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }

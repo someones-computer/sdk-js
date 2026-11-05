@@ -31,6 +31,11 @@ docs/DeploymentDeploymentEndpoint.md
 docs/DeploymentJsonMergePatch.md
 docs/DeploymentJsonMergePatchBuildContextsValueValue.md
 docs/Failure.md
+docs/GameServerApi.md
+docs/GameServerGameServerInput.md
+docs/GameServerGameServerRead.md
+docs/GameServerGameServerReadSettingsValue.md
+docs/GameServerGameServerSettingsInputJsonMergePatch.md
 docs/Machine.md
 docs/ManagedService.md
 docs/ManagedServiceApi.md
@@ -72,6 +77,7 @@ src/apis/ApplicationApi.ts
 src/apis/CreditTransactionApi.ts
 src/apis/DeploymentAccessGateApi.ts
 src/apis/DeploymentApi.ts
+src/apis/GameServerApi.ts
 src/apis/ManagedServiceApi.ts
 src/apis/OrganizationApi.ts
 src/apis/ServiceBindingApi.ts
@@ -103,6 +109,10 @@ src/models/DeploymentDeploymentEndpoint.ts
 src/models/DeploymentJsonMergePatch.ts
 src/models/DeploymentJsonMergePatchBuildContextsValueValue.ts
 src/models/Failure.ts
+src/models/GameServerGameServerInput.ts
+src/models/GameServerGameServerRead.ts
+src/models/GameServerGameServerReadSettingsValue.ts
+src/models/GameServerGameServerSettingsInputJsonMergePatch.ts
 src/models/Machine.ts
 src/models/ManagedService.ts
 src/models/ManagedServiceEngine.ts
