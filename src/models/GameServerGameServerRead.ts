@@ -72,6 +72,9 @@ export interface GameServerGameServerRead {
 export const GameServerGameServerReadKindEnum = {
     Minecraft: 'minecraft',
     Factorio: 'factorio',
+    Terraria: 'terraria',
+    MinecraftBedrock: 'minecraft-bedrock',
+    Valheim: 'valheim',
 } as const;
 export type GameServerGameServerReadKindEnum = typeof GameServerGameServerReadKindEnum[keyof typeof GameServerGameServerReadKindEnum];
 
