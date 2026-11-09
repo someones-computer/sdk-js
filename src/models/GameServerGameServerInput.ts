@@ -59,6 +59,7 @@ export const GameServerGameServerInputKindEnum = {
     Terraria: 'terraria',
     MinecraftBedrock: 'minecraft-bedrock',
     Valheim: 'valheim',
+    Freelancer: 'freelancer',
 } as const;
 export type GameServerGameServerInputKindEnum = typeof GameServerGameServerInputKindEnum[keyof typeof GameServerGameServerInputKindEnum];
 
