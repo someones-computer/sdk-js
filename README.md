@@ -63,6 +63,9 @@ All URIs are relative to *http://localhost*
 *ApplicationApi* | [**applicationsGet**](docs/ApplicationApi.md#applicationsget) | **GET** /api/applications/{id} | Retrieves a Application resource.
 *ApplicationApi* | [**applicationsList**](docs/ApplicationApi.md#applicationslist) | **GET** /api/applications | Retrieves the collection of Application resources.
 *ApplicationApi* | [**applicationsUpdate**](docs/ApplicationApi.md#applicationsupdate) | **PATCH** /api/applications/{id} | Updates the Application resource.
+*ApplicationVolumeApi* | [**apiApplicationVolumesGetCollection**](docs/ApplicationVolumeApi.md#apiapplicationvolumesgetcollection) | **GET** /api/application_volumes | Retrieves the collection of ApplicationVolume resources.
+*ApplicationVolumeApi* | [**apiApplicationVolumesIdDelete**](docs/ApplicationVolumeApi.md#apiapplicationvolumesiddelete) | **DELETE** /api/application_volumes/{id} | Removes the ApplicationVolume resource.
+*ApplicationVolumeApi* | [**apiApplicationVolumesIdGet**](docs/ApplicationVolumeApi.md#apiapplicationvolumesidget) | **GET** /api/application_volumes/{id} | Retrieves a ApplicationVolume resource.
 *CreditTransactionApi* | [**creditTransactionsGet**](docs/CreditTransactionApi.md#credittransactionsget) | **GET** /api/credit_transactions/{id} | Retrieves a CreditTransaction resource.
 *CreditTransactionApi* | [**creditTransactionsList**](docs/CreditTransactionApi.md#credittransactionslist) | **GET** /api/credit_transactions | Retrieves the collection of CreditTransaction resources.
 *DeploymentApi* | [**deploymentsBundleUploadConfirm**](docs/DeploymentApi.md#deploymentsbundleuploadconfirm) | **POST** /api/deployments/bundle_uploads/confirm | Creates a Deployment resource.
@@ -86,6 +89,10 @@ All URIs are relative to *http://localhost*
 *GameServerApi* | [**gameServersStart**](docs/GameServerApi.md#gameserversstart) | **POST** /api/game_servers/{id}/start | Creates a GameServer resource.
 *GameServerApi* | [**gameServersStop**](docs/GameServerApi.md#gameserversstop) | **POST** /api/game_servers/{id}/stop | Creates a GameServer resource.
 *GameServerApi* | [**gameServersUpdate**](docs/GameServerApi.md#gameserversupdate) | **PATCH** /api/game_servers/{id} | Updates the GameServer resource.
+*GateRouteExemptionApi* | [**apiGateRouteExemptionsGetCollection**](docs/GateRouteExemptionApi.md#apigaterouteexemptionsgetcollection) | **GET** /api/gate_route_exemptions | Retrieves the collection of GateRouteExemption resources.
+*GateRouteExemptionApi* | [**apiGateRouteExemptionsIdDelete**](docs/GateRouteExemptionApi.md#apigaterouteexemptionsiddelete) | **DELETE** /api/gate_route_exemptions/{id} | Removes the GateRouteExemption resource.
+*GateRouteExemptionApi* | [**apiGateRouteExemptionsIdGet**](docs/GateRouteExemptionApi.md#apigaterouteexemptionsidget) | **GET** /api/gate_route_exemptions/{id} | Retrieves a GateRouteExemption resource.
+*GateRouteExemptionApi* | [**apiGateRouteExemptionsPost**](docs/GateRouteExemptionApi.md#apigaterouteexemptionspost) | **POST** /api/gate_route_exemptions | Creates a GateRouteExemption resource.
 *ManagedServiceApi* | [**managedServicesCreate**](docs/ManagedServiceApi.md#managedservicescreate) | **POST** /api/managed_services | Creates a ManagedService resource.
 *ManagedServiceApi* | [**managedServicesDelete**](docs/ManagedServiceApi.md#managedservicesdelete) | **DELETE** /api/managed_services/{id} | Removes the ManagedService resource.
 *ManagedServiceApi* | [**managedServicesGet**](docs/ManagedServiceApi.md#managedservicesget) | **GET** /api/managed_services/{id} | Retrieves a ManagedService resource.
@@ -122,6 +129,7 @@ All URIs are relative to *http://localhost*
 - [AdoptionApprovalAdoptionApprovalInput](docs/AdoptionApprovalAdoptionApprovalInput.md)
 - [Application](docs/Application.md)
 - [ApplicationJsonMergePatch](docs/ApplicationJsonMergePatch.md)
+- [ApplicationVolume](docs/ApplicationVolume.md)
 - [BundleAdditionalContextInput](docs/BundleAdditionalContextInput.md)
 - [BundleContextInput](docs/BundleContextInput.md)
 - [BundleForwardedImageInput](docs/BundleForwardedImageInput.md)
@@ -146,6 +154,8 @@ All URIs are relative to *http://localhost*
 - [GameServerGameServerRead](docs/GameServerGameServerRead.md)
 - [GameServerGameServerReadSettingsValue](docs/GameServerGameServerReadSettingsValue.md)
 - [GameServerGameServerSettingsInputJsonMergePatch](docs/GameServerGameServerSettingsInputJsonMergePatch.md)
+- [GateRouteExemption](docs/GateRouteExemption.md)
+- [GateRouteExemptionGateRouteExemptionInput](docs/GateRouteExemptionGateRouteExemptionInput.md)
 - [Machine](docs/Machine.md)
 - [ManagedService](docs/ManagedService.md)
 - [ManagedServiceEngine](docs/ManagedServiceEngine.md)

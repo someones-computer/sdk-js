@@ -8,6 +8,8 @@ docs/AdoptionApprovalApi.md
 docs/Application.md
 docs/ApplicationApi.md
 docs/ApplicationJsonMergePatch.md
+docs/ApplicationVolume.md
+docs/ApplicationVolumeApi.md
 docs/BundleAdditionalContextInput.md
 docs/BundleContextInput.md
 docs/BundleForwardedImageInput.md
@@ -36,6 +38,9 @@ docs/GameServerGameServerInput.md
 docs/GameServerGameServerRead.md
 docs/GameServerGameServerReadSettingsValue.md
 docs/GameServerGameServerSettingsInputJsonMergePatch.md
+docs/GateRouteExemption.md
+docs/GateRouteExemptionApi.md
+docs/GateRouteExemptionGateRouteExemptionInput.md
 docs/Machine.md
 docs/ManagedService.md
 docs/ManagedServiceApi.md
@@ -74,10 +79,12 @@ docs/VolumeVolumeInput.md
 package.json
 src/apis/AdoptionApprovalApi.ts
 src/apis/ApplicationApi.ts
+src/apis/ApplicationVolumeApi.ts
 src/apis/CreditTransactionApi.ts
 src/apis/DeploymentAccessGateApi.ts
 src/apis/DeploymentApi.ts
 src/apis/GameServerApi.ts
+src/apis/GateRouteExemptionApi.ts
 src/apis/ManagedServiceApi.ts
 src/apis/OrganizationApi.ts
 src/apis/ServiceBindingApi.ts
@@ -89,6 +96,7 @@ src/models/AdoptionApproval.ts
 src/models/AdoptionApprovalAdoptionApprovalInput.ts
 src/models/Application.ts
 src/models/ApplicationJsonMergePatch.ts
+src/models/ApplicationVolume.ts
 src/models/BundleAdditionalContextInput.ts
 src/models/BundleContextInput.ts
 src/models/BundleForwardedImageInput.ts
@@ -113,6 +121,8 @@ src/models/GameServerGameServerInput.ts
 src/models/GameServerGameServerRead.ts
 src/models/GameServerGameServerReadSettingsValue.ts
 src/models/GameServerGameServerSettingsInputJsonMergePatch.ts
+src/models/GateRouteExemption.ts
+src/models/GateRouteExemptionGateRouteExemptionInput.ts
 src/models/Machine.ts
 src/models/ManagedService.ts
 src/models/ManagedServiceEngine.ts
